@@ -1,0 +1,29 @@
+site_name: Cours Linux
+site_description: Travaux pratiques Linux
+
+theme:
+  name: material
+  language: fr
+  features:
+    - navigation.sections
+    - navigation.top
+    - search.suggest
+    - search.highlight
+
+nav:
+  - Accueil: index.md
+  - Élèves:
+      - TP 1 — Premier contact avec Linux: eleves/tp1-premier-contact-linux.md
+      - TP 2 — Lire les traces d'un poste: eleves/tp2-lire-les-traces.md
+  - Professeur:
+      - TP 1 — Guide tableau et explications globales: professeur/tp1-guide-tableau.md
+      - TP 2 — Guide tableau et explications globales: professeur/tp2-guide-tableau.md
+
+markdown_extensions:
+  - tables
+  - fenced_code
+  - admonition
+  - pymdownx.highlight
+  - pymdownx.superfences
+
+copyright: "Cours Linux"

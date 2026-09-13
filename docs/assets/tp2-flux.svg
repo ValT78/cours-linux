@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="660" viewBox="0 0 1600 660" role="img" aria-labelledby="title desc">
+  <title id="title">Les trois canaux d'une commande</title><desc id="desc">Une commande reçoit une entrée standard et produit une sortie normale ainsi qu'une sortie d'erreur. Le shell peut rediriger chaque flux.</desc>
+  <defs><style>.t{font-family:Arial,sans-serif;fill:#102a43}.m{font-family:monospace;fill:#102a43}.a{stroke-width:8;fill:none;marker-end:url(#h)}</style><marker id="h" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 Z" fill="#102a43"/></marker></defs><rect width="1600" height="660" fill="#f7fbff"/>
+  <text class="t" x="800" y="65" text-anchor="middle" font-size="39" font-weight="700">Chaque commande utilise trois canaux</text>
+  <rect x="620" y="210" width="360" height="210" rx="30" fill="#b8f3df"/><text class="t" x="800" y="295" text-anchor="middle" font-size="35" font-weight="700">une commande</text><text class="m" x="800" y="345" text-anchor="middle" font-size="27">grep, sort, ls...</text>
+  <path class="a" stroke="#4ac0e0" d="M260 310 H580"/><text class="t" x="420" y="265" text-anchor="middle" font-size="27">entrée standard (0)</text><text class="t" x="420" y="350" text-anchor="middle" font-size="22">clavier ou fichier avec &lt;</text>
+  <path class="a" stroke="#7ece9d" d="M1020 275 H1340"/><text class="t" x="1180" y="225" text-anchor="middle" font-size="27">sortie normale (1)</text><text class="t" x="1180" y="315" text-anchor="middle" font-size="22">terminal, fichier avec &gt;, ou |</text>
+  <path class="a" stroke="#ff725c" d="M1020 375 H1340"/><text class="t" x="1180" y="425" text-anchor="middle" font-size="27">messages d'erreur (2)</text><text class="t" x="1180" y="465" text-anchor="middle" font-size="22">terminal ou fichier avec 2&gt;</text>
+  <text class="m" x="800" y="570" text-anchor="middle" font-size="25">ls bruts fichier-inexistant &gt; liste.txt 2&gt; erreurs.txt</text>
+</svg>

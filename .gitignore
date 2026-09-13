@@ -1,0 +1,9 @@
+# Contenu historique : volontairement exclu du dépôt des nouveaux cours.
+/Ancien TPs/
+/Anciens Cours/
+/Bons exemples/
+
+# Fichiers générés localement par MkDocs.
+/site/
+/.cache/
+__pycache__/

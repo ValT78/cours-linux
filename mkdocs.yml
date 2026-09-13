@@ -4,6 +4,10 @@ site_description: Travaux pratiques Linux
 theme:
   name: material
   language: fr
+  palette:
+    scheme: slate
+    primary: black
+    accent: cyan
   features:
     - navigation.sections
     - navigation.top
@@ -25,5 +29,8 @@ markdown_extensions:
   - admonition
   - pymdownx.highlight
   - pymdownx.superfences
+
+extra_css:
+  - stylesheets/extra.css
 
 copyright: "Cours Linux"

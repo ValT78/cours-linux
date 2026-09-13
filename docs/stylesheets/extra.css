@@ -1,0 +1,98 @@
+/* Identité sombre et lisible, pensée pour des consignes techniques. */
+:root {
+  --md-default-bg-color: #0b1220;
+  --md-default-fg-color: #e5edf8;
+  --md-default-fg-color--light: #b6c3d6;
+  --md-default-fg-color--lighter: #7f91aa;
+  --md-primary-fg-color: #111b2d;
+  --md-primary-bg-color: #f8fbff;
+  --md-accent-fg-color: #22d3ee;
+  --course-panel: #131e31;
+  --course-panel-raised: #192840;
+  --course-border: #2b3d58;
+  --course-code: #0a101c;
+}
+
+/* Des titres qui structurent immédiatement la page. */
+.md-typeset h1,
+.md-typeset h2,
+.md-typeset h3 {
+  color: #f8fbff;
+  font-weight: 750;
+  letter-spacing: -0.025em;
+}
+
+.md-typeset h1 {
+  font-size: 2.35em;
+  line-height: 1.15;
+  margin-bottom: 1rem;
+}
+
+.md-typeset h2 {
+  border-bottom: 1px solid var(--course-border);
+  margin-top: 2.2em;
+  padding-bottom: 0.38em;
+}
+
+.md-typeset h3 {
+  color: #a5f3fc;
+}
+
+.md-typeset strong {
+  color: #ffffff;
+  font-weight: 750;
+}
+
+/* Code intégré : court, lumineux et impossible à confondre avec le texte. */
+.md-typeset :not(pre) > code {
+  background-color: #1c2a42;
+  border: 1px solid #395170;
+  border-radius: 0.3rem;
+  color: #a5f3fc;
+  font-size: 0.9em;
+  font-weight: 650;
+  padding: 0.14em 0.36em;
+}
+
+/* Blocs de code : surface dédiée, accent latéral et meilleure lecture. */
+.md-typeset pre,
+.md-typeset .highlight {
+  background: var(--course-code);
+  border: 1px solid var(--course-border);
+  border-left: 4px solid #22d3ee;
+  border-radius: 0.5rem;
+  box-shadow: 0 12px 28px rgb(0 0 0 / 18%);
+}
+
+.md-typeset pre > code,
+.md-typeset .highlight code {
+  color: #e5edf8;
+  font-size: 0.88em;
+  line-height: 1.65;
+}
+
+/* Les tableaux et citations gardent une séparation claire dans les longs TP. */
+.md-typeset table:not([class]) {
+  background: var(--course-panel);
+  border: 1px solid var(--course-border);
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.md-typeset table:not([class]) th {
+  background: var(--course-panel-raised);
+  color: #f8fbff;
+  font-weight: 700;
+}
+
+.md-typeset blockquote {
+  background: #12243a;
+  border-left-color: #38bdf8;
+  border-radius: 0 0.35rem 0.35rem 0;
+  color: #d8e7f7;
+  padding: 0.7rem 1rem;
+}
+
+.md-typeset hr {
+  border-bottom-color: var(--course-border);
+}

@@ -1,208 +1,194 @@
-# TP 1 - Guide tableau et explications globales
+# TP 1 — Repères visuels et notions clés
 
-Ce document est prévu pour l'enseignant. Il accompagne le TP autonome **Premier contact avec Linux**. L'idée n'est pas de refaire un cours de 90 minutes : chaque arrêt collectif répond à une observation que les élèves viennent réellement de faire.
+Cette annexe rassemble les idées essentielles du TP **Premier contact avec Linux**. Elle relie les commandes observées à une vue d'ensemble du système : qui interprète une commande, comment les fichiers sont organisés et pourquoi les droits ou les processus se comportent ainsi.
 
-## Contrat pédagogique de la séance
+## Carte des notions
 
-- **Public :** débutants complets, tout juste sortis du lycée.
-- **Expérience recherchée :** « Je peux explorer Linux sans avoir peur ; les choses ont une logique. »
-- **Règle de sécurité :** aucune commande avec `sudo`, aucune modification hors de `~/base-exploration`, aucun PID système visé par `kill`.
-- **Rythme :** laisser les élèves avancer, puis arrêter le groupe quand environ deux tiers sont arrivés à une même étape. Une explication globale dure 4 à 7 minutes.
-- **À éviter :** demander aux rapides d'attendre sans rien faire. Les défis optionnels les occupent ; les notes aident les autres à consolider.
+| Notion | Observation dans le terminal | Idée essentielle |
+|---|---|---|
+| terminal, shell et noyau | `whoami`, `ls` | l'interface, l'interpréteur et le cœur du système ont des rôles différents |
+| arborescence | `ls /` | tous les chemins appartiennent à un arbre unique qui part de `/` |
+| chemins | `pwd`, `cd`, `..`, `~` | un chemin décrit un itinéraire absolu ou relatif |
+| redirections | `echo`, `>`, `>>`, `<` | le shell choisit où circulent les données |
+| commandes internes | `type cd`, `type ls` | certaines commandes modifient le shell lui-même, d'autres sont des programmes séparés |
+| droits | `ls -l`, `chmod` | `r`, `w` et `x` changent de sens selon l'objet |
+| liens symboliques | `ln -s`, `ls -l` | un lien mémorise un chemin, pas une copie |
+| processus | `sleep 300 &`, `jobs`, `ps` | un programme lancé devient un processus identifié par un PID |
 
-## Déroulé enseignant
-
-| Pause tableau | Moment déclencheur | Durée | Idée à faire retenir |
-|---|---|---:|---|
-| 1 | après `whoami` | 5 min | terminal, shell et noyau ne sont pas la même chose |
-| 2 | après `ls /` | 7 min | une arborescence unique, avec des dossiers qui ont chacun un rôle |
-| 3 | après les essais avec `cd`, `..` et `~` | 5 min | un chemin est une succession de portes ; absolu et relatif dépendent du point de départ |
-| 4 | après `echo`, `>` et `>>` | 4 min | le shell peut envoyer le texte dans un fichier ou l'ajouter à sa fin |
-| 5 | après le `man` et `type cd` | 5 min | le shell interprète, lance des programmes, et certaines commandes lui appartiennent |
-| 6 | après les droits sur le coffre | 7 min | les droits portent sur des entrées ; écrire dans un répertoire change sa liste de noms |
-| 7 | bonus, après le lien cassé | 4 min | un lien symbolique contient un chemin, pas une copie du fichier |
-| 8 | bonus, après `sleep 300 &` | 5 min | programme et processus sont différents ; le shell est le parent du programme lancé |
+!!! warning "Périmètre sûr"
+    Les manipulations restent dans `~/base-exploration`, sans `sudo`. La seule cible de `kill` est le processus `sleep` créé dans le terminal pendant le TP.
 
 ---
 
-## Pause tableau 1 - Terminal, shell, noyau : qui fait quoi ?
+## 1. Terminal, shell, noyau : qui fait quoi ?
 
-À dessiner ou projeter :
+![Les logiciels de l'espace utilisateur passent par le noyau Linux pour accéder au processeur, à la mémoire, au disque, au réseau et aux périphériques.](../assets/tp1-depart-linux.svg)
+
+Le **terminal** affiche du texte et transmet les frappes du clavier. Le **shell** — souvent Bash — interprète la ligne saisie, prépare la commande puis lance le programme demandé. Les logiciels ne pilotent pas directement le matériel : ils demandent des services au **noyau Linux** au moyen d'appels système.
+
+Le noyau occupe donc une place centrale. Il arbitre l'accès au processeur, isole la mémoire, contrôle les droits sur les fichiers et dialogue avec les périphériques grâce à des pilotes.
 
 ```text
-toi
- │ tu écris : ls -l
- ▼
-terminal
- │ fenêtre qui affiche du texte et transmet le clavier
- ▼
-shell (souvent bash)
- │ comprend la commande et demande son exécution
- ▼
-noyau Linux
- │ arbitre les droits, la mémoire, le processeur et les périphériques
- ▼
-matériel : processeur, disque, réseau, écran...
+commande saisie
+      ↓
+terminal → shell → programme
+                     ↕ appels système
+                 noyau Linux
+                     ↕ pilotes
+     processeur · mémoire · disque · réseau · écran
 ```
 
-![Du terminal à Linux : l'élève transmet une commande au terminal, au shell puis au noyau Linux.](../assets/tp1-depart-linux.svg)
+!!! info "Un nom à double sens"
+    Dans la vie courante, « Linux » désigne souvent tout le système. Techniquement, Linux est le noyau ; les commandes comme Bash, `ls` ou `grep` sont d'autres logiciels assemblés autour de lui.
 
-À dire simplement :
-
-> Le terminal est la fenêtre. Le shell est le traducteur de vos commandes. Linux, au sens strict, est surtout le noyau qui fait respecter les règles et partage le matériel. Ouvrir un terminal ne vous donne donc pas tous les pouvoirs : vous restez l'utilisateur connecté.
-
-Question à lancer : « Si deux élèves lançaient beaucoup de programmes en même temps, qui décide lequel passe en premier sur le processeur ? »
+**Question de réflexion :** si dix programmes veulent utiliser le processeur en même temps, quel composant décide quand chacun peut travailler ?
 
 ---
 
-## Pause tableau 2 - La carte du territoire
+## 2. La carte du territoire
 
-À dessiner :
+![La grande arborescence Linux : tous les dossiers partent de `/`, y compris le dossier personnel.](../assets/tp1-arborescence.svg)
 
 ```text
 /
-├── home/       les espaces personnels, par exemple /home/alice
-├── root/       l'espace personnel de l'administrateur root
-├── etc/        réglages et configuration de la machine
+├── home/       espaces personnels, par exemple /home/alice
+├── root/       espace personnel de l'administrateur root
+├── etc/        configuration de la machine
 ├── tmp/        fichiers temporaires
-├── usr/        beaucoup de programmes installés, dont usr/bin/
-└── var/        données variables : journaux, cache, files d'attente...
+├── usr/        grande partie des programmes installés
+└── var/        données variables : journaux, caches, files d'attente…
 ```
 
-![La grande arborescence Linux : tous les dossiers partent de `/`, y compris le dossier personnel de l'élève.](../assets/tp1-arborescence.svg)
+Linux présente une seule grande arborescence qui commence par `/`. Un disque, une clé USB ou un partage réseau vient se raccorder à cet arbre à un **point de montage** : il n'apparaît pas nécessairement sous une nouvelle lettre comme sous Windows.
 
-Deux points importants :
+Selon la distribution, certains chemins peuvent différer. Sur beaucoup de systèmes récents, `/bin` est un lien symbolique vers `/usr/bin`. Les anciens noms restent ainsi disponibles sans dupliquer les programmes.
 
-1. Il n'y a qu'un seul grand arbre qui commence avec `/`, pas un disque `C:` puis un disque `D:` comme dans l'habitude Windows.
-2. Selon la distribution, un élève peut voir des différences. Sur beaucoup de Linux récents, `/bin` est un lien symbolique vers `/usr/bin`. Ce n'est pas une anomalie : les noms historiques restent disponibles.
+!!! info "Pourquoi `/etc` ?"
+    Le nom vient historiquement de *et cetera* : ce répertoire accueillait les fichiers système qui n'entraient pas ailleurs. Il est progressivement devenu le lieu principal de la configuration.
 
-Fait intéressant : `/etc` signifie historiquement « et cetera », le lieu où l'on rangeait diverses configurations. Aujourd'hui, il contient encore une énorme partie des réglages système.
-
-Question : « Dans quel dossier chercheriez-vous un journal qui grossit avec le temps ? Pourquoi ? »
+**Question de réflexion :** dans quel répertoire chercher un journal qui grossit avec le temps ?
 
 ---
 
-## Pause tableau 3 - Les chemins comme déplacement dans un bâtiment
+## 3. Les chemins sont des itinéraires
 
-À dessiner :
+![Deux itinéraires mènent au même fichier : le chemin absolu part toujours de la racine, le chemin relatif part du dossier courant.](../assets/tp1-chemins.svg)
 
-```text
-/
-└── home/
-    └── alice/
-        └── base-exploration/
-            └── mission/
-                └── briefing/
-                    └── objectif.txt
-```
-
-Si l'élève est dans `base-exploration/` :
+Un chemin n'est pas l'objet lui-même : c'est l'itinéraire utilisé pour l'atteindre.
 
 ```text
-mission/briefing/objectif.txt       chemin relatif
-./mission/briefing/objectif.txt     même chemin, . = ici
-../                                le dossier parent
-~/base-exploration/...               ~ = son dossier personnel
-/home/alice/base-exploration/...    chemin absolu, depuis /
+/home/alice/base-exploration/mission/briefing/objectif.txt
+└──────────────────── chemin absolu : départ à la racine /
+
+mission/briefing/objectif.txt
+└──────────────────── chemin relatif : départ dans le dossier courant
 ```
 
-Phrase utile :
+| Écriture | Signification |
+|---|---|
+| `/` | racine de toute l'arborescence |
+| `.` | dossier courant |
+| `..` | dossier parent |
+| `~` | dossier personnel de l'utilisateur |
+| `cd` sans argument | retour au dossier personnel dans Bash |
 
-> Un chemin n'est pas l'objet lui-même. C'est l'itinéraire utilisé pour l'atteindre. Un chemin relatif commence là où vous êtes ; un chemin absolu commence toujours à la racine.
+Si le dossier courant est `/home/alice/base-exploration`, les deux chemins suivants désignent le même fichier :
 
-Précaution débutants : montrer que `cd` seul ramène habituellement à la maison (`~`), mais présenter cela comme une commodité de Bash plutôt qu'une règle mystérieuse à apprendre d'urgence.
+```text
+mission/briefing/objectif.txt
+/home/alice/base-exploration/mission/briefing/objectif.txt
+```
+
+Le premier dépend du point de départ ; le second reste valable quel que soit le dossier courant.
 
 ---
 
-## Pause tableau 4 - Les flèches : où part le texte ?
+## 4. Les redirections : où part le texte ?
 
-À dessiner :
+![Les redirections du shell : `>` remplace le contenu d'un fichier, `>>` ajoute à la fin et `<` fournit un fichier en entrée.](../assets/tp1-redirections.svg)
 
 ```text
-echo "Bonjour"             texte affiché dans le terminal
-echo "Bonjour" > note.txt  texte envoyé dans un fichier ; ancien contenu remplacé
-echo "Bonjour" >> note.txt texte ajouté à la fin du fichier
-cat < note.txt              contenu du fichier envoyé à cat
+echo "Bonjour"             → texte affiché dans le terminal
+echo "Bonjour" > note.txt  → texte écrit dans un fichier ; ancien contenu remplacé
+echo "Bonjour" >> note.txt → texte ajouté à la fin du fichier
+cat < note.txt              → contenu du fichier fourni à cat
 ```
 
-![Les redirections du shell : `>` remplace le contenu d'un fichier, `>>` ajoute à la fin, et `<` enverra plus tard un fichier vers une commande.](../assets/tp1-redirections.svg)
+Les symboles `>`, `>>` et `<` ne sont pas des options de `echo` ou de `cat`. Le shell les traite avant de lancer la commande et branche les flux au bon endroit.
 
-À dire :
-
-> Les flèches ne font pas partie de `echo`. Elles sont comprises par le shell avant le lancement de la commande. `>` peut effacer l'ancien contenu : c'est utile, mais il faut savoir qu'on le fait. `>>` est fait pour compléter un fichier existant.
+!!! danger "`>` remplace le contenu"
+    La redirection `>` vide d'abord le fichier cible s'il existe. `>>` conserve le contenu et ajoute les nouvelles données à la fin.
 
 ---
 
-## Pause tableau 5 - Pourquoi certaines commandes sont « dans » le shell
-
-À dessiner :
+## 5. Commandes internes et programmes externes
 
 ```text
 shell Bash
- ├── cd       commande interne : elle doit modifier le shell courant
- ├── echo     souvent interne aussi
- └── lance /usr/bin/ls  programme externe, puis attend sa fin
+ ├── cd                  commande interne : modifie le shell courant
+ ├── echo                souvent interne
+ └── lance /usr/bin/ls   programme externe : travaille puis se termine
 ```
 
-À dire :
+`ls` peut travailler dans un processus séparé puis disparaître. `cd`, au contraire, doit modifier le dossier courant du shell qui attend la prochaine commande. Si un programme séparé changeait de dossier, lui seul se déplacerait ; le shell resterait au même endroit.
 
-> `ls` peut être lancé dans un petit processus séparé, faire son travail, puis disparaître. `cd`, lui, doit modifier l'endroit où attend votre shell. Si un programme séparé faisait ce changement, seul ce programme voyagerait : votre terminal resterait au même endroit.
+La commande `type` permet de découvrir ce que Bash lancera réellement :
 
-Faire remarquer l'autonomie : même des administrateurs utilisent `man`, `--help` et des recherches. Mémoriser la syntaxe exacte n'est pas le but ; savoir retrouver une information fiable en est un.
+```bash
+type cd
+type ls
+type echo
+```
+
+!!! info "L'aide fait partie du travail"
+    Les pages `man`, les options `--help` et la commande `type` ne sont pas des roues de secours pour débutants. Les administrateurs les utilisent quotidiennement : savoir retrouver une information fiable compte davantage que mémoriser toutes les options.
 
 ---
 
-## Pause tableau 6 - Les droits : ce qui semble paradoxal devient logique
-
-À dessiner :
-
-```text
-                     fichier                 répertoire
-r (read)       lire son contenu          lister les noms
-w (write)      modifier son contenu      ajouter, renommer, supprimer des noms
-x (execute)    l'exécuter                traverser le dossier dans un chemin
-```
-
-Puis insister sur la différence entre fichier et entrée de répertoire :
-
-```text
-mission/coffre/          contient la liste des noms : code.txt, ...
-        │
-        └── code.txt     est le fichier contenant le texte CODE-ALPHA-42
-```
+## 6. Les droits : trois lettres, deux significations
 
 ![Les droits Linux : `r`, `w` et `x` ont un sens différent sur un fichier et sur un répertoire.](../assets/tp1-droits.svg)
 
-À dire :
+| Droit | Sur un fichier | Sur un répertoire |
+|---|---|---|
+| `r` — read | lire son contenu | lister les noms qu'il contient |
+| `w` — write | modifier son contenu | ajouter, renommer ou supprimer des noms |
+| `x` — execute | exécuter le fichier | traverser le répertoire dans un chemin |
 
-> Supprimer `code.txt`, ce n'est pas « effacer son texte caractère par caractère ». C'est retirer le nom `code.txt` de la liste qui appartient à `coffre/`. Voilà pourquoi le droit important pour supprimer est l'écriture sur le répertoire.
-
-Ne pas approfondir immédiatement les ACL, les permissions numériques et les groupes secondaires : ils seront plus faciles à comprendre après l'expérience présente. En revanche, préciser que l'élève est propriétaire des fichiers qu'il vient de créer : les droits `g` et `o` sont donc observables mais pas pleinement expérimentables sans un second compte.
-
----
-
-## Pause tableau 7 - Lien symbolique : un panneau, pas un second objet
-
-À dessiner :
+La différence entre le fichier et son entrée dans un répertoire explique un résultat parfois surprenant :
 
 ```text
-acces-rapide  ── contient le texte ──>  briefing/objectif.txt
-                                              │
-                                              ▼
-                                      le véritable fichier
+mission/coffre/          contient une liste de noms
+        │
+        └── code.txt     désigne le fichier contenant CODE-ALPHA-42
 ```
 
-À dire :
+Supprimer `code.txt` revient d'abord à retirer le nom `code.txt` de la liste tenue par `coffre/`. Le droit d'écriture du répertoire est donc déterminant, même si le fichier lui-même est en lecture seule.
 
-> Le lien symbolique ne possède pas une copie du briefing. Il mémorise seulement une adresse. Si l'adresse devient fausse, le lien existe toujours mais il ne mène plus nulle part.
-
-Question : « Pourquoi un raccourci peut-il être pratique quand on change souvent l'organisation d'un projet ? »
+Les droits affichés par `ls -l` sont répartis entre le propriétaire (`u`), le groupe (`g`) et les autres (`o`). Un fichier créé pendant le TP appartient normalement à la personne connectée.
 
 ---
 
-## Pause tableau 8 - Programmes, processus et parenté
+## 7. Lien symbolique : un panneau, pas une copie
 
-À dessiner :
+![Un lien symbolique mémorise un chemin vers une cible ; si cette cible est déplacée, le lien demeure mais devient cassé.](../assets/tp1-liens-symboliques.svg)
+
+```text
+acces-rapide  ── contient le chemin ──>  briefing/objectif.txt
+                                                  │
+                                                  ▼
+                                          véritable fichier
+```
+
+Un lien symbolique contient une adresse. Il ne duplique ni le contenu ni les droits de sa cible. Si la cible change de nom ou de place, le lien existe encore mais son itinéraire ne mène plus à un objet valide : il est **cassé**.
+
+Cette indirection est pratique pour conserver un nom stable — par exemple `version-courante` — pendant que la cible réelle évolue de `version-1` à `version-2`.
+
+---
+
+## 8. Programme, processus et parenté
+
+![Un programme est un fichier ; lorsqu'il est lancé par le shell, il devient un processus avec son propre PID.](../assets/tp1-processus.svg)
 
 ```text
 programme : /usr/bin/sleep     fichier immobile sur le disque
@@ -211,35 +197,29 @@ shell Bash (PID 4210)
 └── sleep 300 (PID 4368)       processus vivant, lancé maintenant
 ```
 
-![Un programme est un fichier ; lorsqu'il est lancé par le shell, il devient un processus avec son propre PID.](../assets/tp1-processus.svg)
+Un même programme peut être lancé dix fois : dix processus distincts existent alors, chacun avec son propre **PID**. Le shell qui lance une commande est le processus parent. La commande `jobs` connaît précisément les tâches lancées depuis ce shell.
 
-À dire :
-
-> Un même programme peut être lancé dix fois : il y aura alors dix processus différents. Chacun possède un PID. Le shell qui lance la commande est son parent. C'est pourquoi `jobs` sait nous parler des processus lancés depuis ce terminal.
-
-Faire le lien avec la sécurité : tuer sans comprendre peut interrompre un service, couper une interface ou faire perdre du travail. Dans le TP, l'élève ne touche qu'à son propre `sleep` : la conséquence est visible et récupérable.
+!!! info "Que vaut un PID ?"
+    Un PID n'est pas l'identité permanente d'un programme. Il est attribué à un processus vivant et pourra être réutilisé après sa fin. Il faut donc toujours vérifier la cible avant d'utiliser `kill`.
 
 ---
 
-## Réponses aux erreurs les plus fréquentes
+## Diagnostic rapide
 
-| Message ou situation | Ce que cela signifie | Réponse à donner plutôt que la solution |
+| Message ou situation | Signification probable | Vérification utile |
 |---|---|---|
-| `No such file or directory` | le chemin ne désigne pas une entrée existante depuis l'endroit courant | « Où es-tu ? Que donne `pwd` ? Que donne `ls` dans le dossier précédent ? » |
-| `Permission denied` | le système a refusé l'action demandée | « Quelle action essaies-tu de faire : lire, écrire ou traverser ? Sur quel objet ? » |
-| `command not found` | shell ne trouve pas cette commande | « Vérifie l'orthographe, puis demande `type` ou `command -v`. » |
-| l'élève a peur de `/` | la racine est simplement le départ de l'arbre | « Observer `ls /` ne modifie rien. On revient avec `cd ~`. » |
-| le lien est cassé | la cible a changé ou disparu | « Que montre la flèche de `ls -l` ? Cette adresse existe-t-elle encore ? » |
-| `sleep` semble ne rien faire | c'est précisément son travail : attendre | « Vérifie avec `jobs` ou `ps`, sans ouvrir une autre commande dangereuse. » |
+| `No such file or directory` | le chemin ne désigne rien depuis l'endroit courant | contrôler `pwd`, puis `ls` à chaque niveau du chemin |
+| `Permission denied` | le système refuse l'action demandée | identifier l'action (`r`, `w` ou `x`) et l'objet concerné |
+| `command not found` | le shell ne trouve pas la commande | vérifier l'orthographe, puis utiliser `type` ou `command -v` |
+| la racine `/` semble risquée | observer l'arborescence ne la modifie pas | `ls /` ne fait que lire ; `cd ~` ramène au dossier personnel |
+| un lien est cassé | la cible a changé ou disparu | lire la flèche de `ls -l` et vérifier le chemin indiqué |
+| `sleep` semble ne rien faire | le programme attend, comme demandé | l'observer avec `jobs` ou `ps` |
 
-## Critères de réussite de la séance
+## À retenir
 
-À la fin, un élève débutant doit pouvoir dire, sans vocabulaire parfait :
-
-- « Je sais retrouver où je suis et revenir chez moi. »
-- « Je sais que `/` est le départ de tous les dossiers. »
-- « Je sais chercher l'aide d'une commande. »
-- « Je comprends qu'un droit différent n'a pas le même sens pour un fichier et un dossier. »
-- « Je sais qu'un processus est un programme en train de tourner. »
-
-Le meilleur indicateur n'est pas la vitesse de fin du TP : c'est la qualité des formulations dans les notes et la capacité des élèves à expliquer une erreur rencontrée.
+- Le terminal est une interface, le shell interprète les commandes et le noyau contrôle les ressources.
+- `/` est le départ de toute l'arborescence ; `~` désigne le dossier personnel.
+- Un chemin relatif dépend du dossier courant, un chemin absolu part de `/`.
+- Les redirections sont préparées par le shell.
+- Les droits sur un fichier et sur un répertoire ne décrivent pas les mêmes actions.
+- Un lien symbolique stocke un chemin ; un processus est un programme en cours d'exécution.

@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="690" viewBox="0 0 1600 690" role="img" aria-labelledby="title desc">
+  <title id="title">Un lien symbolique contient un chemin</title>
+  <desc id="desc">Dans le premier cas, acces-rapide contient le chemin briefing/objectif.txt qui mène au fichier. Dans le second cas, le fichier cible a été déplacé : le même chemin ne mène plus nulle part et le lien est cassé.</desc>
+  <defs>
+    <style>.t{font-family:Arial,sans-serif;fill:#102a43}.m{font-family:monospace;fill:#102a43}.ok{stroke:#1f9aaa;stroke-width:9;fill:none}.bad{stroke:#d64545;stroke-width:9;fill:none;stroke-dasharray:18 14}</style>
+    <marker id="ho" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 Z" fill="#1f9aaa"/></marker>
+    <marker id="hx" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 Z" fill="#d64545"/></marker>
+  </defs>
+  <rect width="1600" height="690" rx="28" fill="#f7fbff"/>
+  <text class="t" x="800" y="62" text-anchor="middle" font-size="41" font-weight="700">Le lien mémorise une adresse, pas le contenu</text>
+
+  <rect x="70" y="110" width="700" height="490" rx="26" fill="#eaf7f4"/>
+  <text class="t" x="420" y="160" text-anchor="middle" font-size="28" font-weight="700">La cible est à l'adresse attendue</text>
+  <rect x="120" y="235" width="230" height="120" rx="22" fill="#b8f3df"/>
+  <text class="m" x="235" y="285" text-anchor="middle" font-size="25">acces-rapide</text><text class="t" x="235" y="322" text-anchor="middle" font-size="18">lien symbolique</text>
+  <path class="ok" d="M365 295 H500" marker-end="url(#ho)"/><text class="m" x="435" y="262" text-anchor="middle" font-size="18">chemin</text>
+  <path d="M540 210 h165 l42 42 v155 H540z" fill="#f6c453"/><path d="M705 210 v42 h42" fill="none" stroke="#102a43" stroke-width="6"/>
+  <text class="m" x="643" y="315" text-anchor="middle" font-size="23">objectif.txt</text><text class="t" x="643" y="365" text-anchor="middle" font-size="18">contenu unique</text>
+  <text class="m" x="420" y="505" text-anchor="middle" font-size="21">briefing/objectif.txt</text><text class="t" x="420" y="545" text-anchor="middle" font-size="20">le chemin résout correctement la cible</text>
+
+  <rect x="830" y="110" width="700" height="490" rx="26" fill="#fff0f0"/>
+  <text class="t" x="1180" y="160" text-anchor="middle" font-size="28" font-weight="700">La cible a été déplacée</text>
+  <rect x="880" y="235" width="230" height="120" rx="22" fill="#ffd7d7"/>
+  <text class="m" x="995" y="285" text-anchor="middle" font-size="25">acces-rapide</text><text class="t" x="995" y="322" text-anchor="middle" font-size="18">le lien existe encore</text>
+  <path class="bad" d="M1125 295 H1280" marker-end="url(#hx)"/>
+  <line x1="1300" y1="250" x2="1375" y2="340" stroke="#d64545" stroke-width="12" stroke-linecap="round"/><line x1="1375" y1="250" x2="1300" y2="340" stroke="#d64545" stroke-width="12" stroke-linecap="round"/>
+  <text class="m" x="1180" y="505" text-anchor="middle" font-size="21">briefing/objectif.txt</text><text class="t" x="1180" y="545" text-anchor="middle" font-size="20" fill="#a52626">le chemin ne désigne plus de fichier</text>
+
+  <text class="t" x="800" y="650" text-anchor="middle" font-size="24">Déplacer le lien ne change pas son texte interne ; déplacer la cible peut casser l'itinéraire.</text>
+</svg>

@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="720" viewBox="0 0 1600 720" role="img" aria-labelledby="title desc">
+  <title id="title">Chemin absolu et chemin relatif</title>
+  <desc id="desc">Le chemin absolu part de la racine puis traverse home, alice, base-exploration, mission et briefing. Le chemin relatif part directement du dossier courant base-exploration pour rejoindre le même fichier objectif.txt.</desc>
+  <defs>
+    <style>.t{font-family:Arial,sans-serif;fill:#102a43}.m{font-family:monospace;fill:#102a43}.a{stroke:#ff725c;stroke-width:8;fill:none;stroke-linecap:round}.b{stroke:#1f9aaa;stroke-width:8;fill:none;stroke-linecap:round}.node{fill:#f7fbff;stroke:#c4d3e3;stroke-width:3}</style>
+    <marker id="hr" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 Z" fill="#ff725c"/></marker>
+    <marker id="hb" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 Z" fill="#1f9aaa"/></marker>
+  </defs>
+  <rect width="1600" height="720" rx="28" fill="#edf4fb"/>
+  <text class="t" x="800" y="62" text-anchor="middle" font-size="41" font-weight="700">Deux points de départ, un même fichier</text>
+
+  <text class="t" x="95" y="130" font-size="25" font-weight="700" fill="#b9382f">CHEMIN ABSOLU — commence toujours par /</text>
+  <path class="a" d="M180 235 H1385" marker-end="url(#hr)"/>
+  <g class="t" text-anchor="middle">
+    <rect class="node" x="95" y="185" width="170" height="100" rx="20"/><text x="180" y="247" font-size="34" font-weight="700">/</text>
+    <rect class="node" x="310" y="185" width="180" height="100" rx="20"/><text x="400" y="247" font-size="27">home</text>
+    <rect class="node" x="535" y="185" width="180" height="100" rx="20"/><text x="625" y="247" font-size="27">alice</text>
+    <rect x="760" y="175" width="230" height="120" rx="20" fill="#b8f3df" stroke="#1f9aaa" stroke-width="4"/><text x="875" y="225" font-size="25" font-weight="700">base-exploration</text><text x="875" y="263" font-size="19">dossier courant</text>
+    <rect class="node" x="1035" y="185" width="180" height="100" rx="20"/><text x="1125" y="247" font-size="27">mission</text>
+    <rect class="node" x="1260" y="185" width="180" height="100" rx="20"/><text x="1350" y="247" font-size="25">briefing</text>
+  </g>
+  <path class="a" d="M1440 235 H1495 V385" marker-end="url(#hr)"/>
+  <rect x="1260" y="410" width="270" height="105" rx="22" fill="#f6c453"/>
+  <text class="m" x="1395" y="474" text-anchor="middle" font-size="28">objectif.txt</text>
+
+  <text class="t" x="95" y="388" font-size="25" font-weight="700" fill="#16737e">CHEMIN RELATIF — part du dossier courant</text>
+  <path class="b" d="M875 307 V570 H1235" marker-end="url(#hb)"/>
+  <g class="t" text-anchor="middle">
+    <rect x="915" y="530" width="180" height="82" rx="18" fill="#b8f3df"/><text x="1005" y="581" font-size="25">mission</text>
+    <rect x="1130" y="530" width="180" height="82" rx="18" fill="#b8f3df"/><text x="1220" y="581" font-size="23">briefing</text>
+  </g>
+  <path class="b" d="M1310 570 H1395 V530" marker-end="url(#hb)"/>
+
+  <text class="m" x="800" y="670" text-anchor="middle" font-size="25">mission/briefing/objectif.txt  =  /home/alice/base-exploration/mission/briefing/objectif.txt</text>
+</svg>

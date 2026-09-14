@@ -1,176 +1,188 @@
-# TP 2 - Guide tableau et explications globales
+# TP 2 — Repères visuels et notions clés
 
-Ce document accompagne le TP autonome **Lire les traces d'un poste**. Il sert à expliquer les idées communes lorsque les élèves viennent de les rencontrer dans leurs propres commandes.
+Cette annexe prolonge le TP **Lire les traces d'un poste**. Elle montre comment le shell transforme une ligne de commande, relie de petits outils et produit des rapports reproductibles à partir de données brutes.
 
-## Contrat pédagogique de la séance
+## Vue d'ensemble : des traces au rapport
 
-- **Public :** élèves ayant réalisé le TP 1 ; ils savent déjà utiliser `ls`, `cd`, `pwd`, `mkdir`, `cat`, `echo` et les redirections simples.
-- **Expérience recherchée :** « Je peux faire parler des fichiers, sans lire mille lignes une par une. »
-- **Fil rouge :** les élèves transforment de vraies données locales en rapports simples et vérifiables.
-- **Rythme :** laisser avancer la classe, puis lancer une pause tableau de 4 à 7 minutes lorsqu'une majorité vient de voir le même effet.
-- **Sécurité :** les fichiers créés sont tous dans `~/base-exploration/analyse-traces`. La seule tâche terminée avec `kill` est celle que l'élève vient de créer avec `sleep`.
+![Une analyse shell transforme des journaux bruts en information utile, puis en rapport reproductible.](../assets/tp2-analyse-globale.svg)
 
-## Déroulé enseignant
+```text
+fichiers bruts → sélection → transformation → tri ou comptage → rapport
+     logs          grep        cut · tr         sort · wc          >
+```
 
-| Pause tableau | Moment déclencheur | Durée | Idée à faire retenir |
-|---|---|---:|---|
-| 1 | après `*`, guillemets et `$(date)` | 6 min | le shell transforme certains caractères avant de lancer une commande |
-| 2 | après le premier `grep ... | wc -l` | 6 min | une conduite relie la sortie d'une commande à l'entrée de la suivante |
-| 3 | après `>` et `2>` | 6 min | une commande possède une entrée, une sortie normale et une sortie d'erreur |
-| 4 | après `cut`, `sort` et `tr` | 5 min | les filtres résolvent chacun une petite partie du problème |
-| 5 | bonus, après `sleep`, `jobs`, `fg` et `bg` | 5 min | avant-plan et arrière-plan concernent les tâches de ce terminal |
-| 6 | après `bash scripts/bilan.sh` | 5 min | un script conserve une recette reproductible |
+Le principe directeur est simple : chaque commande accomplit une opération limitée et vérifiable. Le caractère `|` transmet le résultat à l'étape suivante ; une redirection finale conserve le résultat dans un fichier.
+
+## Carte des notions
+
+| Notion | Exemple | Idée essentielle |
+|---|---|---|
+| transformations du shell | `*`, guillemets, `$(date)` | Bash prépare les mots avant de lancer la commande |
+| conduite | `grep ... | wc -l` | la sortie de gauche devient l'entrée de droite |
+| flux standard | `>`, `2>`, `<` | résultat normal et erreurs circulent sur des canaux distincts |
+| filtres | `cut`, `sort`, `tr`, `grep` | chaque outil réalise une transformation simple |
+| tâches du terminal | `sleep`, `jobs`, `fg`, `bg` | avant-plan et arrière-plan décrivent le lien entre le shell et ses tâches |
+| scripts | `bash scripts/bilan.sh` | un fichier texte conserve une suite de commandes reproductible |
+
+!!! warning "Périmètre sûr"
+    Tous les fichiers créés restent dans `~/base-exploration/analyse-traces`. La seule cible de `kill` est le processus `sleep` lancé dans le même terminal pendant le TP.
 
 ---
 
-## Pause tableau 1 - Le shell prépare les mots
-
-À dessiner :
-
-```text
-ce que l'élève tape      ce que Bash prépare        ce que reçoit la commande
-echo bruts/*.log   ->    bruts/evenements.log  ->   echo bruts/evenements.log
-```
+## 1. Le shell prépare les mots
 
 ![Le shell transforme une commande avant de la lancer.](../assets/tp2-shell-transformations.svg)
 
-À dire :
+```text
+ligne saisie             préparation par Bash          arguments reçus par echo
+echo bruts/*.log    →    recherche des noms       →    bruts/evenements.log
+echo "bruts/*.log"  →    étoile protégée          →    bruts/*.log
+echo "$(date +%F)"   →    commande exécutée        →    2026-09-14
+```
 
-> Bash ne transmet pas toujours exactement les caractères tapés. Il reconnaît certains raccourcis : `*`, `~`, les accolades, `$(...)` et les guillemets. Il les interprète avant d'appeler la commande. `echo` est pratique pour observer ce que Bash a préparé.
+Bash ne transmet pas toujours les caractères tels qu'ils ont été tapés. Il reconnaît et développe notamment `*`, `~`, les accolades et `$(...)`. Les guillemets contrôlent ces transformations.
 
-Ne pas exiger l'ordre complet des sept développements à ce stade. L'objectif est que les élèves puissent prédire deux cas : `*` devient une liste de noms existants ; des guillemets peuvent préserver l'étoile telle quelle.
+La commande appelée ne voit généralement que le résultat final. Ainsi, `echo` ne recherche aucun fichier : le shell remplace d'abord `*.log` par les noms correspondants, puis fournit ces noms à `echo`.
 
-Question à lancer : « Si `echo "*.log"` affiche une étoile, est-ce `echo` qui a oublié de chercher les fichiers ? »
+!!! info "L'étoile existait avant Unix"
+    L'astérisque comme joker vient des premiers systèmes de traitement de texte et s'est imposé dans les shells. Son développement par le shell permet à de nombreuses commandes de l'utiliser sans contenir chacune leur propre moteur de recherche de fichiers.
+
+**Question de réflexion :** pourquoi `echo "*.log"` affiche-t-il une étoile au lieu d'une liste de fichiers ?
 
 ---
 
-## Pause tableau 2 - Une conduite : plusieurs outils, une seule ligne
-
-À dessiner :
-
-```text
-fichier -> grep "ERREUR" -> sort -> terminal
-              garde             range
-           les lignes utiles    les résultats
-```
+## 2. Une conduite : plusieurs outils, une seule ligne
 
 ![Une conduite relie plusieurs filtres.](../assets/tp2-pipeline.svg)
 
-À dire :
+```text
+fichier → grep "ERREUR" → sort → terminal
+             garde          range
+          certaines lignes  le résultat
+```
 
-> Le caractère `|` est un tuyau. Il ne crée pas forcément un fichier : il branche directement la sortie de gauche sur l'entrée de droite. Chaque filtre fait une action simple. La combinaison produit un résultat plus intéressant.
+Le caractère `|` relie directement la sortie normale de la commande de gauche à l'entrée standard de celle de droite. Il ne crée pas de fichier intermédiaire.
 
-Faire verbaliser la commande avant d'en montrer une autre : « sélectionne les erreurs, puis compte-les ». Une élève ou un élève doit pouvoir dire à quoi sert chaque moitié de `grep 'ERREUR' ... | wc -l`.
+```bash
+grep 'ERREUR' bruts/evenements.log | wc -l
+```
+
+Cette ligne se lit de gauche à droite : « sélectionner les lignes contenant `ERREUR`, puis compter les lignes sélectionnées ».
+
+!!! info "Pourquoi parler de *pipe* ?"
+    Dans Unix, un tube est un petit espace mémoire géré par le noyau. Pendant que la première commande y écrit, la suivante peut déjà lire : les étapes d'une longue chaîne peuvent donc travailler en même temps.
 
 ---
 
-## Pause tableau 3 - Trois canaux, pas un seul bloc de texte
-
-À dessiner :
-
-```text
-clavier ou fichier  -> entrée standard  (0) ->
-                                              commande
-terminal ou fichier <- sortie normale   (1) <-
-terminal ou fichier <- sortie d'erreur  (2) <-
-```
+## 3. Trois canaux, pas un seul bloc de texte
 
 ![Les trois canaux d'une commande.](../assets/tp2-flux.svg)
 
-À dire :
+```text
+clavier ou fichier  → entrée standard  (0) →
+                                             commande
+terminal ou fichier ← sortie normale   (1) ←
+terminal ou fichier ← sortie d'erreur  (2) ←
+```
 
-> Une commande ne sait pas forcément si elle parle au clavier, au terminal ou à un fichier. Elle lit sur son entrée et écrit sur deux sorties distinctes : son résultat normal et ses erreurs. C'est le shell qui branche ces canaux avec `<`, `>`, `>>`, `2>` et `|`.
+Une commande lit son **entrée standard** et peut écrire sur deux sorties différentes : son résultat normal et ses messages d'erreur. Le shell branche ces canaux avec `<`, `>`, `>>`, `2>` et `|`.
 
-Insister sur le cas vu : si `ls` produit une liste et une erreur dans la même commande, `> liste.txt` ne capture que la liste. `2> erreurs.txt` capture l'erreur séparément.
+```bash
+ls dossier-existant dossier-absent > liste.txt 2> erreurs.txt
+```
+
+Dans cet exemple, les noms trouvés vont dans `liste.txt` et le message concernant le dossier absent va dans `erreurs.txt`. Cette séparation permet d'automatiser un traitement sans confondre données et diagnostic.
 
 ---
 
-## Pause tableau 4 - Une boîte à outils de filtres
-
-À dessiner :
-
-```text
-head / tail   choisir le début ou la fin
-wc             compter
-grep           garder ou exclure des lignes
-cut            prendre des colonnes
-sort           ranger les lignes
-tr             remplacer des caractères
-```
+## 4. Une boîte à outils de filtres
 
 ![Les filtres de texte Linux : chaque commande transforme les lignes à sa manière.](../assets/tp2-filtres.svg)
 
-À dire :
+| Outil | Transformation principale | Exemple de lecture |
+|---|---|---|
+| `head`, `tail` | choisir le début ou la fin | « les 10 premières lignes » |
+| `wc` | compter | « combien de lignes ? » |
+| `grep` | garder ou exclure des lignes | « seulement les erreurs » |
+| `cut` | extraire des champs | « seulement la colonne utilisateur » |
+| `sort` | ranger et dédupliquer | « valeurs triées et uniques » |
+| `tr` | remplacer des caractères | « minuscules transformées en majuscules » |
 
-> Ces commandes sont petites par choix. Une bonne ligne de shell ne demande pas à un énorme programme de tout faire : elle compose des programmes modestes, chacun expert d'une transformation.
+Une analyse devient plus lisible lorsqu'elle est décomposée en verbes : sélectionner, extraire, normaliser, trier, compter. Chaque verbe correspond à un filtre testable séparément.
 
-Activité orale très courte : donner « je veux les personnes uniques du journal » ; demander aux élèves de proposer, dans l'ordre, les deux ou trois filtres nécessaires. La bonne chaîne est `cut`, puis `sort -u`.
+```bash
+cut -d';' -f2 bruts/connexions.csv | sort -u
+```
+
+La chaîne extrait le deuxième champ, puis ne conserve qu'une occurrence de chaque valeur.
+
+!!! info "Une philosophie de construction"
+    Les premiers outils Unix ont été pensés comme de petites pièces combinables. Cette approche évite de réécrire un grand programme pour chaque nouvelle question : on réassemble des transformations déjà fiables.
 
 ---
 
-## Pause tableau 5 - Les tâches du terminal
-
-À dessiner :
-
-```text
-sleep 20       le terminal attend la tâche : avant-plan
-sleep 90 &     le terminal redevient disponible : arrière-plan
-
-jobs           voir les tâches du terminal
-fg             ramener la tâche au premier plan
-bg             reprendre une tâche suspendue en arrière-plan
-```
+## 5. Les tâches liées au terminal
 
 ![Avant-plan et arrière-plan dans le terminal.](../assets/tp2-taches.svg)
 
-À dire :
+```text
+sleep 20       le shell attend la tâche : avant-plan
+sleep 90 &     l'invite revient immédiatement : arrière-plan
 
-> Les tâches ne sont pas tous les processus de la machine. Ce sont celles que ce shell connaît, car il les a lancées. Le `&` ne rend pas une commande plus rapide : il permet simplement de récupérer l'invite pendant qu'elle continue.
+jobs           liste les tâches connues de ce shell
+fg             replace une tâche au premier plan
+bg             reprend une tâche suspendue en arrière-plan
+```
 
-Sécurité : ne faire manipuler `kill %1` qu'après avoir vérifié que les élèves ont lancé `sleep` dans ce même terminal. Ne pas demander de PID ni de signal à ce stade.
+Les tâches affichées par `jobs` ne représentent pas tous les processus de la machine. Elles appartiennent à ce shell, qui connaît leur état parce qu'il les a lancées.
+
+Le symbole `&` n'accélère pas la commande. Il rend l'invite disponible pendant que le processus continue. Un numéro de tâche comme `%1` est local au shell ; un PID identifie le processus dans le système.
+
+!!! danger "Toujours identifier la cible"
+    Avant `kill %1`, `jobs` doit montrer que la tâche visée est bien le `sleep` créé pour l'exercice.
 
 ---
 
-## Pause tableau 6 - Un script garde la recette
+## 6. Un script conserve la recette
 
-À dessiner :
+![Un script Bash rassemble plusieurs commandes.](../assets/tp2-script.svg)
 
 ```text
 bilan.sh                         Bash                       bilan.txt
 -----------------        -------------------        -----------------
-grep ... | wc -l   ->    exécute les lignes   ->    rapport réutilisable
-cut ... | sort -u         dans leur ordre
+grep ... | wc -l   →     exécute les lignes   →     rapport produit
+cut ... | sort -u          dans leur ordre
 ```
 
-![Un script Bash rassemble plusieurs commandes.](../assets/tp2-script.svg)
+Un script Bash est un fichier texte contenant des commandes qui pourraient être saisies une par une. La commande suivante demande à Bash de lire la recette et de l'exécuter :
 
-À dire :
+```bash
+bash scripts/bilan.sh
+```
 
-> Le script n'est pas une nouvelle sorte de magie. C'est un fichier texte qui contient les commandes que nous aurions pu taper. `bash scripts/bilan.sh` demande simplement à Bash de lire ce fichier et d'exécuter ses lignes.
+Le script est la **recette** ; le rapport est le **résultat**. Lorsque les données brutes changent, la même recette peut produire un rapport actualisé. Cette reproductibilité facilite la vérification, la correction et l'automatisation.
 
-Faire distinguer explicitement : le script est la recette, le rapport est le plat obtenu. Si le fichier de départ change, le même script peut produire un nouveau rapport.
+!!! info "Des programmes lisibles"
+    Bien avant les outils modernes, les programmes étaient déjà des suites d'instructions conservées pour être rejouées. Un script poursuit cette idée avec un avantage précieux : son texte reste directement lisible et modifiable.
 
 ---
 
-## Réponses aux difficultés fréquentes
+## Diagnostic rapide
 
-| Situation | Ce qui se passe | Réponse utile |
+| Situation | Signification probable | Vérification utile |
 |---|---|---|
-| `grep` n'affiche rien | aucune ligne ne correspond au mot demandé | « Est-ce une erreur, ou une réponse possible ? Vérifie l'orthographe et la casse. » |
-| `*.log` est affiché tel quel | aucun fichier ne correspond, ou l'élève a placé des guillemets | « Que donne `ls bruts` ? Les guillemets sont-ils voulus ? » |
-| le rapport est vide | une redirection a envoyé ailleurs le résultat attendu | « Relis la commande de gauche à droite : quelle sortie va dans quel fichier ? » |
-| un fichier a été remplacé par `>` | `>` vide l'ancien contenu avant d'écrire | « Quel symbole ajoute au lieu de remplacer ? Recrée seulement les données nécessaires. » |
-| `fg` répond qu'il n'y a pas de tâche | la tâche est terminée ou n'a pas été lancée avec `&` | « Que montre `jobs` ? Lance un nouveau `sleep 90 &`. » |
-| le script affiche des caractères inattendus | les guillemets ont été interprétés au mauvais moment | « Lis d'abord le script avec `cat`. Que devrait Bash interpréter maintenant, et que fallait-il conserver pour plus tard ? » |
+| `grep` n'affiche rien | aucune ligne ne correspond | vérifier le mot, la casse et le fichier source |
+| `*.log` reste affiché | aucun nom ne correspond, ou les guillemets protègent `*` | examiner `ls bruts` et les guillemets |
+| le rapport est vide | la sélection ne trouve rien ou le flux part ailleurs | tester chaque partie de la conduite séparément |
+| un fichier a été remplacé | `>` l'a vidé avant d'écrire | utiliser `>>` uniquement lorsqu'un ajout est voulu |
+| `fg` ne trouve aucune tâche | la tâche est terminée ou n'appartient pas à ce shell | consulter `jobs`, puis relancer un `sleep` si nécessaire |
+| le script produit des caractères inattendus | les guillemets ont agi au mauvais moment | lire le script avec `cat` et repérer chaque développement attendu |
 
-## Critères de réussite de la séance
+## À retenir
 
-À la fin, un élève doit pouvoir dire :
-
-- « Je sais expliquer à quoi sert une étoile et pourquoi les guillemets changent son comportement. »
-- « Je peux lire une conduite de gauche à droite. »
-- « Je sais distinguer résultat normal et message d'erreur. »
-- « Je peux choisir un filtre adapté pour chercher, compter, extraire ou trier. »
-- « Je peux lancer un script et expliquer pourquoi il évite de retaper les mêmes commandes. »
-
-Les notes doivent montrer une explication personnelle d'au moins une conduite et d'une redirection. Elles sont plus utiles que la simple présence des fichiers de sortie.
+- Bash transforme certains caractères avant de lancer une commande ; les guillemets modifient ces transformations.
+- Une conduite se lit de gauche à droite et transmet des données sans fichier intermédiaire.
+- La sortie normale et la sortie d'erreur sont deux canaux distincts.
+- Les filtres sont de petits outils spécialisés que l'on peut composer.
+- `jobs`, `fg` et `bg` concernent les tâches connues du shell courant.
+- Un script conserve une recette afin de produire à nouveau le même type de résultat.

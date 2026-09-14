@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="680" viewBox="0 0 1600 680" role="img" aria-labelledby="title desc">
+  <title id="title">Des traces brutes à un rapport reproductible</title>
+  <desc id="desc">Des fichiers journaux entrent dans une chaîne composée de grep, cut, sort et wc. Bash relie les commandes avec des tubes, puis une redirection écrit le résultat dans bilan.txt. Le script permet de rejouer toute la chaîne.</desc>
+  <defs>
+    <style>.t{font-family:Arial,sans-serif;fill:#102a43}.m{font-family:monospace;fill:#102a43}.a{stroke:#ff725c;stroke-width:8;fill:none;stroke-linecap:round}</style>
+    <marker id="h" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 Z" fill="#ff725c"/></marker>
+  </defs>
+  <rect width="1600" height="680" rx="28" fill="#f7fbff"/>
+  <text class="t" x="800" y="62" text-anchor="middle" font-size="41" font-weight="700">Une question devient une chaîne de transformations vérifiables</text>
+
+  <path d="M55 230 h220 l50 50 v185 H55z" fill="#f6c453"/><path d="M275 230 v50 h50" fill="none" stroke="#102a43" stroke-width="7"/>
+  <text class="m" x="190" y="335" text-anchor="middle" font-size="26">traces.log</text><text class="t" x="190" y="380" text-anchor="middle" font-size="20">données brutes</text><text class="t" x="190" y="412" text-anchor="middle" font-size="18">beaucoup de lignes</text>
+
+  <path class="a" d="M350 350 H460" marker-end="url(#h)"/>
+  <rect x="485" y="245" width="220" height="210" rx="25" fill="#b8f3df"/><text class="m" x="595" y="315" text-anchor="middle" font-size="31">grep</text><text class="t" x="595" y="360" text-anchor="middle" font-size="20">sélectionne</text><text class="t" x="595" y="394" text-anchor="middle" font-size="18">ERREUR seulement</text>
+  <path class="a" d="M730 350 H820" marker-end="url(#h)"/>
+  <rect x="845" y="245" width="220" height="210" rx="25" fill="#8de7ef"/><text class="m" x="955" y="315" text-anchor="middle" font-size="31">cut · sort</text><text class="t" x="955" y="360" text-anchor="middle" font-size="20">extrait et range</text><text class="t" x="955" y="394" text-anchor="middle" font-size="18">les valeurs utiles</text>
+  <path class="a" d="M1090 350 H1180" marker-end="url(#h)"/>
+  <rect x="1205" y="245" width="170" height="210" rx="25" fill="#dce9f5"/><text class="m" x="1290" y="315" text-anchor="middle" font-size="31">wc</text><text class="t" x="1290" y="360" text-anchor="middle" font-size="20">compte</text><text class="t" x="1290" y="394" text-anchor="middle" font-size="18">le résultat</text>
+  <path class="a" d="M1400 350 H1480 V445" marker-end="url(#h)"/>
+  <path d="M1270 480 h240 l35 35 v95 h-275z" fill="#ffe6a6" stroke="#d9aa31" stroke-width="3"/><path d="M1510 480 v35 h35" fill="none" stroke="#102a43" stroke-width="5"/>
+  <text class="m" x="1407" y="552" text-anchor="middle" font-size="25">bilan.txt</text><text class="t" x="1407" y="585" text-anchor="middle" font-size="17">information exploitable</text>
+
+  <path d="M485 195 H1375" stroke="#1f9aaa" stroke-width="5" stroke-dasharray="13 10"/>
+  <text class="m" x="930" y="178" text-anchor="middle" font-size="23">les caractères | relient les étapes</text>
+  <path d="M590 505 V580 H1170 V505" stroke="#1f9aaa" stroke-width="6" fill="none"/>
+  <rect x="690" y="545" width="380" height="78" rx="22" fill="#102a43"/>
+  <text x="880" y="578" text-anchor="middle" font-family="monospace" font-size="25" fill="#b8f3df">scripts/bilan.sh</text><text x="880" y="605" text-anchor="middle" font-family="Arial,sans-serif" font-size="17" fill="#fff">conserve et rejoue toute la chaîne</text>
+  <text class="t" x="190" y="540" text-anchor="middle" font-size="20">question :</text><text class="t" x="190" y="570" text-anchor="middle" font-size="19">« combien d'erreurs ? »</text>
+</svg>

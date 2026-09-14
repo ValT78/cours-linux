@@ -1,10 +1,48 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="700" viewBox="0 0 1600 700" role="img" aria-labelledby="title desc">
-  <title id="title">De l'élève à Linux</title><desc id="desc">Un élève utilise un terminal qui communique avec le shell, Linux et le matériel.</desc>
-  <defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#102a43"/><stop offset="1" stop-color="#1f5f70"/></linearGradient><style>.label{font-family:Arial,sans-serif;font-weight:700;fill:#102a43}.small{font-family:Arial,sans-serif;fill:#243b53}.arrow{stroke:#f6c453;stroke-width:10;fill:none;stroke-linecap:round}</style><marker id="head" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 Z" fill="#f6c453"/></marker></defs>
-  <rect width="1600" height="700" fill="url(#bg)"/>
-  <circle cx="210" cy="184" r="55" fill="#ffcc9d"/><path d="M120 340 Q210 245 300 340 L330 520 L90 520Z" fill="#ff725c"/><path d="M155 132 Q210 75 270 130 L262 166 Q210 133 158 169Z" fill="#27364a"/>
-  <rect x="90" y="475" width="255" height="30" rx="10" fill="#cbd9e8"/><rect x="120" y="350" width="210" height="130" rx="12" fill="#dce9f5"/><rect x="135" y="365" width="180" height="94" rx="6" fill="#102a43"/><text x="150" y="405" font-family="monospace" font-size="25" fill="#b8f3df">$ ls /</text><text x="150" y="438" font-family="monospace" font-size="20" fill="#f6c453">home  etc  var</text><text x="210" y="570" text-anchor="middle" font-family="Arial,sans-serif" font-size="28" font-weight="700" fill="#ffffff">toi</text>
-  <path class="arrow" marker-end="url(#head)" d="M375 350 H520"/><rect x="550" y="265" width="220" height="170" rx="28" fill="#f7fbff"/><text class="label" x="660" y="335" text-anchor="middle" font-size="34">terminal</text><text class="small" x="660" y="375" text-anchor="middle" font-size="21">la fenêtre</text>
-  <path class="arrow" marker-end="url(#head)" d="M795 350 H920"/><rect x="950" y="265" width="220" height="170" rx="28" fill="#b8f3df"/><text class="label" x="1060" y="335" text-anchor="middle" font-size="34">shell</text><text class="small" x="1060" y="375" text-anchor="middle" font-size="21">le traducteur</text>
-  <path class="arrow" marker-end="url(#head)" d="M1195 350 H1320"/><rect x="1350" y="220" width="190" height="260" rx="28" fill="#f6c453"/><text class="label" x="1445" y="315" text-anchor="middle" font-size="34">Linux</text><text class="small" x="1445" y="355" text-anchor="middle" font-size="21">le noyau</text><text class="small" x="1445" y="389" text-anchor="middle" font-size="21">qui arbitre</text><circle cx="1400" cy="430" r="18" fill="#ff725c"/><circle cx="1445" cy="430" r="18" fill="#4ac0e0"/><circle cx="1490" cy="430" r="18" fill="#7ece9d"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Le noyau Linux entre les logiciels et le matériel</title>
+  <desc id="desc">Les applications, le terminal, le shell et les utilitaires sont dans l'espace utilisateur. Leurs appels système passent par le noyau Linux, qui gère les ressources et utilise des pilotes pour communiquer avec le matériel.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0f2944"/><stop offset="1" stop-color="#173f55"/></linearGradient>
+    <linearGradient id="kernel" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#f6c453"/><stop offset="1" stop-color="#ff9f68"/></linearGradient>
+    <style>.title{font-family:Arial,sans-serif;font-weight:700;fill:#fff}.label{font-family:Arial,sans-serif;font-weight:700;fill:#102a43}.small{font-family:Arial,sans-serif;fill:#334e68}.light{font-family:Arial,sans-serif;fill:#dce9f5}.mono{font-family:monospace;fill:#102a43}.flow{stroke:#8de7ef;stroke-width:7;fill:none;stroke-linecap:round}</style>
+    <marker id="down" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 Z" fill="#8de7ef"/></marker>
+    <marker id="up" markerWidth="12" markerHeight="12" refX="2" refY="6" orient="auto"><path d="M12,0 L0,6 L12,12 Z" fill="#8de7ef"/></marker>
+  </defs>
+  <rect width="1600" height="900" rx="30" fill="url(#bg)"/>
+  <text class="title" x="800" y="62" text-anchor="middle" font-size="42">Le noyau relie les logiciels aux ressources physiques</text>
+
+  <rect x="80" y="105" width="1440" height="240" rx="28" fill="#f7fbff"/>
+  <text class="label" x="120" y="152" font-size="26">ESPACE UTILISATEUR — logiciels isolés</text>
+  <rect x="125" y="185" width="300" height="115" rx="20" fill="#b8f3df"/>
+  <text class="label" x="275" y="230" text-anchor="middle" font-size="29">terminal</text><text class="small" x="275" y="267" text-anchor="middle" font-size="20">affiche et transmet</text>
+  <rect x="475" y="185" width="300" height="115" rx="20" fill="#8de7ef"/>
+  <text class="label" x="625" y="230" text-anchor="middle" font-size="29">shell Bash</text><text class="small" x="625" y="267" text-anchor="middle" font-size="20">interprète et lance</text>
+  <rect x="825" y="185" width="300" height="115" rx="20" fill="#dce9f5"/>
+  <text class="mono" x="975" y="230" text-anchor="middle" font-size="29">ls · grep · sleep</text><text class="small" x="975" y="267" text-anchor="middle" font-size="20">programmes en cours</text>
+  <rect x="1175" y="185" width="300" height="115" rx="20" fill="#e9d5ff"/>
+  <text class="label" x="1325" y="230" text-anchor="middle" font-size="29">autres logiciels</text><text class="small" x="1325" y="267" text-anchor="middle" font-size="20">navigateur, éditeur…</text>
+
+  <path class="flow" d="M690 352 V407" marker-end="url(#down)"/><path class="flow" d="M910 407 V352" marker-end="url(#up)"/>
+  <rect x="500" y="382" width="600" height="62" rx="31" fill="#102a43" stroke="#8de7ef" stroke-width="3"/>
+  <text class="light" x="800" y="422" text-anchor="middle" font-size="23">APPELS SYSTÈME : ouvrir · lire · écrire · créer · terminer</text>
+
+  <rect x="80" y="470" width="1440" height="190" rx="28" fill="url(#kernel)"/>
+  <text class="label" x="800" y="525" text-anchor="middle" font-size="38">NOYAU LINUX</text>
+  <text class="small" x="800" y="560" text-anchor="middle" font-size="22">protège, partage et arbitre les ressources</text>
+  <g font-family="Arial,sans-serif" font-size="21" font-weight="700" fill="#102a43" text-anchor="middle">
+    <rect x="160" y="586" width="245" height="48" rx="16" fill="#fff" fill-opacity=".72"/><text x="282" y="617">processus</text>
+    <rect x="420" y="586" width="245" height="48" rx="16" fill="#fff" fill-opacity=".72"/><text x="542" y="617">mémoire</text>
+    <rect x="680" y="586" width="245" height="48" rx="16" fill="#fff" fill-opacity=".72"/><text x="802" y="617">fichiers &amp; droits</text>
+    <rect x="940" y="586" width="245" height="48" rx="16" fill="#fff" fill-opacity=".72"/><text x="1062" y="617">réseau</text>
+    <rect x="1200" y="586" width="245" height="48" rx="16" fill="#fff" fill-opacity=".72"/><text x="1322" y="617">pilotes</text>
+  </g>
+
+  <path class="flow" d="M690 670 V720" marker-end="url(#down)"/><path class="flow" d="M910 720 V670" marker-end="url(#up)"/>
+  <text class="light" x="800" y="704" text-anchor="middle" font-size="21">commandes des pilotes ↕ événements du matériel</text>
+
+  <rect x="80" y="735" width="1440" height="105" rx="28" fill="#dce9f5"/>
+  <text class="label" x="120" y="778" font-size="26">MATÉRIEL</text>
+  <g class="small" font-family="Arial,sans-serif" font-size="24" text-anchor="middle">
+    <text x="380" y="810">processeur</text><text x="600" y="810">mémoire</text><text x="800" y="810">disque</text><text x="1000" y="810">réseau</text><text x="1230" y="810">écran · clavier · USB</text>
+  </g>
 </svg>

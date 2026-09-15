@@ -16,7 +16,7 @@ Ton rôle est de transformer ces traces brutes en un rapport simple et lisible. 
 
 Tu ne dois pas tout retenir immédiatement. À chaque niveau, une nouvelle commande règle un problème précis. À la fin, tu les assembleras.
 
-Les niveaux 0 à 7 constituent la mission principale. Les explorations bonus permettent d'aller plus loin si ton rapport est déjà terminé.
+Essaye de finir les niveaux 0 à 7. Tu pourras tester les niveaux bonus si tu as le temps.
 
 > Toutes les modifications de ce TP se font dans `~/base-exploration/analyse-traces`. Ne lance pas de commande avec `sudo` et ne supprime rien en dehors de ce dossier.
 

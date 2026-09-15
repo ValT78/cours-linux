@@ -6,11 +6,9 @@ Tu connais sûrement Windows : tu cliques sur une icône, tu ouvres un dossier �
 
 Aujourd'hui, tu vas passer de l'autre côté du décor.
 
-Ton poste utilise Linux. Au lieu de cliquer partout, tu vas lui parler directement avec le terminal. Tu découvriras où vivent tes fichiers, pourquoi il existe des dossiers étranges comme `/etc` ou `/var`, comment Linux protège tes données et quels programmes sont déjà en train de travailler.
+Ton poste utilise Linux. Au lieu de cliquer partout, tu vas lui parler directement avec le terminal. Tu découvriras comment fonctionne Linux sans interface graphique, pourquoi il existe des dossiers étranges comme `/etc` ou `/var`, comment Linux protège tes données et quels programmes sont déjà en train de travailler en arrière plan.
 
-Tu n'as rien à connaître avant de commencer. Tu n'as pas besoin de tout mémoriser. Avance, observe, puis explique ce que tu as compris.
-
-Les niveaux 0 à 7 constituent la mission principale. Si tu les termines, les deux explorations bonus te feront découvrir les liens symboliques et les processus.
+Tu n'as rien à connaître avant de commencer. Tu n'as pas besoin de tout mémoriser. La seule chose à faire, c'est d'expliquer ce que tu observes : c'est la meilleure manière d'ancrer les connaissances.
 
 ---
 

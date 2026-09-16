@@ -2,6 +2,8 @@
 
 Bienvenue dans l'espace de cours Linux.
 
+Pour m'envoyer vos note : un mail avec votre nom/prénom à l'adresse : _*v.lantigny@gmail.com*_
+
 ## Pour les élèves
 
 - [TP 1 — Premier contact avec Linux](eleves/tp1-premier-contact-linux.md)

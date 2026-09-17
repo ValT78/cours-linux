@@ -186,7 +186,7 @@ Puis crée les fichiers de mission :
 echo 'Bienvenue, explorateur.' > mission/briefing/objectif.txt
 echo 'Premier indice : le chemin compte.' > mission/preuves/journal.txt
 echo 'CODE-ALPHA-42' > mission/coffre/code.txt
-echo 'Deuxième indice : observe avant d'agir.' >> mission/preuves/journal.txt
+echo "Deuxième indice : observe avant d'agir." >> mission/preuves/journal.txt
 ```
 
 Tu viens d'utiliser `echo` pour écrire un message et les flèches pour l'envoyer dans un fichier. Ne cherche pas encore à tout retenir : observe que les trois fichiers existent.
@@ -339,8 +339,13 @@ Demande de l'aide pour `ls` :
 ```bash
 man ls
 ```
+Si ça ne fonctionne pas :
+```bash
+ls --help
+```
 
-Le manuel s'ouvre dans un lecteur. Tu peux chercher avec `/mot`, passer à la page suivante avec espace, et quitter avec `q`.
+
+Le manuel s'ouvre dans un lecteur. Avec `man`, tu peux chercher avec `/mot`, passer à la page suivante avec espace, et quitter avec `q`.
 
 Cherche l'option `-a`, puis quitte. Essaie ensuite :
 
@@ -348,7 +353,6 @@ Cherche l'option `-a`, puis quitte. Essaie ensuite :
 ls --help
 type cd
 type ls
-command -v ls
 ```
 
 `type` révèle la nature d'une commande. Tu devrais constater que `cd` est intégré au shell, alors que `ls` correspond à un programme extérieur.

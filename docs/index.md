@@ -4,6 +4,10 @@ Bienvenue dans l'espace de cours Linux.
 
 Pour m'envoyer vos note : un mail avec votre nom/prénom à l'adresse : _*v.lantigny@gmail.com*_
 
+## Tu n'as pas Linux sur ton ordinateur ?
+
+Commence par [Installer Linux pour les TP](installer-linux.md). Tutoriel pour Windows, Mac, ou un terminal en ligne en dernier recours.
+
 ## Pour les élèves
 
 - [TP 1 — Premier contact avec Linux](eleves/tp1-premier-contact-linux.md)

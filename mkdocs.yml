@@ -16,6 +16,7 @@ theme:
 
 nav:
   - Accueil: index.md
+  - Installer Linux: installer-linux.md
   - Élèves:
       - TP 1 — Premier contact avec Linux: eleves/tp1-premier-contact-linux.md
       - TP 2 — Lire les traces d'un poste: eleves/tp2-lire-les-traces.md

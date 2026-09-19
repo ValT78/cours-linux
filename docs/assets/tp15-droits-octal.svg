@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="760" viewBox="0 0 1600 760" role="img" aria-labelledby="title desc">
+  <title id="title">Correspondance entre droits symboliques et numériques</title>
+  <desc id="desc">Les droits du propriétaire, du groupe et des autres sont calculés séparément avec r égal à 4, w égal à 2 et x égal à 1. L'exemple rw-r----- correspond à 640.</desc>
+  <defs>
+    <style>.t{font-family:Arial,sans-serif;fill:#102a43}.m{font-family:monospace;font-weight:700;fill:#102a43}.small{font-family:Arial,sans-serif;fill:#334e68}</style>
+  </defs>
+  <rect width="1600" height="760" rx="28" fill="#f7fbff"/>
+  <text class="t" x="800" y="62" text-anchor="middle" font-size="42" font-weight="700">Chaque catégorie additionne r = 4, w = 2 et x = 1</text>
+
+  <g text-anchor="middle">
+    <rect x="120" y="120" width="400" height="420" rx="26" fill="#b8f3df"/>
+    <text class="t" x="320" y="172" font-size="27" font-weight="700">propriétaire — u</text>
+    <text class="m" x="320" y="250" font-size="58">rw-</text>
+    <text class="m" x="320" y="335" font-size="34">4 + 2 + 0</text>
+    <circle cx="320" cy="435" r="60" fill="#102a43"/><text x="320" y="454" font-family="Arial,sans-serif" font-size="52" font-weight="700" fill="#fff">6</text>
+
+    <rect x="600" y="120" width="400" height="420" rx="26" fill="#8de7ef"/>
+    <text class="t" x="800" y="172" font-size="27" font-weight="700">groupe — g</text>
+    <text class="m" x="800" y="250" font-size="58">r--</text>
+    <text class="m" x="800" y="335" font-size="34">4 + 0 + 0</text>
+    <circle cx="800" cy="435" r="60" fill="#102a43"/><text x="800" y="454" font-family="Arial,sans-serif" font-size="52" font-weight="700" fill="#fff">4</text>
+
+    <rect x="1080" y="120" width="400" height="420" rx="26" fill="#dce9f5"/>
+    <text class="t" x="1280" y="172" font-size="27" font-weight="700">autres — o</text>
+    <text class="m" x="1280" y="250" font-size="58">---</text>
+    <text class="m" x="1280" y="335" font-size="34">0 + 0 + 0</text>
+    <circle cx="1280" cy="435" r="60" fill="#102a43"/><text x="1280" y="454" font-family="Arial,sans-serif" font-size="52" font-weight="700" fill="#fff">0</text>
+  </g>
+
+  <rect x="380" y="585" width="840" height="105" rx="25" fill="#102a43"/>
+  <text x="800" y="632" text-anchor="middle" font-family="monospace" font-size="38" font-weight="700" fill="#b8f3df">rw-r-----  ⇔  640</text>
+  <text x="800" y="670" text-anchor="middle" font-family="Arial,sans-serif" font-size="20" fill="#fff">les trois chiffres suivent le même ordre : propriétaire, groupe, autres</text>
+</svg>

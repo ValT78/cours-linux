@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="760" viewBox="0 0 1600 760" role="img" aria-labelledby="title desc">
+  <title id="title">Choisir un outil pour consulter un fichier</title>
+  <desc id="desc">Un fichier volumineux peut être affiché entièrement avec cat, parcouru avec less, limité au début avec head, limité à la fin avec tail, filtré avec grep ou modifié avec nano.</desc>
+  <defs>
+    <style>.t{font-family:Arial,sans-serif;fill:#102a43}.m{font-family:monospace;font-weight:700;fill:#102a43}.small{font-family:Arial,sans-serif;fill:#334e68}.a{stroke:#ff725c;stroke-width:7;fill:none}</style>
+  </defs>
+  <rect width="1600" height="760" rx="28" fill="#f7fbff"/>
+  <text class="t" x="800" y="62" text-anchor="middle" font-size="42" font-weight="700">Le bon outil dépend de la question posée au fichier</text>
+  <path d="M655 235 h240 l55 55 v230 H655z" fill="#f6c453"/><path d="M895 235 v55 h55" fill="none" stroke="#102a43" stroke-width="7"/>
+  <text class="m" x="800" y="360" text-anchor="middle" font-size="29">journal.log</text><text class="small" x="800" y="405" text-anchor="middle" font-size="21">des centaines de lignes</text>
+
+  <g text-anchor="middle">
+    <rect x="80" y="125" width="300" height="125" rx="22" fill="#b8f3df"/><text class="m" x="230" y="178" font-size="31">cat</text><text class="small" x="230" y="217" font-size="20">tout afficher d'un coup</text>
+    <path class="a" d="M380 205 L650 300"/>
+    <rect x="80" y="315" width="300" height="125" rx="22" fill="#8de7ef"/><text class="m" x="230" y="368" font-size="31">head</text><text class="small" x="230" y="407" font-size="20">voir les premières lignes</text>
+    <path class="a" d="M380 375 L650 375"/>
+    <rect x="80" y="505" width="300" height="125" rx="22" fill="#dce9f5"/><text class="m" x="230" y="558" font-size="31">tail</text><text class="small" x="230" y="597" font-size="20">voir les dernières lignes</text>
+    <path class="a" d="M380 560 L650 445"/>
+
+    <rect x="1220" y="125" width="300" height="125" rx="22" fill="#e9d5ff"/><text class="m" x="1370" y="178" font-size="31">less</text><text class="small" x="1370" y="217" font-size="20">parcourir et chercher</text>
+    <path class="a" d="M1220 205 L950 300"/>
+    <rect x="1220" y="315" width="300" height="125" rx="22" fill="#ffe3d9"/><text class="m" x="1370" y="368" font-size="31">grep</text><text class="small" x="1370" y="407" font-size="20">garder les lignes utiles</text>
+    <path class="a" d="M1220 375 L950 375"/>
+    <rect x="1220" y="505" width="300" height="125" rx="22" fill="#fff0bd"/><text class="m" x="1370" y="558" font-size="31">nano</text><text class="small" x="1370" y="597" font-size="20">modifier le contenu</text>
+    <path class="a" d="M1220 560 L950 445"/>
+  </g>
+  <text class="t" x="800" y="694" text-anchor="middle" font-size="24">Lire, sélectionner et modifier sont trois intentions différentes.</text>
+</svg>

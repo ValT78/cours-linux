@@ -19,9 +19,10 @@ nav:
   - Installer Linux: installer-linux.md
   - Élèves:
       - TP 1 — Premier contact avec Linux: eleves/tp1-premier-contact-linux.md
+      - TP 1.5 — Reprendre le contrôle du terminal: eleves/tp1-5-maitriser-terminal.md
       - TP 2 — Lire les traces d'un poste: eleves/tp2-lire-les-traces.md
   - Annexes projetables:
-      - TP 1 — Repères visuels et notions clés: professeur/tp1-guide-tableau.md
+      - TP 1 et TP 1.5 — Repères visuels et notions clés: professeur/tp1-guide-tableau.md
       - TP 2 — Repères visuels et notions clés: professeur/tp2-guide-tableau.md
 
 markdown_extensions:

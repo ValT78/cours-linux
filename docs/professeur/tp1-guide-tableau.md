@@ -1,6 +1,6 @@
-# TP 1 — Repères visuels et notions clés
+# TP 1 et TP 1.5 — Repères visuels et notions clés
 
-Cette annexe rassemble les idées essentielles du TP **Premier contact avec Linux**. Elle relie les commandes observées à une vue d'ensemble du système : qui interprète une commande, comment les fichiers sont organisés et pourquoi les droits ou les processus se comportent ainsi.
+Cette annexe rassemble les idées essentielles des TP **Premier contact avec Linux** et **Reprendre le contrôle du terminal**. Elle relie les commandes observées à une vue d'ensemble du système : qui interprète une commande, comment les fichiers sont organisés, comment parcourir de grands textes et pourquoi les droits se comportent ainsi.
 
 ## Carte des notions
 
@@ -14,9 +14,14 @@ Cette annexe rassemble les idées essentielles du TP **Premier contact avec Linu
 | droits | `ls -l`, `chmod` | `r`, `w` et `x` changent de sens selon l'objet |
 | liens symboliques | `ln -s`, `ls -l` | un lien mémorise un chemin, pas une copie |
 | processus | `sleep 300 &`, `jobs`, `ps` | un programme lancé devient un processus identifié par un PID |
+| édition de ligne | Tab, historique, `Ctrl+A`, `Ctrl+R` | le shell permet de compléter, rappeler et corriger sans tout retaper |
+| observation des fichiers | `ls -lah`, `head`, `tail`, `less` | chaque outil répond à une question différente sur les données |
+| recherche | `grep`, `grep -n`, `grep -i` | un motif sélectionne les lignes utiles sans modifier le fichier |
+| édition de texte | `nano` | lire et modifier sont deux intentions différentes |
+| droits numériques | `chmod 640`, `chmod 750` | `r`, `w` et `x` valent respectivement 4, 2 et 1 |
 
 !!! warning "Périmètre sûr"
-    Les manipulations restent dans `~/base-exploration`, sans `sudo`. La seule cible de `kill` est le processus `sleep` créé dans le terminal pendant le TP.
+    Les manipulations restent dans `~/base-exploration`, sans `sudo`. Les changements de droits portent uniquement sur les fichiers extraits dans le laboratoire du TP.
 
 ---
 
@@ -204,6 +209,130 @@ Un même programme peut être lancé dix fois : dix processus distincts existent
 
 ---
 
+## 9. Le terminal est aussi un éditeur de ligne
+
+![Les principaux raccourcis pour compléter, rappeler, parcourir, corriger ou interrompre une ligne de commande.](../assets/tp15-raccourcis-terminal.svg)
+
+La ligne affichée après l'invite n'est pas envoyée caractère par caractère à Linux. Le shell attend la validation avec Entrée ; avant cela, la ligne peut être parcourue, corrigée et complétée.
+
+| Raccourci | Action |
+|---|---|
+| `↑` / `↓` | rappeler les commandes précédentes ou suivantes |
+| `Tab` | compléter un nom à partir des entrées réellement disponibles |
+| `Ctrl+A` / `Ctrl+E` | rejoindre le début ou la fin de la ligne |
+| `Ctrl+←` / `Ctrl+→` | se déplacer par mot ; `Alt+B` / `Alt+F` est une variante fréquente |
+| `Ctrl+W` | effacer le mot précédent |
+| `Ctrl+R` | rechercher dans l'historique |
+| `Ctrl+C` | abandonner la ligne ou demander l'interruption du processus au premier plan |
+
+La commande `history 10` affiche les dix dernières entrées connues de Bash. Les flèches et `Ctrl+R` parcourent le même historique de manière interactive.
+
+La complétion avec Tab n'est pas seulement un gain de temps. Elle vérifie progressivement qu'un nom existe. Si plusieurs possibilités correspondent, une nouvelle pression sur Tab peut les afficher.
+
+!!! info "L'historique conserve du texte"
+    L'historique évite la ressaisie, mais il répète aussi les erreurs. Une commande rappelée doit être relue avant Entrée, en particulier lorsqu'elle modifie ou supprime un fichier.
+
+---
+
+## 10. Choisir comment consulter un fichier
+
+![Les outils ne répondent pas à la même question : afficher tout, voir une extrémité, parcourir, sélectionner ou modifier.](../assets/tp15-outils-lecture.svg)
+
+| Intention | Outil adapté | Le fichier est-il modifié ? |
+|---|---|---|
+| afficher un petit fichier entier | `cat` | non |
+| observer ses premières lignes | `head` | non |
+| observer ses dernières lignes | `tail` | non |
+| parcourir et chercher sans modifier | `less` | non |
+| sélectionner les lignes correspondant à un motif | `grep` | non |
+| modifier le texte | `nano` | oui, après enregistrement |
+
+`less`, `head`, `tail` et `grep` évitent de confondre « lire un fichier » avec « afficher toutes ses lignes ». Le choix de l'outil part de la question : début, fin, occurrence précise, parcours libre ou modification.
+
+```text
+head -n 5 journal.log      cinq premières lignes
+tail -n 5 journal.log      cinq dernières lignes
+grep -n 'ERREUR' journal   lignes correspondantes avec leur numéro
+less journal.log           parcours interactif ; /mot cherche, q quitte
+```
+
+---
+
+## 11. `grep` reçoit d'abord un motif, puis un fichier
+
+```text
+grep [options] 'motif recherché' fichier
+ │       │             │           │
+ │       │             │           └── données à examiner
+ │       │             └────────────── règle de sélection
+ │       └──────────────────────────── comportement supplémentaire
+ └──────────────────────────────────── programme
+```
+
+Dans la commande suivante, les arguments sont inversés :
+
+```bash
+grep transmissions/radio.log ANOMALIE
+```
+
+`grep` cherche alors le texte `transmissions/radio.log` dans un fichier nommé `ANOMALIE`. Le message `No such file or directory` ne signifie donc pas que `grep` est absent : il révèle la façon dont les arguments ont été interprétés.
+
+`grep` affiche les lignes correspondantes sur sa sortie normale. Il ne retire aucune ligne du fichier d'origine.
+
+---
+
+## 12. Droits symboliques et droits numériques
+
+![Le mode `640` est obtenu en calculant séparément les droits du propriétaire, du groupe et des autres avec les valeurs 4, 2 et 1.](../assets/tp15-droits-octal.svg)
+
+Les deux commandes suivantes décrivent le même objectif :
+
+```bash
+chmod u=rw,g=r,o= document.txt
+chmod 640 document.txt
+```
+
+Le mode numérique additionne trois valeurs dans chacune des trois catégories :
+
+```text
+r = 4     w = 2     x = 1
+
+7 = rwx   6 = rw-   5 = r-x   4 = r--
+3 = -wx   2 = -w-   1 = --x   0 = ---
+```
+
+Les chiffres suivent toujours l'ordre `u`, `g`, `o`. Il n'existe pas de chiffre `8` ou `9`, car trois droits binaires ne produisent que huit combinaisons, de `0` à `7`.
+
+!!! info "Deux notations complémentaires"
+    La forme symbolique exprime bien une intention — « ajouter l'exécution au propriétaire » avec `u+x`. La forme numérique exprime directement un état complet — « fixer le mode à `750` ». Utiliser l'une ou l'autre dépend du changement recherché.
+
+---
+
+## 13. Propriétaire, groupe et autres : une seule catégorie s'applique
+
+```text
+utilisateur courant
+       │
+       ├── est propriétaire ?  → appliquer les droits u
+       │
+       ├── sinon, appartient au groupe ? → appliquer les droits g
+       │
+       └── sinon → appliquer les droits o
+```
+
+Les trois groupes de droits ne s'additionnent pas. Si Alice possède un fichier réglé sur `040`, elle ne peut pas le lire en tant que membre du groupe : Linux reconnaît d'abord qu'elle est propriétaire et applique uniquement les droits `u`, qui valent ici `---`.
+
+Cette règle explique l'expérience :
+
+```bash
+chmod u=,g=r,o= groupe-seul.txt
+cat groupe-seul.txt               # refusé pour son propriétaire
+```
+
+Pour un répertoire, l'accès combine généralement plusieurs droits : `r` permet de lire la liste des noms, `x` de traverser et d'accéder aux entrées connues, et `w` avec `x` de créer, supprimer ou renommer des entrées.
+
+---
+
 ## Diagnostic rapide
 
 | Message ou situation | Signification probable | Vérification utile |
@@ -214,6 +343,11 @@ Un même programme peut être lancé dix fois : dix processus distincts existent
 | la racine `/` semble risquée | observer l'arborescence ne la modifie pas | `ls /` ne fait que lire ; `cd ~` ramène au dossier personnel |
 | un lien est cassé | la cible a changé ou disparu | lire la flèche de `ls -l` et vérifier le chemin indiqué |
 | `sleep` semble ne rien faire | le programme attend, comme demandé | l'observer avec `jobs` ou `ps` |
+| `head` essaie d'ouvrir un fichier nommé `5` | l'option `-n` a été oubliée | utiliser `head -n 5 fichier` |
+| `grep` cherche dans le mauvais fichier | le motif et le nom du fichier sont inversés | relire la forme `grep 'motif' fichier` |
+| `nano` semble conserver une ancienne version | les changements n'ont pas été enregistrés | utiliser `Ctrl+O`, confirmer avec Entrée, puis quitter avec `Ctrl+X` |
+| un mode comme `758` est refusé | un chiffre de droits doit être compris entre 0 et 7 | recalculer chaque catégorie avec 4, 2 et 1 |
+| le propriétaire ne profite pas du droit `g` | Linux a déjà sélectionné la catégorie `u` | définir explicitement les droits du propriétaire |
 
 ## À retenir
 
@@ -223,3 +357,6 @@ Un même programme peut être lancé dix fois : dix processus distincts existent
 - Les redirections sont préparées par le shell.
 - Les droits sur un fichier et sur un répertoire ne décrivent pas les mêmes actions.
 - Un lien symbolique stocke un chemin ; un processus est un programme en cours d'exécution.
+- L'historique et la complétion permettent de réutiliser une commande tout en vérifiant ses chemins.
+- `cat`, `less`, `head`, `tail`, `grep` et `nano` répondent à des intentions différentes.
+- Les notations `u=rw,g=r,o=` et `640` peuvent décrire le même ensemble de droits.

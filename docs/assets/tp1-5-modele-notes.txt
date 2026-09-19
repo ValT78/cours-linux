@@ -1,0 +1,126 @@
+TP 1.5 — Reprendre le contrôle du terminal
+Nom / prénom :
+
+Consigne : conserve tes prédictions, même lorsqu'elles sont fausses. Ajoute ton analyse après avoir essayé la commande.
+
+N01 — Diagnostic de départ
+Réponse corrigée :
+Ce que je comprends maintenant :
+
+N02 — ls et ls /
+Ma prédiction :
+Mon observation :
+Mon explication :
+
+N03 — L'erreur /~
+Message observé :
+Pourquoi la commande échoue :
+Correction :
+
+N04 — Deux chemins vers la même cible
+Chemin relatif :
+Chemin absolu :
+Pourquoi ils fonctionnent :
+
+N05 — Raccourcis utiles
+Les deux raccourcis qui m'ont fait gagner le plus de temps :
+Exemple d'utilisation :
+
+N06 — Entrée cachée
+Nom trouvé :
+Pourquoi elle était cachée :
+Fragment découvert :
+
+N07 — Fichier ou dossier
+Différence entre mkdir et touch :
+Méthode utilisée pour vérifier le type :
+
+N08 — Prédiction sur > et >>
+Contenu prévu :
+Contenu observé :
+Règle retenue :
+
+N09 — Rediriger vers un dossier
+Commande en échec :
+Message exact :
+Cause :
+Correction :
+
+N10 — Options de ls
+Commande choisie :
+Pourquoi ces options sont adaptées :
+
+N11 — Choisir cat, less ou nano
+Mon choix pour lire un gros fichier :
+Mon choix pour le modifier :
+Explication :
+
+N12 — Prédiction head et tail
+Ma prédiction :
+Mon observation :
+Différence entre les deux commandes :
+
+N13 — Recherche avec grep
+Commande construite :
+Information trouvée :
+Rôle de -n :
+
+N14 — Erreur grep
+Message observé :
+Ce que grep a pris pour le motif :
+Ce que grep a pris pour le fichier :
+Correction :
+
+N15 — Rapport modifié avec nano
+Modification effectuée :
+Raccourci de sauvegarde :
+Raccourci de sortie :
+
+N16 — Identité Unix
+Utilisateur :
+Groupe principal :
+Différence entre whoami et id :
+
+N17 — Retirer le droit d'écriture
+Ma prédiction avant chmod :
+Résultat de la lecture :
+Résultat de l'écriture :
+Explication :
+
+N18 — Propriétaire et groupe
+Ma prédiction :
+Résultat de cat :
+Pourquoi les droits du groupe ne s'ajoutent pas à ceux du propriétaire :
+
+N19 — Formes symbolique et numérique
+Mode symbolique choisi :
+Mode numérique équivalent :
+Calcul :
+
+N20 — Formes symbolique et numérique
+Fichier choisi :
+Mode numérique :
+Écriture rwx :
+Forme symbolique équivalente :
+Calcul :
+
+N21 — Droits d'un répertoire
+Mes prédictions :
+Résultats observés :
+Différence avec un fichier :
+
+N22 — Code de la station et bilan
+Code final :
+Outils utilisés pour chaque fragment :
+
+Trois réflexes lorsque je suis perdu ou qu'une commande échoue :
+1.
+2.
+3.
+
+Une erreur qui m'a appris quelque chose :
+
+Une notion encore incertaine :
+
+Confiance globale avant le TP (1 à 4) :
+Confiance globale après le TP (1 à 4) :

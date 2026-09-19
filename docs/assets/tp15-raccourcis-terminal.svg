@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="760" viewBox="0 0 1600 760" role="img" aria-labelledby="title desc">
+  <title id="title">Raccourcis utiles dans le terminal</title>
+  <desc id="desc">Une ligne de commande est entourée de raccourcis pour l'historique, la complétion, le déplacement, la correction, la recherche et l'interruption.</desc>
+  <defs>
+    <style>.t{font-family:Arial,sans-serif;fill:#102a43}.key{font-family:monospace;font-weight:700;fill:#102a43}.small{font-family:Arial,sans-serif;fill:#334e68}.line{stroke:#ff725c;stroke-width:6;fill:none;stroke-linecap:round}</style>
+  </defs>
+  <rect width="1600" height="760" rx="28" fill="#f7fbff"/>
+  <text class="t" x="800" y="66" text-anchor="middle" font-size="42" font-weight="700">La ligne de commande peut être parcourue, corrigée et réutilisée</text>
+  <rect x="170" y="310" width="1260" height="120" rx="24" fill="#102a43"/>
+  <text x="220" y="382" font-family="monospace" font-size="32" fill="#b8f3df">$ ls -la navigation/secteur-alpha</text>
+  <rect x="783" y="345" width="18" height="42" fill="#f6c453"/>
+
+  <g>
+    <rect x="85" y="120" width="280" height="120" rx="22" fill="#b8f3df"/><text class="key" x="225" y="170" text-anchor="middle" font-size="27">↑  ↓</text><text class="small" x="225" y="207" text-anchor="middle" font-size="21">parcourir l'historique</text>
+    <path class="line" d="M300 240 L410 310"/>
+    <rect x="430" y="120" width="280" height="120" rx="22" fill="#8de7ef"/><text class="key" x="570" y="170" text-anchor="middle" font-size="27">Tab</text><text class="small" x="570" y="207" text-anchor="middle" font-size="21">compléter un nom</text>
+    <path class="line" d="M600 240 L650 310"/>
+    <rect x="775" y="120" width="310" height="120" rx="22" fill="#dce9f5"/><text class="key" x="930" y="170" text-anchor="middle" font-size="27">Ctrl+A / Ctrl+E</text><text class="small" x="930" y="207" text-anchor="middle" font-size="21">début / fin de ligne</text>
+    <path class="line" d="M900 240 L880 310"/>
+    <rect x="1150" y="120" width="365" height="120" rx="22" fill="#e9d5ff"/><text class="key" x="1332" y="170" text-anchor="middle" font-size="24">Ctrl+← / Ctrl+→</text><text class="small" x="1332" y="207" text-anchor="middle" font-size="21">se déplacer par mot</text>
+    <path class="line" d="M1260 240 L1180 310"/>
+  </g>
+
+  <g>
+    <rect x="120" y="505" width="300" height="120" rx="22" fill="#ffe3d9"/><text class="key" x="270" y="555" text-anchor="middle" font-size="27">Ctrl+W</text><text class="small" x="270" y="592" text-anchor="middle" font-size="21">effacer le mot précédent</text>
+    <path class="line" d="M360 505 L470 430"/>
+    <rect x="500" y="505" width="300" height="120" rx="22" fill="#fff0bd"/><text class="key" x="650" y="555" text-anchor="middle" font-size="27">Ctrl+R</text><text class="small" x="650" y="592" text-anchor="middle" font-size="21">chercher dans l'historique</text>
+    <path class="line" d="M690 505 L720 430"/>
+    <rect x="880" y="505" width="300" height="120" rx="22" fill="#ffd7d7"/><text class="key" x="1030" y="555" text-anchor="middle" font-size="27">Ctrl+C</text><text class="small" x="1030" y="592" text-anchor="middle" font-size="21">abandonner ou interrompre</text>
+    <path class="line" d="M1000 505 L980 430"/>
+    <rect x="1260" y="505" width="250" height="120" rx="22" fill="#dce9f5"/><text class="key" x="1385" y="555" text-anchor="middle" font-size="27">q</text><text class="small" x="1385" y="592" text-anchor="middle" font-size="21">quitter less ou man</text>
+    <path class="line" d="M1320 505 L1240 430"/>
+  </g>
+  <text class="t" x="800" y="698" text-anchor="middle" font-size="24">Rappeler puis corriger une commande évite la ressaisie et réduit les fautes.</text>
+</svg>

@@ -4,68 +4,53 @@
 
 La station scientifique Nadir a transmis plusieurs milliers de lignes de journaux, des documents techniques et une arborescence entière d'archives. Un code en cinq fragments y est caché.
 
-Cette fois, les commandes ne seront pas toutes données. Pour chaque notion, tu rencontreras généralement :
-
-1. une première situation guidée ;
-2. une situation voisine à résoudre avec moins d'aide ;
-3. parfois une commande volontairement fausse à diagnostiquer.
-
-Les erreurs font partie de l'enquête. Une erreur utile n'est pas seulement une commande qui échoue : c'est une commande dont tu arrives à expliquer **ce que le shell a compris**, **pourquoi le résultat diffère de ton attente** et **quelle correction minimale suffit**.
-
-Le TP est prévu pour une séance de trois heures. S'il reste des étapes, l'enquête pourra se poursuivre à la séance suivante.
+Tu vas fouiller ces fichiers depuis le terminal, retrouver le code et préparer un court compte rendu. Le TP est prévu pour trois heures. S'il reste des étapes, tu les reprendras à la séance suivante.
 
 !!! warning "Périmètre sûr"
     Toutes les modifications doivent rester dans `~/base-exploration/tp1-5`. N'utilise pas `sudo` et ne change jamais les droits d'un fichier système.
 
-## Téléchargements
+## Récupérer les fichiers du TP
 
 - [Terrain de jeu — Station Nadir](../assets/tp1-5-station-nadir.zip)
 - [Laboratoire des permissions](../assets/tp1-5-atelier-permissions.zip)
 - [Modèle de notes à compléter](../assets/tp1-5-modele-notes.txt)
 
-Télécharge les deux archives et le modèle de notes. Garde le fichier de notes ouvert dans l'application de ton choix, puis dépose-le sur Moodle à la fin de l'enquête.
-
-## Comment reconnaître ce qu'il faut noter ?
-
-Trois repères rythment le TP :
-
-!!! question "📝 Notes — réponse à conserver"
-    Une question numérotée `N01`, `N02`… doit être traitée dans le fichier de notes.
-
-!!! tip "🔮 Prédire puis analyser"
-    Écris d'abord ta prédiction. Ne l'efface pas si elle est fausse : ajoute ensuite ton observation et ton explication.
-
-!!! danger "🧩 Débogage"
-    La commande proposée est volontairement incorrecte ou incomplète. Lis son message, formule une hypothèse, puis corrige-la avec le moins de changements possible.
-
----
-
-## Niveau 0 — Installer le terrain de jeu
-
-Commence par retrouver le dossier où ton navigateur a enregistré les archives :
-
-```bash
-ls ~
-```
-
-Le dossier peut s'appeler `Téléchargements` ou `Downloads`. Utilise la touche **Tab** après avoir saisi les premières lettres du nom : le shell peut compléter le chemin à ta place.
-
-Prépare ensuite le dossier du TP :
+Ouvre ton terminal WSL ou celui de ta machine virtuelle, puis prépare le dossier du TP :
 
 ```bash
 cd ~/base-exploration
 mkdir tp1-5
 cd tp1-5
-pwd
 ```
 
-Décompresse la première archive. Adapte son chemin au nom observé sur ta machine et utilise Tab plutôt que de tout recopier :
+Récupère ensuite les trois fichiers :
 
 ```bash
-unzip ~/Téléchargements/tp1-5-station-nadir.zip
+wget https://valt78.github.io/cours-linux/assets/tp1-5-station-nadir.zip
+wget https://valt78.github.io/cours-linux/assets/tp1-5-atelier-permissions.zip
+wget https://valt78.github.io/cours-linux/assets/tp1-5-modele-notes.txt
 ```
 
-Si ton dossier s'appelle `Downloads`, la commande commencera naturellement par `unzip ~/Downloads/`.
+`wget` télécharge le fichier indiqué par une adresse web et l'enregistre dans le dossier courant. Vérifie que tout est bien arrivé :
+
+```bash
+ls
+```
+
+Garde `tp1-5-modele-notes.txt` ouvert pendant le TP. Les encadrés `À noter — N01`, `N02`… indiquent les réponses à écrire dans ce fichier. Quand on te demande de prévoir un résultat, réponds avant de lancer la commande, puis ajoute ce que tu as vraiment observé.
+
+À la fin de la séance, dépose le fichier complété sur Moodle.
+
+---
+
+## Niveau 0 — Installer le terrain de jeu
+
+Tu dois être dans `~/base-exploration/tp1-5`. Vérifie-le, puis décompresse la première archive :
+
+```bash
+pwd
+unzip tp1-5-station-nadir.zip
+```
 
 Vérifie le résultat :
 
@@ -77,7 +62,7 @@ ls
 cat 00-LIRE-MOI.txt
 ```
 
-!!! question "📝 Notes — N01 · Diagnostic de départ"
+!!! question "À noter — N01 · Diagnostic de départ"
     Avant de poursuivre, relis les questions suivantes et choisis celle sur laquelle tu étais le moins sûr : que représentent `/`, `~`, `.` et `..` ? Quelle différence entre `ls` et `ls /` ? Quelle différence entre `mkdir` et `touch` ? Écris ta réponse actuelle. Tu la corrigeras si nécessaire pendant le TP.
 
 ---
@@ -86,7 +71,7 @@ cat 00-LIRE-MOI.txt
 
 ### 1.1 Observer avant de se déplacer
 
-Pendant les premières missions, utilise ce cycle de navigation :
+Quand tu changes de dossier, prends ce réflexe :
 
 ```text
 avant : pwd puis ls
@@ -94,7 +79,7 @@ action : cd vers la destination
 après  : pwd puis ls
 ```
 
-Ce cycle n'est pas une règle obligatoire de Linux. C'est un réflexe temporaire pour comparer l'endroit imaginé avec l'endroit réel.
+`pwd` te dit où tu es et `ls` montre ce qui se trouve autour de toi. Ces deux commandes évitent beaucoup d'erreurs de chemin.
 
 Observe ton emplacement actuel :
 
@@ -104,8 +89,8 @@ ls
 ls /
 ```
 
-!!! tip "🔮 Prédire puis analyser — N02"
-    Avant d'exécuter les deux commandes `ls` et `ls /`, écris dans tes notes ce que chacune devrait afficher. Après l'exécution, conserve ta prédiction et ajoute : « La différence vient du fait que… »
+!!! tip "À noter — N02 · Avant et après le test"
+    Avant d'exécuter `ls` et `ls /`, note ce que chacune devrait afficher. Lance-les, puis complète ta réponse : « La différence vient du fait que… »
 
 Rappel compact :
 
@@ -128,25 +113,24 @@ cat ./00-LIRE-MOI.txt
 cat navigation/../00-LIRE-MOI.txt
 ```
 
-La troisième commande entre symboliquement dans `navigation`, puis `..` revient dans son parent avant d'atteindre le fichier.
+Dans la troisième commande, le chemin passe par `navigation`, puis `..` ramène dans le dossier parent avant d'atteindre le fichier.
 
-### 1.3 Une erreur qui révèle une règle
+### 1.3 Revenir dans son dossier personnel
 
-!!! danger "🧩 Débogage — D01"
-    Lance volontairement cette commande et lis entièrement le message :
+Tu veux maintenant revenir directement dans ton dossier personnel. Essaie :
 
 ```bash
 cd /~
 ```
 
-Le `/` placé au début signifie « pars de la racine ». Bash ne développe pas `~` lorsqu'il n'est pas au début du mot : la commande cherche donc une entrée littéralement nommée `~` sous `/`.
+Lis le message du terminal. Dans `/~`, le premier `/` signifie « pars de la racine ». Linux cherche donc un vrai dossier nommé `~` à cet endroit. Pour revenir dans ton dossier personnel, `~` doit être placé au début du chemin.
 
-!!! question "📝 Notes — N03 · L'erreur `/~`"
-    Recopie le message important, explique pourquoi `/~` ne désigne pas ton dossier personnel, puis écris la correction minimale.
+!!! question "À noter — N03 · Le chemin `/~`"
+    Recopie le message utile, explique pourquoi `/~` ne désigne pas ton dossier personnel, puis écris la commande qui permet vraiment d'y revenir.
 
-### 1.4 Même destination, moins d'aide
+### 1.4 Deux chemins vers la même destination
 
-Sans commande prête :
+Reviens à la racine de `station-nadir`, puis retrouve les chemins demandés :
 
 1. place-toi dans `navigation/secteur-beta` avec un chemin relatif ;
 2. affiche `carte.txt` ;
@@ -154,14 +138,14 @@ Sans commande prête :
 4. note le chemin affiché par `pwd` ;
 5. va dans `/tmp`, puis reviens à `station-nadir` avec un chemin absolu commençant par `/`.
 
-!!! question "📝 Notes — N04 · Deux chemins vers la même cible"
+!!! question "À noter — N04 · Deux chemins vers la même cible"
     Note le chemin relatif et le chemin absolu que tu as utilisés pour atteindre la station. Explique pourquoi l'un dépend du dossier courant alors que l'autre fonctionne depuis `/tmp`.
 
 ---
 
 ## Niveau 2 — Ne plus tout retaper
 
-Le shell utilise une bibliothèque d'édition de ligne : la commande en cours peut être parcourue et corrigée comme une courte ligne de texte.
+Dans Bash, tu peux corriger la commande en cours comme une petite ligne de texte. Tu peux aussi rappeler une ancienne commande au lieu de la retaper.
 
 Affiche d'abord l'historique récent :
 
@@ -169,9 +153,9 @@ Affiche d'abord l'historique récent :
 history 10
 ```
 
-Chaque terminal Bash conserve une liste numérotée des commandes déjà validées. Les flèches et `Ctrl+R` permettent de réutiliser cette liste sans recopier son contenu.
+`history` affiche les commandes déjà validées. Les flèches et `Ctrl+R` permettent de les retrouver rapidement.
 
-### 2.1 Première prise en main guidée
+### 2.1 Rappeler et corriger une commande
 
 Reviens dans la station puis exécute cette commande :
 
@@ -197,9 +181,9 @@ Teste ensuite ces gestes sans utiliser la souris :
 
 Avec `↑`, rappelle la commande précédente. Remplace seulement `-la` par `-ld`, puis exécute-la. Observe que `-d` demande des informations sur les dossiers eux-mêmes plutôt que sur leur contenu.
 
-### 2.2 Variante moins guidée
+### 2.2 Réutiliser une commande
 
-Sans retaper entièrement une commande :
+Pars de l'historique au lieu de tout retaper :
 
 1. rappelle la commande qui affichait les trois secteurs ;
 2. transforme-la pour ne consulter que `secteur-beta` ;
@@ -207,7 +191,7 @@ Sans retaper entièrement une commande :
 4. retrouve ensuite avec `Ctrl+R` la première commande contenant `00-LIRE` ;
 5. annule la commande retrouvée avec `Ctrl+C` au lieu de l'exécuter.
 
-!!! question "📝 Notes — N05 · Raccourcis utiles"
+!!! question "À noter — N05 · Raccourcis utiles"
     Quels sont les deux raccourcis qui t'ont évité le plus de saisie ? Décris un cas concret où chacun t'a aidé.
 
 ### 2.3 La première pièce cachée
@@ -219,9 +203,9 @@ ls navigation
 ls -a navigation
 ```
 
-Une entrée supplémentaire apparaît avec `-a`. Sans commande fournie, entre dans cette entrée, lis le fichier qu'elle contient et reviens à la racine de la station.
+Une entrée supplémentaire apparaît avec `-a`. Entre dans cette entrée, lis le fichier qu'elle contient et reviens à la racine de la station.
 
-!!! question "📝 Notes — N06 · Entrée cachée"
+!!! question "À noter — N06 · Entrée cachée"
     Note le nom de l'entrée, la raison pour laquelle le premier `ls` ne l'affichait pas et le premier fragment du code découvert.
 
 ---
@@ -248,7 +232,7 @@ d...  répertoire
 l...  lien symbolique
 ```
 
-!!! question "📝 Notes — N07 · Fichier ou dossier"
+!!! question "À noter — N07 · Fichier ou dossier"
     Explique avec tes mots la différence entre `mkdir` et `touch`. Quelle observation te permet de vérifier le type de l'objet créé ?
 
 ### 3.2 Écrire puis ajouter
@@ -259,15 +243,15 @@ echo "Station : Nadir" >> travail/enquete/observations.txt
 cat travail/enquete/observations.txt
 ```
 
-!!! tip "🔮 Prédire puis analyser — N08"
-    Sans exécuter de commande supplémentaire, prédis le contenu du fichier après ces deux lignes :
+!!! tip "À noter — N08 · Avant et après le test"
+    Sans exécuter de commande supplémentaire, note le contenu que tu penses obtenir après ces deux lignes :
 
 ```bash
 echo "ancienne hypothese" > travail/enquete/test.txt
 echo "nouvelle hypothese" > travail/enquete/test.txt
 ```
 
-Lance-les seulement après avoir écrit ta prédiction. Compare ensuite avec `cat` et formule la règle qui distingue `>` de `>>`.
+Lance-les après avoir répondu. Vérifie ensuite avec `cat` et explique la différence entre `>` et `>>`.
 
 ### 3.3 Copier, déplacer, supprimer dans la zone de travail
 
@@ -277,7 +261,7 @@ mv travail/enquete/rapport-copie.txt travail/enquete/rapport-final.txt
 ls travail/enquete
 ```
 
-Crée maintenant, sans commande prête :
+Crée maintenant :
 
 - une copie de `observations.txt` nommée `observations-secours.txt` ;
 - un fichier caché `.progression` ;
@@ -286,23 +270,24 @@ Crée maintenant, sans commande prête :
 
 Vérifie chaque étape. Avant `rm`, relis toujours le chemin ciblé.
 
-### 3.4 Une destination du mauvais type
+### 3.4 Écrire dans `enquete`
 
-!!! danger "🧩 Débogage — D02"
-    Cette commande essaie d'écrire dans un dossier comme s'il s'agissait d'un fichier :
+Le dossier `travail/enquete` existe déjà. Essaie d'y écrire directement :
 
 ```bash
 echo "test" > travail/enquete
 ```
 
-!!! question "📝 Notes — N09 · Rediriger vers un dossier"
+Le terminal refuse la commande : `>` doit envoyer le texte vers un fichier, pas vers un dossier. Il faut donc ajouter un nom de fichier après `travail/enquete/`.
+
+!!! question "À noter — N09 · Rediriger vers un dossier"
     Recopie le message d'erreur, identifie l'objet qui est un dossier et propose une correction qui écrit `test` dans un nouveau fichier placé à l'intérieur de ce dossier.
 
 ---
 
 ## Niveau 4 — Voir précisément avec `ls`
 
-`ls` ne possède pas une seule manière d'afficher les données. Compare progressivement :
+`ls` peut donner beaucoup plus d'informations qu'une simple liste de noms. Compare :
 
 ```bash
 ls transmissions
@@ -324,7 +309,7 @@ ls -R navigation
 
 Les options courtes peuvent être réunies : `ls -lah` équivaut ici à `ls -l -a -h`.
 
-### Mission moins guidée
+### À toi de choisir les options
 
 Choisis toi-même les options nécessaires pour répondre à ces questions :
 
@@ -333,7 +318,7 @@ Choisis toi-même les options nécessaires pour répondre à ces questions :
 3. quels sont les droits du dossier `travail` lui-même ?
 4. quels fichiers se trouvent dans tous les sous-dossiers de `inventaire` ?
 
-!!! question "📝 Notes — N10 · Choisir les options"
+!!! question "À noter — N10 · Choisir les options"
     Pour deux des questions précédentes, note la commande construite et explique pourquoi ses options sont adaptées. Ne réponds pas seulement par le nom de l'option.
 
 ---
@@ -363,7 +348,7 @@ Dans `less` :
 
 Cherche le mot `navigation`, passe au résultat suivant, puis quitte sans modifier le fichier.
 
-!!! question "📝 Notes — N11 · Choisir `cat`, `less` ou `nano`"
+!!! question "À noter — N11 · Choisir `cat`, `less` ou `nano`"
     Quel outil choisirais-tu pour lire un fichier de 700 lignes sans le modifier ? Lequel choisirais-tu pour le modifier ? Explique la différence d'usage, pas seulement le nom des commandes.
 
 ### 5.2 Voir seulement le début ou la fin
@@ -373,19 +358,18 @@ head -n 5 transmissions/radio-2026-09-15.log
 tail -n 5 transmissions/radio-2026-09-16.log
 ```
 
-!!! tip "🔮 Prédire puis analyser — N12"
-    Avant de lancer les commandes, écris ce que signifie `-n 5` et quelle partie du fichier chacune devrait afficher. Après l'exécution, note les deux fragments découverts au début et à la fin des journaux.
+!!! tip "À noter — N12 · Avant et après le test"
+    Avant de lancer les commandes, note ce que signifie `-n 5` et quelle partie du fichier chacune devrait afficher. Après le test, ajoute les deux fragments découverts au début et à la fin des journaux.
 
-### 5.3 Une option oubliée
+### 5.3 Demander cinq lignes
 
-!!! danger "🧩 Débogage — D03"
-    Lance cette commande volontairement incorrecte :
+Tu veux afficher les cinq premières lignes du journal. Essaie :
 
 ```bash
 head 5 transmissions/radio-2026-09-15.log
 ```
 
-Sans `-n`, `head` interprète `5` comme un nom de fichier supplémentaire. Corrige la commande en utilisant l'aide si nécessaire :
+Le message parle d'un fichier nommé `5`. Sans `-n`, `head` comprend que `5` est un nom de fichier supplémentaire. Retrouve la bonne forme avec l'aide :
 
 ```bash
 head --help
@@ -395,9 +379,9 @@ head --help
 
 ## Niveau 6 — Chercher une aiguille avec `grep`
 
-### 6.1 Première recherche guidée
+### 6.1 Chercher dans un journal
 
-Le journal du 14 septembre contient presque mille lignes. Cherche directement l'anomalie importante :
+Le journal du 14 septembre contient presque mille lignes. Inutile de tout lire : cherche directement l'anomalie importante.
 
 ```bash
 grep 'ANOMALIE-ROUGE' transmissions/radio-2026-09-14.log
@@ -412,30 +396,29 @@ Une recherche peut ignorer la différence entre majuscules et minuscules :
 grep -i 'anomalie-rouge' transmissions/radio-2026-09-14.log
 ```
 
-!!! question "📝 Notes — N13 · Recherche avec `grep`"
+!!! question "À noter — N13 · Recherche avec `grep`"
     Quel secteur est associé à l'anomalie ? À quoi sert `-n` ? Explique pourquoi `grep` est plus adapté que `cat` pour cette recherche.
 
-### 6.2 Une commande dans le mauvais ordre
+### 6.2 Retrouver l'ordre des arguments
 
-!!! danger "🧩 Débogage — D04"
-    Lance la commande suivante et observe ce que `grep` essaie d'ouvrir :
+Tu veux maintenant chercher la même anomalie en écrivant le fichier avant le motif :
 
 ```bash
 grep transmissions/radio-2026-09-14.log ANOMALIE-ROUGE
 ```
 
-La forme générale attendue est :
+Observe le message, puis compare avec la forme attendue :
 
 ```text
 grep [options] 'motif recherché' fichier
 ```
 
-!!! question "📝 Notes — N14 · Comprendre l'erreur `grep`"
-    Dans la commande incorrecte, quel argument est pris pour le motif ? Quel argument est pris pour un nom de fichier ? Note le message observé puis écris la correction.
+!!! question "À noter — N14 · Comprendre l'ordre de `grep`"
+    Quel argument est pris pour le motif ? Quel argument est pris pour un nom de fichier ? Note le message observé puis écris la commande qui fonctionne.
 
-### 6.3 Recherche moins guidée
+### 6.3 Retrouver le protocole
 
-Sans commande prête :
+À toi de faire les recherches suivantes :
 
 1. cherche le mot `archive` sans tenir compte de la casse dans le journal du 15 septembre ;
 2. affiche avec leur numéro toutes les lignes contenant `AVERTISSEMENT` dans ce même journal ;
@@ -475,11 +458,11 @@ Enregistre, quitte, puis vérifie avec un outil de lecture :
 cat travail/enquete/rapport-final.txt
 ```
 
-### Modification moins guidée
+### Reprendre le rapport
 
 Rouvre le rapport sans recopier la commande : utilise l'historique. Recherche le mot `Code`, déplace la ligne correspondante en haut du fichier avec les raccourcis de `nano`, puis enregistre à nouveau.
 
-!!! question "📝 Notes — N15 · Modifier avec `nano`"
+!!! question "À noter — N15 · Modifier avec `nano`"
     Note la modification effectuée et les raccourcis utilisés pour enregistrer et quitter. Pourquoi vérifier ensuite avec `cat` ou `less` reste-t-il utile ?
 
 ---
@@ -490,7 +473,7 @@ Décompresse maintenant le second terrain de jeu à côté de la station :
 
 ```bash
 cd ~/base-exploration/tp1-5
-unzip ~/Téléchargements/tp1-5-atelier-permissions.zip
+unzip tp1-5-atelier-permissions.zip
 cd atelier-permissions
 pwd
 ls
@@ -508,7 +491,7 @@ id -gn
 
 `whoami` affiche le nom de l'utilisateur courant. `id` détaille l'UID, le GID et les groupes. `id -un` redonne le nom d'utilisateur ; `id -gn` donne le nom du groupe principal.
 
-!!! question "📝 Notes — N16 · Identité Unix"
+!!! question "À noter — N16 · Identité Unix"
     Note ton utilisateur et ton groupe principal. Explique pourquoi l'UID affiché par `id` n'est pas « l'identifiant du PC ».
 
 ### 8.2 Lire une ligne de droits
@@ -541,7 +524,7 @@ Pour un fichier :
 
 ## Niveau 9 — Modifier les droits avec des lettres
 
-### 9.1 Expérience guidée sur le propriétaire
+### 9.1 Retirer un droit, puis le remettre
 
 Observe avant de modifier :
 
@@ -551,8 +534,8 @@ chmod u-w documents/rapport-public.txt
 ls -l documents/rapport-public.txt
 ```
 
-!!! tip "🔮 Prédire puis analyser — N17"
-    Avant les deux prochaines commandes, prédis séparément si la lecture et l'écriture vont fonctionner. Garde ces prédictions dans tes notes.
+!!! tip "À noter — N17 · Avant et après le test"
+    Avant les deux prochaines commandes, note séparément si tu penses que la lecture et l'écriture vont fonctionner. Ajoute ensuite les résultats obtenus.
 
 ```bash
 cat documents/rapport-public.txt
@@ -576,8 +559,8 @@ chmod u=,g=r,o= laboratoire/groupe-seul.txt
 ls -l laboratoire/groupe-seul.txt
 ```
 
-!!! tip "🔮 Prédire puis analyser — N18"
-    Tu es propriétaire du fichier et tu appartiens probablement aussi à son groupe. Prédis si `cat` pourra le lire, puis vérifie.
+!!! tip "À noter — N18 · Avant et après le test"
+    Tu es propriétaire du fichier et tu appartiens probablement aussi à son groupe. Note si tu penses que `cat` pourra le lire, puis vérifie.
 
 ```bash
 cat laboratoire/groupe-seul.txt
@@ -592,9 +575,9 @@ chmod u=rw,g=r,o= laboratoire/groupe-seul.txt
 cat laboratoire/groupe-seul.txt
 ```
 
-### 9.3 Variante moins guidée
+### 9.3 Régler les droits du groupe
 
-Sans commande complète, règle `equipe/partage-equipe.txt` pour obtenir :
+Règle `equipe/partage-equipe.txt` pour obtenir :
 
 - propriétaire : lecture et écriture ;
 - groupe : lecture seulement ;
@@ -602,7 +585,7 @@ Sans commande complète, règle `equipe/partage-equipe.txt` pour obtenir :
 
 Vérifie avec `ls -l`.
 
-!!! question "📝 Notes — N19 · Forme symbolique"
+!!! question "À noter — N19 · Forme symbolique"
     Note la commande utilisée et explique chaque partie de l'expression `u=...,g=...,o=...`.
 
 ---
@@ -635,7 +618,7 @@ Ainsi :
 
 ![Le mode `640` est obtenu en calculant séparément les droits du propriétaire, du groupe et des autres avec les valeurs 4, 2 et 1.](../assets/tp15-droits-octal.svg)
 
-### 10.1 Exemple guidé
+### 10.1 Lire le mode `640`
 
 ```bash
 chmod 640 documents/rapport-public.txt
@@ -644,20 +627,19 @@ ls -l documents/rapport-public.txt
 
 Le premier chiffre concerne `u`, le deuxième `g`, le troisième `o`.
 
-### 10.2 Une valeur impossible
+### 10.2 Tester le mode `758`
 
-!!! danger "🧩 Débogage — D05"
-    Lance volontairement :
+Applique maintenant ce mode :
 
 ```bash
 chmod 758 documents/rapport-public.txt
 ```
 
-Chaque chiffre décrit trois bits et doit donc rester compris entre `0` et `7`. Le chiffre `8` ne correspond à aucune combinaison de `r`, `w` et `x`.
+Lis le message obtenu. Chaque chiffre regroupe les droits `r`, `w` et `x` d'une catégorie. Il doit rester compris entre `0` et `7` : le chiffre `8` ne correspond à aucune combinaison possible.
 
-### 10.3 Configuration autonome
+### 10.3 Régler les quatre fichiers
 
-Sans commandes prêtes, applique les objectifs contenus dans `00-LIRE-MOI.txt` :
+Applique les objectifs contenus dans `00-LIRE-MOI.txt` :
 
 | Cible | Mode attendu |
 |---|---:|
@@ -672,7 +654,7 @@ Vérifie les quatre lignes avec `ls -l`. Puis lance le script :
 ./scripts/diagnostic.sh
 ```
 
-!!! question "📝 Notes — N20 · Formes symbolique et numérique"
+!!! question "À noter — N20 · Formes symbolique et numérique"
     Choisis l'un des quatre fichiers. Note son mode numérique, son écriture `rwx` et une forme symbolique de `chmod` qui produirait le même résultat. Détaille le calcul.
 
 ---
@@ -695,8 +677,8 @@ ls -l laboratoire/depot
 chmod u-w laboratoire/depot
 ```
 
-!!! tip "🔮 Prédire puis analyser — N21"
-    Avant d'exécuter les commandes suivantes, prédis laquelle modifiera la liste des noms contenue dans `depot`.
+!!! tip "À noter — N21 · Avant et après le test"
+    Avant d'exécuter les commandes suivantes, note lesquelles devraient modifier la liste des noms contenue dans `depot`.
 
 ```bash
 touch laboratoire/depot/nouveau.txt
@@ -712,16 +694,16 @@ Restaure immédiatement le dossier :
 chmod u+w laboratoire/depot
 ```
 
-Reproduis ensuite l'expérience, sans commandes fournies, dans un nouveau dossier jetable nommé `laboratoire/depot-2`. Crée d'abord un témoin, retire l'écriture au dossier, teste une création et une suppression, puis restaure le droit.
+Refais ensuite l'expérience dans un nouveau dossier jetable nommé `laboratoire/depot-2`. Crée d'abord un témoin, retire l'écriture au dossier, teste une création et une suppression, puis restaure le droit.
 
-!!! question "📝 Notes — complément N21"
-    Compare tes prédictions aux résultats. Pourquoi retirer `w` à un dossier n'a-t-il pas le même effet que retirer `w` à un fichier ?
+!!! question "À noter — complément N21"
+    Compare tes réponses aux résultats. Pourquoi retirer `w` à un dossier n'a-t-il pas le même effet que retirer `w` à un fichier ?
 
 ---
 
 ## Boss final — Reconstituer la transmission
 
-Il reste à reconstruire le code de la station et à terminer le rapport. Aucune commande complète n'est fournie.
+Il reste à reconstruire le code de la station et à terminer le rapport.
 
 ### Les cinq fragments
 
@@ -733,7 +715,7 @@ Dans cet ordre, retrouve :
 4. **numéro** — sur la dernière ligne du journal du 16 septembre ;
 5. **protocole** — près de `PROTOCOLE-ORION` dans le manuel.
 
-Utilise volontairement des outils différents : options de `ls`, `head`, `tail`, `grep` et recherche dans `less`.
+Pour chaque fragment, choisis l'outil le plus pratique parmi les options de `ls`, `head`, `tail`, `grep` et la recherche dans `less`.
 
 Assemble les fragments avec des tirets puis complète `station-nadir/travail/enquete/rapport-final.txt` dans `nano`.
 
@@ -757,7 +739,7 @@ Le rapport doit contenir :
 □ Aucun dossier du laboratoire n'est resté verrouillé.
 ```
 
-!!! question "📝 Notes — N22 · Bilan final"
+!!! question "À noter — N22 · Bilan final"
     Note le code obtenu, puis trois réflexes à appliquer lorsqu'une commande échoue. Termine par une erreur qui t'a réellement appris quelque chose, une notion encore incertaine et ta confiance avant/après le TP sur une échelle de 1 à 4.
 
 ---

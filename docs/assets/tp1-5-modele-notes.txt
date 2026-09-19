@@ -1,15 +1,15 @@
 TP 1.5 — Reprendre le contrôle du terminal
 Nom / prénom :
 
-Consigne : conserve tes prédictions, même lorsqu'elles sont fausses. Ajoute ton analyse après avoir essayé la commande.
+Quand une question te demande de prévoir un résultat, réponds avant le test. Ajoute ensuite ce que tu as vraiment observé.
 
 N01 — Diagnostic de départ
 Réponse corrigée :
 Ce que je comprends maintenant :
 
 N02 — ls et ls /
-Ma prédiction :
-Mon observation :
+Ce que je pensais avant :
+Ce que j'ai observé :
 Mon explication :
 
 N03 — L'erreur /~
@@ -35,7 +35,7 @@ N07 — Fichier ou dossier
 Différence entre mkdir et touch :
 Méthode utilisée pour vérifier le type :
 
-N08 — Prédiction sur > et >>
+N08 — Tester > et >>
 Contenu prévu :
 Contenu observé :
 Règle retenue :
@@ -55,9 +55,9 @@ Mon choix pour lire un gros fichier :
 Mon choix pour le modifier :
 Explication :
 
-N12 — Prédiction head et tail
-Ma prédiction :
-Mon observation :
+N12 — Tester head et tail
+Ce que je pensais avant :
+Ce que j'ai observé :
 Différence entre les deux commandes :
 
 N13 — Recherche avec grep
@@ -82,13 +82,13 @@ Groupe principal :
 Différence entre whoami et id :
 
 N17 — Retirer le droit d'écriture
-Ma prédiction avant chmod :
+Ce que je pensais avant :
 Résultat de la lecture :
 Résultat de l'écriture :
 Explication :
 
 N18 — Propriétaire et groupe
-Ma prédiction :
+Ce que je pensais avant :
 Résultat de cat :
 Pourquoi les droits du groupe ne s'ajoutent pas à ceux du propriétaire :
 
@@ -105,7 +105,7 @@ Forme symbolique équivalente :
 Calcul :
 
 N21 — Droits d'un répertoire
-Mes prédictions :
+Ce que je pensais avant :
 Résultats observés :
 Différence avec un fichier :
 

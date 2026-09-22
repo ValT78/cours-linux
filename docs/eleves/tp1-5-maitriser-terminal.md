@@ -15,7 +15,7 @@ Tu vas fouiller ces fichiers depuis le terminal, retrouver le code et préparer 
 - [Laboratoire des permissions](../assets/tp1-5-atelier-permissions.zip)
 - [Modèle de notes à compléter](../assets/tp1-5-modele-notes.txt)
 
-Ouvre ton terminal WSL ou celui de ta machine virtuelle, puis prépare le dossier du TP :
+Ouvre ton terminal Linux, puis prépare le dossier du TP :
 
 ```bash
 cd ~/base-exploration
@@ -37,7 +37,7 @@ wget https://valt78.github.io/cours-linux/assets/tp1-5-modele-notes.txt
 ls
 ```
 
-Garde `tp1-5-modele-notes.txt` ouvert pendant le TP. Les encadrés `À noter — N01`, `N02`… indiquent les réponses à écrire dans ce fichier. Quand on te demande de prévoir un résultat, réponds avant de lancer la commande, puis ajoute ce que tu as vraiment observé.
+Garde `tp1-5-modele-notes.txt` ouvert pendant le TP. Les encadrés `Question - N01`, `N02`… indiquent les réponses à écrire dans ce fichier. Quand on te demande de prévoir un résultat, réponds avant de lancer la commande, puis ajoute ce que tu as vraiment observé.
 
 À la fin de la séance, dépose le fichier complété sur Moodle.
 
@@ -62,7 +62,7 @@ ls
 cat 00-LIRE-MOI.txt
 ```
 
-!!! question "À noter — N01 · Diagnostic de départ"
+!!! question "Question - N01 · Diagnostic de départ"
     Avant de poursuivre, relis les questions suivantes et choisis celle sur laquelle tu étais le moins sûr : que représentent `/`, `~`, `.` et `..` ? Quelle différence entre `ls` et `ls /` ? Quelle différence entre `mkdir` et `touch` ? Écris ta réponse actuelle. Tu la corrigeras si nécessaire pendant le TP.
 
 ---
@@ -89,7 +89,7 @@ ls
 ls /
 ```
 
-!!! tip "À noter — N02 · Avant et après le test"
+!!! tip "Question - N02 · Avant et après le test"
     Avant d'exécuter `ls` et `ls /`, note ce que chacune devrait afficher. Lance-les, puis complète ta réponse : « La différence vient du fait que… »
 
 Rappel compact :
@@ -125,7 +125,7 @@ cd /~
 
 Lis le message du terminal. Dans `/~`, le premier `/` signifie « pars de la racine ». Linux cherche donc un vrai dossier nommé `~` à cet endroit. Pour revenir dans ton dossier personnel, `~` doit être placé au début du chemin.
 
-!!! question "À noter — N03 · Le chemin `/~`"
+!!! question "Question - N03 · Le chemin `/~`"
     Recopie le message utile, explique pourquoi `/~` ne désigne pas ton dossier personnel, puis écris la commande qui permet vraiment d'y revenir.
 
 ### 1.4 Deux chemins vers la même destination
@@ -138,7 +138,7 @@ Reviens à la racine de `station-nadir`, puis retrouve les chemins demandés :
 4. note le chemin affiché par `pwd` ;
 5. va dans `/tmp`, puis reviens à `station-nadir` avec un chemin absolu commençant par `/`.
 
-!!! question "À noter — N04 · Deux chemins vers la même cible"
+!!! question "Question - N04 · Deux chemins vers la même cible"
     Note le chemin relatif et le chemin absolu que tu as utilisés pour atteindre la station. Explique pourquoi l'un dépend du dossier courant alors que l'autre fonctionne depuis `/tmp`.
 
 ---
@@ -191,7 +191,7 @@ Pars de l'historique au lieu de tout retaper :
 4. retrouve ensuite avec `Ctrl+R` la première commande contenant `00-LIRE` ;
 5. annule la commande retrouvée avec `Ctrl+C` au lieu de l'exécuter.
 
-!!! question "À noter — N05 · Raccourcis utiles"
+!!! question "Question - N05 · Raccourcis utiles"
     Quels sont les deux raccourcis qui t'ont évité le plus de saisie ? Décris un cas concret où chacun t'a aidé.
 
 ### 2.3 La première pièce cachée
@@ -205,7 +205,7 @@ ls -a navigation
 
 Une entrée supplémentaire apparaît avec `-a`. Entre dans cette entrée, lis le fichier qu'elle contient et reviens à la racine de la station.
 
-!!! question "À noter — N06 · Entrée cachée"
+!!! question "Question - N06 · Entrée cachée"
     Note le nom de l'entrée, la raison pour laquelle le premier `ls` ne l'affichait pas et le premier fragment du code découvert.
 
 ---
@@ -232,7 +232,7 @@ d...  répertoire
 l...  lien symbolique
 ```
 
-!!! question "À noter — N07 · Fichier ou dossier"
+!!! question "Question - N07 · Fichier ou dossier"
     Explique avec tes mots la différence entre `mkdir` et `touch`. Quelle observation te permet de vérifier le type de l'objet créé ?
 
 ### 3.2 Écrire puis ajouter
@@ -243,7 +243,7 @@ echo "Station : Nadir" >> travail/enquete/observations.txt
 cat travail/enquete/observations.txt
 ```
 
-!!! tip "À noter — N08 · Avant et après le test"
+!!! tip "Question - N08 · Avant et après le test"
     Sans exécuter de commande supplémentaire, note le contenu que tu penses obtenir après ces deux lignes :
 
 ```bash
@@ -280,7 +280,7 @@ echo "test" > travail/enquete
 
 Le terminal refuse la commande : `>` doit envoyer le texte vers un fichier, pas vers un dossier. Il faut donc ajouter un nom de fichier après `travail/enquete/`.
 
-!!! question "À noter — N09 · Rediriger vers un dossier"
+!!! question "Question - N09 · Rediriger vers un dossier"
     Recopie le message d'erreur, identifie l'objet qui est un dossier et propose une correction qui écrit `test` dans un nouveau fichier placé à l'intérieur de ce dossier.
 
 ---
@@ -318,7 +318,7 @@ Choisis toi-même les options nécessaires pour répondre à ces questions :
 3. quels sont les droits du dossier `travail` lui-même ?
 4. quels fichiers se trouvent dans tous les sous-dossiers de `inventaire` ?
 
-!!! question "À noter — N10 · Choisir les options"
+!!! question "Question - N10 · Choisir les options"
     Pour deux des questions précédentes, note la commande construite et explique pourquoi ses options sont adaptées. Ne réponds pas seulement par le nom de l'option.
 
 ---
@@ -348,7 +348,7 @@ Dans `less` :
 
 Cherche le mot `navigation`, passe au résultat suivant, puis quitte sans modifier le fichier.
 
-!!! question "À noter — N11 · Choisir `cat`, `less` ou `nano`"
+!!! question "Question - N11 · Choisir `cat`, `less` ou `nano`"
     Quel outil choisirais-tu pour lire un fichier de 700 lignes sans le modifier ? Lequel choisirais-tu pour le modifier ? Explique la différence d'usage, pas seulement le nom des commandes.
 
 ### 5.2 Voir seulement le début ou la fin
@@ -358,7 +358,7 @@ head -n 5 transmissions/radio-2026-09-15.log
 tail -n 5 transmissions/radio-2026-09-16.log
 ```
 
-!!! tip "À noter — N12 · Avant et après le test"
+!!! tip "Question - N12 · Avant et après le test"
     Avant de lancer les commandes, note ce que signifie `-n 5` et quelle partie du fichier chacune devrait afficher. Après le test, ajoute les deux fragments découverts au début et à la fin des journaux.
 
 ### 5.3 Demander cinq lignes
@@ -396,7 +396,7 @@ Une recherche peut ignorer la différence entre majuscules et minuscules :
 grep -i 'anomalie-rouge' transmissions/radio-2026-09-14.log
 ```
 
-!!! question "À noter — N13 · Recherche avec `grep`"
+!!! question "Question - N13 · Recherche avec `grep`"
     Quel secteur est associé à l'anomalie ? À quoi sert `-n` ? Explique pourquoi `grep` est plus adapté que `cat` pour cette recherche.
 
 ### 6.2 Retrouver l'ordre des arguments
@@ -413,7 +413,7 @@ Observe le message, puis compare avec la forme attendue :
 grep [options] 'motif recherché' fichier
 ```
 
-!!! question "À noter — N14 · Comprendre l'ordre de `grep`"
+!!! question "Question - N14 · Comprendre l'ordre de `grep`"
     Quel argument est pris pour le motif ? Quel argument est pris pour un nom de fichier ? Note le message observé puis écris la commande qui fonctionne.
 
 ### 6.3 Retrouver le protocole
@@ -462,7 +462,7 @@ cat travail/enquete/rapport-final.txt
 
 Rouvre le rapport sans recopier la commande : utilise l'historique. Recherche le mot `Code`, déplace la ligne correspondante en haut du fichier avec les raccourcis de `nano`, puis enregistre à nouveau.
 
-!!! question "À noter — N15 · Modifier avec `nano`"
+!!! question "Question - N15 · Modifier avec `nano`"
     Note la modification effectuée et les raccourcis utilisés pour enregistrer et quitter. Pourquoi vérifier ensuite avec `cat` ou `less` reste-t-il utile ?
 
 ---
@@ -491,7 +491,7 @@ id -gn
 
 `whoami` affiche le nom de l'utilisateur courant. `id` détaille l'UID, le GID et les groupes. `id -un` redonne le nom d'utilisateur ; `id -gn` donne le nom du groupe principal.
 
-!!! question "À noter — N16 · Identité Unix"
+!!! question "Question - N16 · Identité Unix"
     Note ton utilisateur et ton groupe principal. Explique pourquoi l'UID affiché par `id` n'est pas « l'identifiant du PC ».
 
 ### 8.2 Lire une ligne de droits
@@ -534,7 +534,7 @@ chmod u-w documents/rapport-public.txt
 ls -l documents/rapport-public.txt
 ```
 
-!!! tip "À noter — N17 · Avant et après le test"
+!!! tip "Question - N17 · Avant et après le test"
     Avant les deux prochaines commandes, note séparément si tu penses que la lecture et l'écriture vont fonctionner. Ajoute ensuite les résultats obtenus.
 
 ```bash
@@ -559,7 +559,7 @@ chmod u=,g=r,o= laboratoire/groupe-seul.txt
 ls -l laboratoire/groupe-seul.txt
 ```
 
-!!! tip "À noter — N18 · Avant et après le test"
+!!! tip "Question - N18 · Avant et après le test"
     Tu es propriétaire du fichier et tu appartiens probablement aussi à son groupe. Note si tu penses que `cat` pourra le lire, puis vérifie.
 
 ```bash
@@ -585,7 +585,7 @@ Règle `equipe/partage-equipe.txt` pour obtenir :
 
 Vérifie avec `ls -l`.
 
-!!! question "À noter — N19 · Forme symbolique"
+!!! question "Question - N19 · Forme symbolique"
     Note la commande utilisée et explique chaque partie de l'expression `u=...,g=...,o=...`.
 
 ---
@@ -654,7 +654,7 @@ Vérifie les quatre lignes avec `ls -l`. Puis lance le script :
 ./scripts/diagnostic.sh
 ```
 
-!!! question "À noter — N20 · Formes symbolique et numérique"
+!!! question "Question - N20 · Formes symbolique et numérique"
     Choisis l'un des quatre fichiers. Note son mode numérique, son écriture `rwx` et une forme symbolique de `chmod` qui produirait le même résultat. Détaille le calcul.
 
 ---
@@ -677,7 +677,7 @@ ls -l laboratoire/depot
 chmod u-w laboratoire/depot
 ```
 
-!!! tip "À noter — N21 · Avant et après le test"
+!!! tip "Question - N21 · Avant et après le test"
     Avant d'exécuter les commandes suivantes, note lesquelles devraient modifier la liste des noms contenue dans `depot`.
 
 ```bash
@@ -696,7 +696,7 @@ chmod u+w laboratoire/depot
 
 Refais ensuite l'expérience dans un nouveau dossier jetable nommé `laboratoire/depot-2`. Crée d'abord un témoin, retire l'écriture au dossier, teste une création et une suppression, puis restaure le droit.
 
-!!! question "À noter — complément N21"
+!!! question "Question - complément N21"
     Compare tes réponses aux résultats. Pourquoi retirer `w` à un dossier n'a-t-il pas le même effet que retirer `w` à un fichier ?
 
 ---
@@ -739,7 +739,7 @@ Le rapport doit contenir :
 □ Aucun dossier du laboratoire n'est resté verrouillé.
 ```
 
-!!! question "À noter — N22 · Bilan final"
+!!! question "Question - N22 · Bilan final"
     Note le code obtenu, puis trois réflexes à appliquer lorsqu'une commande échoue. Termine par une erreur qui t'a réellement appris quelque chose, une notion encore incertaine et ta confiance avant/après le TP sur une échelle de 1 à 4.
 
 ---

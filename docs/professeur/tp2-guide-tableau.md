@@ -1,6 +1,6 @@
 # TP 2 — Repères visuels et notions clés
 
-Cette annexe prolonge le TP **Lire les traces d'un poste**. Elle montre comment le shell transforme une ligne de commande, relie de petits outils et produit des rapports reproductibles à partir de données brutes.
+Cette annexe accompagne le TP **Faire parler les traces du relais Aurore**. Elle rassemble les rappels utiles, puis montre comment le shell transforme une ligne de commande, relie de petits outils et produit des rapports reproductibles à partir de données brutes.
 
 ## Vue d'ensemble : des traces au rapport
 
@@ -17,6 +17,8 @@ Le principe directeur est simple : chaque commande accomplit une opération limi
 
 | Notion | Exemple | Idée essentielle |
 |---|---|---|
+| repères et fichiers | `~`, `file`, `ls -ld` | un raccourci du shell, une commande et un objet du système de fichiers sont trois choses différentes |
+| droits | `chmod 750 script.sh` | une catégorie s'applique à la fois ; les droits d'un dossier agissent sur ses entrées |
 | transformations du shell | `*`, guillemets, `$(date)` | Bash prépare les mots avant de lancer la commande |
 | conduite | `grep ... | wc -l` | la sortie de gauche devient l'entrée de droite |
 | flux standard | `>`, `2>`, `<` | résultat normal et erreurs circulent sur des canaux distincts |
@@ -25,7 +27,25 @@ Le principe directeur est simple : chaque commande accomplit une opération limi
 | scripts | `bash scripts/bilan.sh` | un fichier texte conserve une suite de commandes reproductible |
 
 !!! warning "Périmètre sûr"
-    Tous les fichiers créés restent dans `~/base-exploration/analyse-traces`. La seule cible de `kill` est le processus `sleep` lancé dans le même terminal pendant le TP.
+    Tous les fichiers créés restent dans `~/base-exploration/tp2/relais-aurore`. La seule cible de `kill` est le processus `sleep` lancé dans le même terminal pendant le TP.
+
+## Rappels à sécuriser
+
+| Confusion | Repère fiable |
+|---|---|
+| « `~` est un chemin absolu » | `~` est développé par Bash ; une écriture absolue commence directement par `/` |
+| « `type` décrit un fichier » | `type` renseigne sur une commande ; `file` ou `ls -ld` examinent un objet du système de fichiers |
+| « `ls -h` donne les détails » | `-l` active l'affichage détaillé ; `-h` rend notamment les tailles lisibles |
+| « `ls -l dossier` décrit le dossier » | il décrit son contenu ; `ls -ld dossier` décrit le dossier lui-même |
+| « les droits `g` complètent les droits `u` » | si l'utilisateur est propriétaire, seule la catégorie `u` est utilisée |
+| « `w` sur un fichier permet de le supprimer » | la suppression modifie surtout la liste des entrées du dossier parent |
+
+```text
+fichier :      r = lire      w = modifier le contenu      x = exécuter
+dossier :      r = lister    w = créer/supprimer un nom   x = traverser
+```
+
+![Les mêmes lettres décrivent des actions différentes sur un fichier et sur un répertoire.](../assets/tp1-droits.svg)
 
 ---
 
@@ -35,7 +55,7 @@ Le principe directeur est simple : chaque commande accomplit une opération limi
 
 ```text
 ligne saisie             préparation par Bash          arguments reçus par echo
-echo bruts/*.log    →    recherche des noms       →    bruts/evenements.log
+echo bruts/*.log    →    recherche des noms       →    bruts/communications-2026-09-21.log ...
 echo "bruts/*.log"  →    étoile protégée          →    bruts/*.log
 echo "$(date +%F)"   →    commande exécutée        →    2026-09-14
 ```
@@ -64,7 +84,7 @@ fichier → grep "ERREUR" → sort → terminal
 Le caractère `|` relie directement la sortie normale de la commande de gauche à l'entrée standard de celle de droite. Il ne crée pas de fichier intermédiaire.
 
 ```bash
-grep 'ERREUR' bruts/evenements.log | wc -l
+grep 'ERREUR' bruts/communications-2026-09-22.log | wc -l
 ```
 
 Cette ligne se lit de gauche à droite : « sélectionner les lignes contenant `ERREUR`, puis compter les lignes sélectionnées ».
@@ -111,7 +131,7 @@ Dans cet exemple, les noms trouvés vont dans `liste.txt` et le message concerna
 Une analyse devient plus lisible lorsqu'elle est décomposée en verbes : sélectionner, extraire, normaliser, trier, compter. Chaque verbe correspond à un filtre testable séparément.
 
 ```bash
-cut -d';' -f2 bruts/connexions.csv | sort -u
+grep -h 'ERREUR' bruts/*.log | cut -d';' -f3 | sort -u
 ```
 
 La chaîne extrait le deuxième champ, puis ne conserve qu'une occurrence de chaque valeur.
@@ -171,6 +191,7 @@ Le script est la **recette** ; le rapport est le **résultat**. Lorsque les donn
 
 | Situation | Signification probable | Vérification utile |
 |---|---|---|
+| `type dossier` répond « introuvable » | `type` cherche une commande | utiliser `file dossier` ou `ls -ld dossier` |
 | `grep` n'affiche rien | aucune ligne ne correspond | vérifier le mot, la casse et le fichier source |
 | `*.log` reste affiché | aucun nom ne correspond, ou les guillemets protègent `*` | examiner `ls bruts` et les guillemets |
 | le rapport est vide | la sélection ne trouve rien ou le flux part ailleurs | tester chaque partie de la conduite séparément |

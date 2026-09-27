@@ -9,11 +9,20 @@ Tu vas fouiller ces fichiers depuis le terminal, retrouver le code et préparer 
 !!! warning "Périmètre sûr"
     Toutes les modifications doivent rester dans `~/base-exploration/tp1-5`. N'utilise pas `sudo` et ne change jamais les droits d'un fichier système.
 
-## Récupérer les fichiers du TP
+## Avant le TP — préparer le document de notes
+
+- [Modèle de notes à compléter](../assets/tp1-5-modele-notes.txt)
+
+Avant la séance, télécharge ce document sur ton ordinateur habituel. Ouvre-le avec l'éditeur de ton choix : Bloc-notes, Word, Google Docs, VS Code ou un autre outil avec lequel tu es à l'aise.
+
+Les encadrés `Question - N01`, `N02`… indiquent les réponses à écrire dans ce document. Quand on te demande de prévoir un résultat, réponds avant de lancer la commande, puis ajoute ce que tu as vraiment observé.
+
+À la fin de la séance, dépose le fichier complété sur Moodle.
+
+## Récupérer le terrain de jeu dans Linux
 
 - [Terrain de jeu — Station Nadir](../assets/tp1-5-station-nadir.zip)
 - [Laboratoire des permissions](../assets/tp1-5-atelier-permissions.zip)
-- [Modèle de notes à compléter](../assets/tp1-5-modele-notes.txt)
 
 Ouvre ton terminal Linux, puis prépare le dossier du TP :
 
@@ -23,12 +32,11 @@ mkdir tp1-5
 cd tp1-5
 ```
 
-Récupère ensuite les trois fichiers :
+Récupère ensuite les deux archives :
 
 ```bash
 wget https://valt78.github.io/cours-linux/assets/tp1-5-station-nadir.zip
 wget https://valt78.github.io/cours-linux/assets/tp1-5-atelier-permissions.zip
-wget https://valt78.github.io/cours-linux/assets/tp1-5-modele-notes.txt
 ```
 
 `wget` télécharge le fichier indiqué par une adresse web et l'enregistre dans le dossier courant. Vérifie que tout est bien arrivé :
@@ -36,10 +44,6 @@ wget https://valt78.github.io/cours-linux/assets/tp1-5-modele-notes.txt
 ```bash
 ls
 ```
-
-Garde `tp1-5-modele-notes.txt` ouvert pendant le TP. Les encadrés `Question - N01`, `N02`… indiquent les réponses à écrire dans ce fichier. Quand on te demande de prévoir un résultat, réponds avant de lancer la commande, puis ajoute ce que tu as vraiment observé.
-
-À la fin de la séance, dépose le fichier complété sur Moodle.
 
 ---
 

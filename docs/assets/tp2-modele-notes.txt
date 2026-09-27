@@ -1,0 +1,139 @@
+TP 2 — Faire parler les traces du relais Aurore
+Nom / prénom :
+
+Quand une question te demande de prévoir un résultat, réponds avant le test. Ajoute ensuite ce que tu as réellement observé.
+
+N01 — ~ et chemin absolu
+Pourquoi ~ mène à mon dossier personnel :
+Pourquoi son écriture n'est pas un chemin absolu :
+
+N02 — Retrouver son chemin
+Chemin absolu utilisé depuis /tmp :
+Ce que désigne . :
+Ce que désigne .. :
+
+N03 — Commande ou objet du système de fichiers
+Pourquoi type bruts ne convient pas :
+Commandes adaptées :
+Ce qu'elles m'ont appris :
+
+N04 — Options de ls
+Commande pour trouver le plus gros fichier :
+Commande pour examiner le dossier scripts lui-même :
+Rôle précis de -l, -h et -d :
+
+N05 — Propriétaire et groupe
+Ce que je pensais avant le test :
+Résultat de cat :
+Pourquoi le droit du groupe ne complète pas celui du propriétaire :
+
+N06 — Écrire dans un dossier
+Résultat de touch :
+Résultat de rm :
+Résultat de cat :
+Pourquoi la suppression dépend du dossier parent :
+
+N07 — Du nombre aux lettres
+Traduction de 750 :
+Catégories concernées par les trois chiffres :
+Droit qui manquait avec 640 :
+
+N08 — L'étoile et les guillemets
+Ce que je pensais voir avant le test :
+Résultat sans guillemets :
+Résultat avec guillemets :
+Qui développe réellement l'étoile :
+
+N09 — Les guillemets et $(...)
+Résultat avec les guillemets simples :
+Résultat avec les guillemets doubles :
+Mon explication :
+
+N10 — Choisir head, tail ou wc
+Outil pour l'entête :
+Outil pour la dernière transmission :
+Outil pour compter :
+Fragment du 21 septembre :
+Fragment du 23 septembre :
+
+N11 — L'ordre de grep
+Motif compris par grep dans la commande en échec :
+Fichier que grep essaie d'ouvrir :
+Commande corrigée :
+Rôle exact de -n :
+
+N12 — Fouille du 23 septembre
+Commande et nombre de lignes :
+Commande et dernière transmission :
+Commande et ligne critique :
+Rôle de grep -v :
+
+N13 — Prévoir une conduite
+Résultat prévu avant le test :
+Résultat observé :
+Ce que wc -l reçoit :
+
+N14 — Construire une conduite
+Commande finale :
+Résultat :
+Pourquoi tester chaque partie séparément :
+
+N15 — De la ligne à la colonne
+Rôle de grep :
+Rôle de cut :
+Rôle de sort -u :
+Explication complète de la conduite :
+
+N16 — Choisir les filtres
+Commande pour les zones critiques :
+Résultat :
+Commande pour le matériel urgent :
+Résultat :
+Commande pour les sources d'erreur :
+Résultat :
+Commande utilisant tr :
+Résultat :
+Pourquoi l'ordre compte dans l'une de ces conduites :
+
+N17 — > ou >>
+Pourquoi des lignes ont été dupliquées :
+Cas dans lequel je choisirais >> :
+
+N18 — Les deux sorties
+Contenu de liste-bruts.txt :
+Contenu de erreurs.txt :
+Intérêt de les séparer :
+
+N19 — Entrée et sorties standards
+< avec mes mots :
+> avec mes mots :
+2> avec mes mots :
+2>&1 avec mes mots :
+
+N20 — Avant-plan et arrière-plan
+Différence entre sleep 20 et sleep 90 & :
+Ce que montre jobs :
+Rôle de fg :
+Rôle de bg :
+
+N21 — Une recette exécutable
+Mode numérique appliqué au script :
+Traduction rwx :
+Pourquoi bash script fonctionne sans le droit x :
+Partie ajoutée au script :
+
+N22 — Conclusion de l'enquête
+Code final :
+Source du signal :
+Zone :
+Coordonnées :
+Ma conclusion en deux ou trois phrases :
+
+La conduite dont je suis le plus fier :
+
+Une erreur qui m'a aidé à comprendre :
+
+Une notion encore incertaine :
+
+Confiance globale avant le TP (1 à 4) :
+Confiance globale après le TP (1 à 4) :

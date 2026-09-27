@@ -1,286 +1,496 @@
-# Lire les traces d'un poste
+# TP 2 — Faire parler les traces du relais Aurore
 
-## Mission 2 - Des messages à remettre en ordre
+## Mission 3 — Retrouver l'origine d'un signal de détresse
 
-Lors du premier TP, tu as découvert un poste Linux, son arborescence et ta base d'exploration. Tu sais maintenant te déplacer, créer des dossiers et lire des fichiers.
+Le code reconstitué dans les archives de la station Nadir a ouvert un nouveau dossier. Il appartient au relais Aurore, une installation qui reçoit les communications de plusieurs balises isolées.
 
-Cette fois, le poste te confie un problème plus concret : il produit beaucoup de petits messages. Certains sont utiles, d'autres non. Ils sont rangés dans des fichiers, mais personne n'a pris le temps de les trier.
+Aurore fonctionne encore, mais son rapport automatique est en panne. Il reste plusieurs milliers de lignes de journaux, un inventaire et des relevés de capteurs. Quelque part dans ces fichiers se trouve un signal de détresse. Ton travail consiste à retrouver sa source, sa zone et ses coordonnées, puis à conserver les commandes qui permettront de refaire l'analyse.
 
-Ton rôle est de transformer ces traces brutes en un rapport simple et lisible. Tu vas apprendre à demander à Linux :
+![Une analyse shell transforme des journaux bruts en informations utiles, puis en rapport reproductible.](../assets/tp2-analyse-globale.svg)
 
-- « montre-moi seulement les lignes qui parlent d'une erreur » ;
-- « compte-les » ;
-- « prends seulement cette colonne » ;
-- « range le résultat » ;
-- « enregistre ce rapport pour pouvoir le refaire demain ».
+Le TP est prévu pour une séance de trois heures. S'il reste des niveaux, tu les reprendras à la séance suivante.
 
-Tu ne dois pas tout retenir immédiatement. À chaque niveau, une nouvelle commande règle un problème précis. À la fin, tu les assembleras.
+!!! warning "Périmètre sûr"
+    Toutes les modifications doivent rester dans `~/base-exploration/tp2/relais-aurore`. Ne modifie pas les fichiers du dossier `bruts` et n'utilise pas `sudo`.
 
-Essaye de finir les niveaux 0 à 7. Tu pourras tester les niveaux bonus si tu as le temps.
+## Avant le TP — préparer le document de notes
 
-> Toutes les modifications de ce TP se font dans `~/base-exploration/analyse-traces`. Ne lance pas de commande avec `sudo` et ne supprime rien en dehors de ce dossier.
+- [Modèle de notes du TP2](../assets/tp2-modele-notes.txt)
 
----
+Avant la séance, télécharge ce document sur ton ordinateur habituel. Ouvre-le avec l'éditeur de ton choix : Bloc-notes, Word, Google Docs, VS Code ou un autre outil avec lequel tu es à l'aise.
 
-## Tes notes sont importantes
+Ce document reste sur ton poste courant. Tu n'as pas besoin de le récupérer avec `wget` ni de l'ouvrir avec `nano` dans Linux. Garde-le ouvert pendant le TP, puis dépose la version complétée sur Moodle à la fin de la séance.
 
-À la fin de chaque niveau, prends quelques lignes de notes sur le support qui te convient : papier, application de notes ou document texte. Ce sont tes traces à toi.
+Les encadrés `Question - N01`, `N02`… indiquent les réponses à écrire dans ce document. Quand on te demande de prévoir un résultat, réponds avant de lancer la commande, puis ajoute ce que tu as réellement observé.
 
-Elles t'aideront à comprendre ce que tu as fait, à réviser et à retrouver tes erreurs utiles. L'enseignant récupérera les notes de tout le monde pour suivre la progression de la classe et adapter son aide ; il ne s'agit pas de pénaliser une étape non terminée.
+## Récupérer le relais dans Linux
 
-Après chaque niveau, note par exemple :
+- [Terrain de jeu — Relais Aurore](../assets/tp2-relais-aurore.zip)
 
-```md
-## Niveau N - titre
-- Ce que j'ai fait :
-- Ce que j'ai observé :
-- Ce que j'en comprends :
-- Ma question éventuelle :
-```
-
----
-
-## Niveau 0 - Retrouver ta base
-
-Retourne dans ta base d'exploration du premier TP :
+Prépare le dossier du TP :
 
 ```bash
 cd ~/base-exploration
+mkdir tp2
+cd tp2
+```
+
+Télécharge l'archive avec `wget`, puis décompresse-la :
+
+```bash
+wget https://valt78.github.io/cours-linux/assets/tp2-relais-aurore.zip
+unzip tp2-relais-aurore.zip
+cd relais-aurore
 pwd
 ls
+cat 00-LIRE-MOI.txt
 ```
 
-Crée l'espace de travail de cette mission, puis entre dedans :
+`wget` récupère ici l'archive depuis le site du cours et l'enregistre dans le dossier courant.
+
+---
+
+## Niveau 0 — Retrouver le canal de Nadir
+
+La première information est cachée dans un nom commençant par un point :
 
 ```bash
-mkdir analyse-traces
-cd analyse-traces
-mkdir bruts
-mkdir rapports
-mkdir scripts
 ls
+ls -a
+cat .canal-nadir
 ```
 
-Les traces originales resteront dans `bruts`. Tes résultats iront dans `rapports`. Les commandes que tu décideras de garder iront dans `scripts`.
+Tu connais déjà les fichiers cachés : `ls -a` les affiche, mais ne change pas leurs droits et ne les rend pas secrets.
 
-### Dans tes notes
+### `~` aide le shell, mais ne commence pas par `/`
 
-Explique le rôle des trois dossiers `bruts`, `rapports` et `scripts`.
-
----
-
-## Niveau 1 - Préparer les traces à analyser
-
-Les lignes suivantes imitent un journal d'événements. Chaque ligne possède quatre morceaux séparés par des points-virgules : une date, un niveau, un utilisateur ou service, et un message.
-
-Crée le journal, une ligne après l'autre :
-
-```bash
-echo '2026-09-18 08:12;INFO;camille;Connexion réussie' > bruts/evenements.log
-echo '2026-09-18 08:16;INFO;samir;Connexion réussie' >> bruts/evenements.log
-echo '2026-09-18 08:18;ERREUR;camille;Mot de passe refusé' >> bruts/evenements.log
-echo '2026-09-18 08:21;INFO;service-web;Mise à jour terminée' >> bruts/evenements.log
-echo '2026-09-18 08:23;ERREUR;samir;Accès refusé' >> bruts/evenements.log
-echo '2026-09-18 08:27;AVERTISSEMENT;service-web;Espace disque faible' >> bruts/evenements.log
-echo '2026-09-18 08:31;INFO;camille;Déconnexion' >> bruts/evenements.log
-echo '2026-09-18 08:34;INFO;samir;Déconnexion' >> bruts/evenements.log
-```
-
-La première ligne utilise `>` : elle crée le fichier. Toutes les suivantes utilisent `>>` : elles ajoutent une ligne à la fin, sans effacer les précédentes.
-
-Prépare aussi un petit inventaire de fichiers :
-
-```bash
-echo 'nom;taille_ko;etat' > bruts/inventaire.csv
-echo 'photo-vacances.jpg;1840;archive' >> bruts/inventaire.csv
-echo 'rapport-stage.pdf;620;important' >> bruts/inventaire.csv
-echo 'notes.txt;12;important' >> bruts/inventaire.csv
-echo 'telechargement.tmp;4;a_supprimer' >> bruts/inventaire.csv
-```
-
-Affiche ce que tu viens de créer :
-
-```bash
-ls bruts
-cat bruts/evenements.log
-```
-
-### Dans tes notes
-
-Combien de morceaux contient une ligne de `evenements.log` ? Quel caractère les sépare ?
-
----
-
-## Niveau 2 - Le shell complète tes commandes
-
-Tu as déjà utilisé `~`, le raccourci vers ton dossier personnel. Le shell Bash sait aussi développer d'autres raccourcis avant de lancer une commande.
-
-Commence par demander à `echo` de montrer tous les fichiers dont le nom termine par `.log` :
+Observe les deux commandes suivantes :
 
 ```bash
 echo ~
-echo bruts/*.log
+pwd
 ```
 
-Le `~` est remplacé par ton dossier personnel. L'étoile `*` veut dire « n'importe quelle suite de caractères ». Bash remplace donc `bruts/*.log` par les vrais noms qui correspondent avant d'envoyer les mots à `echo`.
+Le shell remplace `~` par le chemin de ton dossier personnel avant de lancer `echo`. Le résultat obtenu commence bien par `/`, mais l'écriture `~` n'est pas elle-même un chemin absolu. Un chemin écrit sous forme absolue commence directement par `/`.
 
-Compare avec les guillemets :
+```text
+~                                     raccourci développé par le shell
+/home/alice                            chemin absolu
+~/base-exploration/tp2                raccourci suivi d'un chemin
+/home/alice/base-exploration/tp2      chemin absolu
+```
+
+!!! question "Question - N01 · `~` et chemin absolu"
+    Explique avec tes mots pourquoi `~` mène bien à ton dossier personnel sans être, dans son écriture, un chemin absolu.
+
+Va dans `/tmp`, puis reviens au relais avec le chemin complet affiché précédemment par `pwd`. Pour ce retour, n'utilise pas `~`.
+
+Ensuite, passe par le dossier `documentation`, lis `format-communications.txt`, puis reviens au relais avec `..`.
+
+!!! question "Question - N02 · Retrouver son chemin"
+    Note le chemin absolu utilisé depuis `/tmp`. Dans la deuxième manipulation, que désignaient `.` et `..` ?
+
+---
+
+## Niveau 1 — Regarder le bon objet
+
+### 1.1 `ls -l` ou `ls -ld` ?
+
+Compare :
 
 ```bash
+ls -l bruts
+ls -ld bruts
+```
+
+Avec `ls -l bruts`, `ls` ouvre le dossier et décrit ce qu'il contient. L'option `-d` demande de décrire le dossier `bruts` lui-même.
+
+Ajoute maintenant `-h` :
+
+```bash
+ls -lh bruts
+```
+
+`-l` demande l'affichage détaillé. `-h` rend notamment les tailles plus faciles à lire ; il ne crée pas à lui seul l'affichage détaillé.
+
+### 1.2 `type` ne décrit pas un fichier
+
+Essaie :
+
+```bash
+type cd
+type ls
+type bruts
+```
+
+`type` cherche une **commande** portant ce nom. Il peut dire que `cd` est intégré à Bash ou indiquer quel programme sera lancé pour `ls`. Il n'est pas fait pour reconnaître un fichier ou un dossier.
+
+Pour examiner un objet du système de fichiers, utilise plutôt :
+
+```bash
+file bruts
+file bruts/inventaire.csv
+ls -ld bruts bruts/inventaire.csv
+```
+
+!!! question "Question - N03 · Commande ou objet du système de fichiers"
+    Pourquoi `type bruts` ne répond-il pas à la question « est-ce un fichier ou un dossier » ? Quelles commandes t'ont donné la bonne information ?
+
+À toi de trouver :
+
+1. le plus gros fichier du dossier `bruts` ;
+2. le type de `scripts/diagnostic.sh` ;
+3. les droits du dossier `scripts` lui-même, pas ceux de son contenu.
+
+!!! question "Question - N04 · Choisir les options de `ls`"
+    Note les commandes utilisées pour les points 1 et 3. Explique précisément le rôle de `-l`, `-h` et `-d` dans ces commandes.
+
+---
+
+## Niveau 2 — Reprendre les droits avant l'enquête
+
+Les droits restent un point important : une seule catégorie s'applique à la fois, et les lettres n'ont pas exactement le même effet sur un fichier et sur un dossier.
+
+![Les droits `r`, `w` et `x` n'ont pas le même effet sur un fichier et sur un dossier.](../assets/tp1-droits.svg)
+
+### 2.1 Le propriétaire ne récupère pas les droits du groupe
+
+Le fichier suivant t'appartient. Donne la lecture au groupe, mais aucun droit au propriétaire ni aux autres :
+
+```bash
+chmod u=,g=r,o= laboratoire/categorie-groupe.txt
+ls -l laboratoire/categorie-groupe.txt
+cat laboratoire/categorie-groupe.txt
+```
+
+La lecture est refusée. Comme tu es propriétaire, Linux utilise la catégorie `u`. Il ne complète pas les droits manquants avec ceux de `g`, même si tu appartiens aussi au groupe du fichier.
+
+Restaure ensuite un mode utilisable :
+
+```bash
+chmod u=rw,g=r,o= laboratoire/categorie-groupe.txt
+```
+
+!!! question "Question - N05 · Propriétaire et groupe"
+    Avant le test, pensais-tu que `cat` fonctionnerait ? Explique maintenant pourquoi le droit `r` du groupe ne t'a pas permis de lire le fichier.
+
+### 2.2 Le droit `w` d'un dossier
+
+Observe le dépôt, puis retire ton droit d'écriture sur le dossier :
+
+```bash
+ls -ld laboratoire/depot
+ls -l laboratoire/depot
+chmod u-w laboratoire/depot
+```
+
+Teste maintenant trois actions :
+
+```bash
+touch laboratoire/depot/nouveau.txt
+rm laboratoire/depot/temoin.txt
+cat laboratoire/depot/temoin.txt
+```
+
+La création et la suppression modifient la liste des noms stockée dans le dossier : elles sont refusées. La lecture du témoin peut encore fonctionner, car elle dépend des droits du fichier et du droit de traverser le dossier.
+
+Restaure immédiatement le droit retiré :
+
+```bash
+chmod u+w laboratoire/depot
+```
+
+!!! question "Question - N06 · Écrire dans un dossier"
+    Pourquoi `rm laboratoire/depot/temoin.txt` dépend-il surtout du droit `w` sur `depot`, et non du droit `w` sur `temoin.txt` ?
+
+### 2.3 Lire un mode numérique
+
+Prépare le script de diagnostic ainsi :
+
+```bash
+chmod 640 scripts/diagnostic.sh
+ls -l scripts/diagnostic.sh
+./scripts/diagnostic.sh
+```
+
+Le mode `640` donne `rw-` au propriétaire, `r--` au groupe et aucun droit aux autres. Il manque donc `x` pour lancer le script directement.
+
+![Chaque chiffre est calculé séparément pour le propriétaire, le groupe et les autres.](../assets/tp15-droits-octal.svg)
+
+Corrige le mode et relance-le :
+
+```bash
+chmod 750 scripts/diagnostic.sh
+ls -l scripts/diagnostic.sh
+./scripts/diagnostic.sh
+```
+
+!!! question "Question - N07 · Du nombre aux lettres"
+    Traduis `750` sous la forme `rwx`. À qui s'appliquent les trois chiffres ? Quel droit manquait avec `640` ?
+
+---
+
+## Niveau 3 — Le shell prépare la commande
+
+Avant de lancer un programme, Bash transforme certains caractères de la ligne saisie.
+
+![Bash développe certains caractères avant de lancer la commande.](../assets/tp2-shell-transformations.svg)
+
+### 3.1 L'étoile cherche des noms
+
+!!! tip "Question - N08 · Avant et après le test"
+    Avant de lancer les deux commandes, note ce que tu penses voir et si `echo` va lui-même ouvrir le dossier `bruts`.
+
+```bash
+echo bruts/*.log
 echo "bruts/*.log"
 ```
 
-Cette fois, l'étoile est affichée telle quelle. Les guillemets doubles demandent au shell de ne pas développer l'étoile.
+Sans guillemets, Bash remplace `bruts/*.log` par tous les noms correspondants, puis lance `echo`. Avec les guillemets, l'étoile est protégée et reste un simple caractère.
 
-Les guillemets simples protègent encore davantage :
+`echo` ne cherche donc aucun fichier : il affiche seulement les arguments préparés par Bash.
+
+Complète ta réponse N08 après le test, puis liste tous les fichiers CSV de `bruts` avec une étoile, sans écrire leurs deux noms un par un.
+
+### 3.2 Guillemets et substitution de commande
+
+Compare :
 
 ```bash
-echo 'Nous sommes le $(date)'
-echo "Nous sommes le $(date +%H:%M)"
+echo 'Rapport créé le $(date +%H:%M)'
+echo "Rapport créé le $(date +%H:%M)"
 ```
 
-Dans la deuxième commande, `$(date +%H:%M)` est remplacé par le résultat de la commande `date`. C'est une **substitution de commande**. Dans la première, les guillemets simples empêchent ce remplacement.
+Dans les guillemets simples, tout reste du texte. Dans les guillemets doubles, Bash exécute `date +%H:%M` et remplace `$(...)` par le résultat obtenu. On appelle cela une **substitution de commande**.
 
-Enfin, les accolades servent à produire plusieurs mots à partir d'un modèle :
+!!! question "Question - N09 · Les guillemets"
+    Explique pourquoi la première commande affiche les caractères `$(` alors que la seconde affiche une heure.
+
+### 3.3 Créer plusieurs noms avec des accolades
 
 ```bash
-echo rapports/{jour,nuit}.txt
-touch rapports/rapport-{jour,nuit}.txt
+echo rapports/{matin,soir}.txt
+touch rapports/test-{matin,soir}.txt
 ls rapports
 ```
 
-> Pour l'instant, retiens trois raccourcis : `*` cherche des noms existants, `$(...)` récupère le résultat d'une commande, et les guillemets empêchent certaines interprétations du shell.
+Les accolades produisent ici deux mots à partir d'un même modèle. À toi de créer en une seule commande trois fichiers vides nommés `rapport-erreurs.txt`, `rapport-sources.txt` et `rapport-zones.txt` dans `rapports`.
 
-### Dans tes notes
-
-Explique ce qui change entre `echo bruts/*.log` et `echo "bruts/*.log"`. À quel moment Bash exécute-t-il `date` dans `$(date)` ?
+Supprime ensuite uniquement ces trois fichiers de test. Garde `LISEZ-MOI.txt`.
 
 ---
 
-## Niveau 3 - Lire juste ce qu'il faut
+## Niveau 4 — Lire et chercher sans tout afficher
 
-Un gros fichier est rarement agréable à lire entièrement. Les commandes suivantes jouent chacune un rôle simple.
+Les journaux contiennent plus de trois mille lignes. `cat` afficherait tout d'un bloc ; ici, il existe de meilleurs outils.
 
-```bash
-head -n 3 bruts/evenements.log
-tail -n 2 bruts/evenements.log
-wc -l bruts/evenements.log
-```
-
-- `head -n 3` affiche les trois premières lignes ;
-- `tail -n 2` affiche les deux dernières lignes ;
-- `wc -l` compte les lignes.
-
-Utilise maintenant `grep` pour garder seulement les lignes qui contiennent un mot :
+### 4.1 Début, fin et nombre de lignes
 
 ```bash
-grep 'ERREUR' bruts/evenements.log
-grep -i 'connexion' bruts/evenements.log
+head -n 3 bruts/communications-2026-09-21.log
+tail -n 3 bruts/communications-2026-09-23.log
+wc -l bruts/communications-2026-09-21.log
+wc -l bruts/*.log
 ```
 
-L'option `-i` signifie *ignore case* : `grep` ne fait plus la différence entre majuscules et minuscules.
+`head` montre le début, `tail` la fin et `wc -l` compte les lignes. Avec plusieurs fichiers, `wc` affiche un résultat par fichier puis un total.
 
-### Défi éclair
+!!! question "Question - N10 · Choisir le bon outil"
+    Quel outil utiliserais-tu pour vérifier l'entête d'un journal, sa dernière transmission et son nombre de lignes ? Note aussi les fragments trouvés au début du 21 septembre et à la fin du 23 septembre.
 
-Sans lancer la commande, prédis le résultat de :
+### 4.2 Retrouver une ligne avec `grep`
 
 ```bash
-grep -v 'INFO' bruts/evenements.log
+grep 'CRITIQUE' bruts/communications-2026-09-22.log
+grep -n 'CRITIQUE' bruts/communications-2026-09-22.log
+grep -i 'signal-urgence' bruts/communications-2026-09-22.log
 ```
 
-L'option `-v` signifie « l'inverse » : elle garde les lignes qui ne correspondent pas au mot recherché.
+La forme générale est :
 
-### Dans tes notes
+```text
+grep [options] 'motif recherché' fichier
+```
 
-Quelle commande utiliserais-tu pour savoir rapidement combien de lignes contient un fichier ? Quelle commande utiliserais-tu pour retrouver un mot dans un journal ?
+`-n` ajoute le numéro de la ligne trouvée. Il ne cherche pas davantage de résultats. `-i` ignore la différence entre majuscules et minuscules.
+
+Essaie maintenant :
+
+```bash
+grep bruts/communications-2026-09-22.log 'CRITIQUE'
+```
+
+Dans cet ordre, `grep` prend le chemin pour le motif et essaie d'ouvrir un fichier nommé `CRITIQUE`. Lis le message, puis remets les deux arguments dans le bon ordre.
+
+!!! question "Question - N11 · L'ordre de `grep`"
+    Dans la commande précédente, qu'est-ce qui a été pris pour le motif et pour le fichier ? Explique aussi ce que change réellement l'option `-n`.
+
+### 4.3 À toi de fouiller le 23 septembre
+
+Trouve maintenant :
+
+1. le nombre de lignes du journal du 23 septembre ;
+2. sa dernière transmission ;
+3. chaque ligne contenant `CRITIQUE`, avec son numéro ;
+4. les lignes qui ne contiennent pas `INFO`, avec `grep -v`.
+
+!!! question "Question - N12 · Fouille du 23 septembre"
+    Note les quatre commandes et les informations importantes trouvées. Que fait `grep -v` ?
 
 ---
 
-## Niveau 4 - Faire circuler les informations
+## Niveau 5 — Relier les commandes avec `|`
 
-Tu peux déjà trouver les erreurs. Mais tu peux aussi envoyer le résultat de `grep` directement à une autre commande, sans créer de fichier intermédiaire.
+Une conduite, appelée *pipe*, envoie la sortie de gauche vers l'entrée de droite. Elle évite de créer un fichier temporaire entre chaque étape.
 
-Le caractère `|` se lit souvent « pipe » ou « tuyau ». Il relie la sortie de la commande de gauche à l'entrée de la commande de droite.
+![Une conduite relie de petits outils spécialisés.](../assets/tp2-pipeline.svg)
 
-```bash
-grep 'ERREUR' bruts/evenements.log | wc -l
-```
-
-Lis cette commande de gauche à droite : « trouve les lignes contenant `ERREUR`, puis compte-les ».
-
-Essaie ensuite :
+### 5.1 Sélectionner, puis compter
 
 ```bash
-grep -v 'INFO' bruts/evenements.log | sort
-grep 'ERREUR' bruts/evenements.log | sort > rapports/erreurs-triees.txt
-cat rapports/erreurs-triees.txt
+grep 'ERREUR' bruts/communications-2026-09-22.log | wc -l
 ```
 
-`sort` range les lignes dans l'ordre alphabétique. La dernière commande ajoute une redirection : le résultat final est enregistré dans un rapport.
+Lis cette ligne de gauche à droite :
 
-> Une commande capable de lire une entrée et d'écrire un résultat est un **filtre**. `grep`, `sort`, `head`, `tail`, `wc`, `cut` et `tr` savent tous participer à une conduite.
+```text
+grep garde les lignes contenant ERREUR  →  wc -l compte les lignes reçues
+```
 
-### Dans tes notes
+!!! tip "Question - N13 · Prévoir une conduite"
+    Avant de lancer la commande suivante, note si le résultat sera une liste de lignes, un nombre ou un fichier.
 
-Que fait le caractère `|` ? Pourquoi est-il pratique de relier des commandes plutôt que de tout faire à la main ?
+```bash
+grep -v 'INFO' bruts/communications-2026-09-21.log | wc -l
+```
+
+Après le test, explique ce que reçoit exactement `wc -l`.
+
+### 5.2 Travailler sur plusieurs journaux
+
+Compare :
+
+```bash
+grep 'CRITIQUE' bruts/*.log
+grep -h 'CRITIQUE' bruts/*.log
+```
+
+Quand plusieurs fichiers sont lus, `grep` ajoute normalement leur nom devant chaque résultat. L'option `-h` masque ce préfixe. C'est pratique lorsqu'une commande suivante doit traiter uniquement le contenu des lignes.
+
+```bash
+grep -h 'CRITIQUE' bruts/*.log | wc -l
+```
+
+Construis maintenant une conduite qui compte toutes les lignes `ERREUR` dans les trois journaux. Vérifie d'abord séparément la sortie de `grep`, puis ajoute le comptage.
+
+!!! question "Question - N14 · Construire une conduite"
+    Note la commande finale et son résultat. Pourquoi tester d'abord la partie gauche aide-t-il à comprendre ou corriger la conduite ?
 
 ---
 
-## Niveau 5 - Extraire, ranger et transformer
+## Niveau 6 — Extraire, trier et transformer
 
-Le journal et l'inventaire sont séparés par des `;`. La commande `cut` permet d'extraire certaines colonnes.
-
-```bash
-cut -d';' -f2 bruts/evenements.log
-cut -d';' -f3 bruts/evenements.log
-```
-
-- `-d';'` indique le séparateur ;
-- `-f2` demande la deuxième colonne ;
-- `-f3` demande la troisième.
-
-Tu peux maintenant créer une liste propre des personnes ou services vus dans le journal :
+Les cinq morceaux d'une communication sont séparés par des points-virgules. Relis rapidement leur ordre :
 
 ```bash
-cut -d';' -f3 bruts/evenements.log | sort
-cut -d';' -f3 bruts/evenements.log | sort -u
+cat documentation/format-communications.txt
 ```
 
-`sort -u` garde un seul exemplaire de chaque ligne identique.
+![Chaque filtre réalise une transformation limitée et vérifiable.](../assets/tp2-filtres.svg)
 
-La commande `tr` remplace des caractères. Essaie :
+### 6.1 Extraire une colonne avec `cut`
 
 ```bash
-echo 'bonjour linux' | tr '[:lower:]' '[:upper:]'
-cut -d';' -f2,3 bruts/evenements.log | tr ';' ' '
+head -n 3 bruts/communications-2026-09-22.log
+head -n 3 bruts/communications-2026-09-22.log | cut -d';' -f2
+head -n 3 bruts/communications-2026-09-22.log | cut -d';' -f3
 ```
 
-La première commande met les lettres en majuscules. Dans la seconde, `tr` remplace le `;` par un espace dans les deux colonnes extraites.
+- `-d';'` indique le caractère qui sépare les champs ;
+- `-f2` conserve le deuxième champ ;
+- `-f3` conserve le troisième.
 
-### Défi - Le répertoire important
+`grep` choisit des **lignes**. `cut` choisit des **colonnes** à l'intérieur des lignes reçues.
 
-Sans chercher de nouvelle commande, produis dans `rapports/fichiers-importants.txt` la liste des noms de fichiers dont l'état est `important`, sans la ligne de titre.
+### 6.2 Trier et retirer les doublons
 
-Indice : commence par `grep`, puis utilise `cut`.
+```bash
+grep -h 'ERREUR' bruts/*.log | cut -d';' -f3 | sort
+grep -h 'ERREUR' bruts/*.log | cut -d';' -f3 | sort -u
+```
 
-### Dans tes notes
+`sort` range les lignes. Avec `-u`, il ne garde qu'une occurrence de chaque ligne identique.
 
-Quelle est la différence entre `cut` et `grep` ? À quoi sert `sort -u` ?
+!!! question "Question - N15 · De la ligne à la colonne"
+    Décris chaque étape de la deuxième conduite. Quelle différence fais-tu maintenant entre `grep`, `cut` et `sort -u` ?
+
+### 6.3 Remplacer des caractères avec `tr`
+
+```bash
+echo 'relais aurore' | tr '[:lower:]' '[:upper:]'
+grep -h 'CRITIQUE' bruts/*.log | cut -d';' -f3,4 | tr ';' ' '
+```
+
+`tr` remplace ici les minuscules par des majuscules, puis le point-virgule par un espace. Il travaille sur les caractères qu'il reçoit.
+
+À toi de produire dans le terminal :
+
+1. les zones des lignes `CRITIQUE`, triées et sans doublon ;
+2. les noms des éléments marqués `urgent` dans `bruts/inventaire.csv`, sans les autres colonnes ;
+3. les sources des lignes `ERREUR`, triées et sans doublon ;
+4. la source et la zone des lignes `CRITIQUE`, avec le point-virgule remplacé par un espace grâce à `tr`.
+
+!!! question "Question - N16 · Choisir les filtres"
+    Note les trois conduites et leurs résultats. Pour l'une d'elles, explique pourquoi l'ordre des commandes compte.
 
 ---
 
-## Niveau 6 - Résultats normaux et messages d'erreur
+## Niveau 7 — Conserver les résultats dans des rapports
 
-Quand une commande fonctionne, elle affiche généralement son résultat dans le terminal. Mais quand elle rencontre un problème, elle affiche un message d'erreur dans un autre canal.
+Une conduite affiche son résultat dans le terminal. Une redirection finale permet de le conserver.
 
-Observe :
+### 7.1 Créer un rapport
 
 ```bash
-ls bruts
-ls bruts/fichier-inexistant
+grep -h 'CRITIQUE' bruts/*.log | sort > rapports/critiques.txt
+cat rapports/critiques.txt
 ```
 
-La deuxième commande ne trouve pas le fichier. Maintenant, demande au shell de séparer les deux sortes de messages :
+Le symbole `>` remplace le contenu du fichier cible avant d'écrire le nouveau résultat. `>>` ajoute à la fin.
+
+Ajoute la date de génération :
+
+```bash
+echo "Rapport généré le $(date '+%Y-%m-%d à %H:%M')" >> rapports/critiques.txt
+tail -n 3 rapports/critiques.txt
+```
+
+Relance maintenant la conduite qui produit les lignes critiques, mais termine-la par `>> rapports/critiques.txt`. Observe les doublons obtenus, puis reconstruis proprement le rapport avec `>`.
+
+!!! question "Question - N17 · `>` ou `>>`"
+    Pourquoi les lignes ont-elles été dupliquées ? Dans quel cas choisirais-tu tout de même `>>` pour un rapport ?
+
+### 7.2 Produire un résultat par soi-même
+
+Crée `rapports/sources-erreur.txt`. Il doit contenir les sources des lignes `ERREUR`, triées, avec une seule occurrence de chaque source.
+
+Vérifie le fichier avec `cat` ou `less`, puis note la commande utilisée.
+
+---
+
+## Niveau 8 — Séparer résultat normal et erreur
+
+Une commande possède trois canaux standards : une entrée, une sortie normale et une sortie d'erreur.
+
+![Une commande reçoit une entrée et peut écrire sur deux sorties différentes.](../assets/tp2-flux.svg)
+
+```text
+0  entrée standard
+1  sortie normale
+2  sortie d'erreur
+```
+
+### 8.1 Deux sorties, deux fichiers
 
 ```bash
 ls bruts bruts/fichier-inexistant > rapports/liste-bruts.txt 2> rapports/erreurs.txt
@@ -288,170 +498,207 @@ cat rapports/liste-bruts.txt
 cat rapports/erreurs.txt
 ```
 
-Le `>` habituel redirige la sortie normale, appelée canal `1`. La forme `2>` redirige les messages d'erreur, appelés canal `2`.
+`>` redirige la sortie normale, le canal `1`. `2>` redirige les messages d'erreur, le canal `2`. Une erreur ne fait donc pas partie du résultat normal de la commande.
 
-Tu connais déjà `>>`, qui ajoute à la fin. Utilise-le pour signer le rapport sans effacer son contenu :
+!!! question "Question - N18 · Les deux sorties"
+    Qu'est parti dans `liste-bruts.txt` et dans `erreurs.txt` ? Pourquoi séparer ces deux informations peut-il être utile dans un script ?
 
-```bash
-echo '--- fin du rapport ---' >> rapports/liste-bruts.txt
-```
-
-Enfin, `<` peut faire le chemin inverse : il donne un fichier comme entrée à une commande.
+### 8.2 Donner un fichier comme entrée
 
 ```bash
-wc -l < bruts/evenements.log
+wc -l bruts/communications-2026-09-21.log
+wc -l < bruts/communications-2026-09-21.log
 ```
 
-Cette commande produit le même nombre de lignes que `wc -l bruts/evenements.log`. Dans le premier cas, `wc` reçoit un nom de fichier ; dans le second, il reçoit directement le contenu du fichier.
+Les deux commandes comptent les mêmes lignes. Dans la première, `wc` reçoit un nom de fichier et peut l'afficher. Dans la seconde, `<` lui donne directement le contenu sur son entrée standard ; `wc` ne connaît pas le nom du fichier.
 
-### Dans tes notes
+Crée ensuite `rapports/controle-complet.txt` avec les deux sorties réunies :
 
-Quelle différence fais-tu entre `>` et `2>` ? Pourquoi peut-il être utile de conserver les erreurs dans un fichier séparé ?
+```bash
+ls bruts bruts/fichier-inexistant > rapports/controle-complet.txt 2>&1
+cat rapports/controle-complet.txt
+```
+
+`2>&1` envoie le canal `2` vers la destination déjà utilisée par le canal `1`.
+
+!!! question "Question - N19 · Entrée et sorties standards"
+    Explique la différence entre `<`, `>`, `2>` et `2>&1` sans recopier leur définition mot pour mot.
 
 ---
 
-## Exploration bonus A - Ne pas bloquer le terminal
+## Niveau 9 — Laisser une tâche travailler
 
-Certaines commandes prennent du temps. Pour voir ce qui se passe sans danger, lance une attente de vingt secondes :
+Une commande lancée normalement occupe l'avant-plan du terminal : Bash attend sa fin avant d'afficher une nouvelle invite.
 
 ```bash
 sleep 20
 ```
 
-Pendant ces vingt secondes, le terminal attend : tu ne peux pas écrire de nouvelle commande. Tu peux arrêter l'attente avec `Ctrl+C`.
-
-Lance maintenant une attente plus longue, mais ajoute `&` à la fin :
+Interromps cette attente avec `Ctrl+C`, puis lance une tâche en arrière-plan :
 
 ```bash
 sleep 90 &
 jobs
 ```
 
-Le caractère `&` lance la commande en arrière-plan : le shell t'affiche une nouvelle invite immédiatement. `jobs` liste les tâches lancées depuis ce terminal.
+Le `&` rend immédiatement l'invite, mais n'accélère pas `sleep`. `jobs` montre les tâches lancées depuis ce terminal.
 
-Ramène la tâche à l'avant-plan :
+![Le shell peut laisser une tâche au premier plan, la suspendre ou la reprendre en arrière-plan.](../assets/tp2-taches.svg)
+
+Repère le numéro affiché entre crochets. S'il s'agit de `[1]`, poursuis avec `%1`. Sinon, remplace `1` par le numéro observé.
 
 ```bash
-fg
+fg %1
 ```
 
-Puis utilise `Ctrl+Z`. La tâche est suspendue. Vérifie son état, relance-la en arrière-plan, puis termine uniquement cette tâche de démonstration :
+La tâche revient au premier plan. Suspends-la avec `Ctrl+Z`, puis reprends-la en arrière-plan :
 
 ```bash
 jobs
-bg
+bg %1
 jobs
 kill %1
+jobs
 ```
 
-> Ne lance jamais `kill` sur un numéro trouvé au hasard. Ici, `%1` désigne la première tâche de ton terminal, celle que tu viens de créer.
+`Ctrl+Z` suspend la tâche ; `bg` la reprend en arrière-plan ; `fg` la ramène au premier plan. Ici, `kill` vise uniquement le `sleep` que tu viens de créer.
 
-### Dans tes notes
+Refais maintenant un cycle plus court : lance un nouveau `sleep 45` en arrière-plan, vérifie sa présence, ramène-le au premier plan et arrête-le avec `Ctrl+C`. Construis toi-même les commandes à partir de ce que tu viens de faire.
 
-Quelle différence as-tu observée entre `sleep 20` et `sleep 90 &` ? À quoi sert `jobs` ?
+!!! question "Question - N20 · Avant-plan et arrière-plan"
+    Quelle différence as-tu observée entre `sleep 20` et `sleep 90 &` ? Que montrent `jobs`, `fg` et `bg` ?
 
 ---
 
-## Niveau 7 - Garder une recette : ton premier script
+## Niveau 10 — Garder la recette dans un script
 
-Tu as assemblé plusieurs commandes. Les retaper tous les jours serait fatigant et risqué. Un script est simplement un fichier texte contenant des commandes que Bash exécutera dans l'ordre.
+Un script Bash est un fichier texte contenant des commandes. Au lieu de reconstruire une analyse à la main, tu peux relancer la même recette sur de nouveaux journaux.
 
-Crée un script qui affiche le nombre d'erreurs et la liste des personnes ou services rencontrés :
+![Un script conserve les commandes ; le rapport conserve le résultat d'une exécution.](../assets/tp2-script.svg)
+
+### 10.1 Écrire puis lancer le script
+
+Ouvre un nouveau fichier :
 
 ```bash
-echo 'echo "Nombre d erreurs :"' > scripts/bilan.sh
-echo "grep 'ERREUR' bruts/evenements.log | wc -l" >> scripts/bilan.sh
-echo 'echo "Utilisateurs et services :"' >> scripts/bilan.sh
-echo "cut -d';' -f3 bruts/evenements.log | sort -u" >> scripts/bilan.sh
+nano scripts/bilan.sh
 ```
 
-Regarde d'abord ce que contient le script :
+Écris les lignes suivantes :
+
+```bash
+#!/usr/bin/env bash
+echo "Nombre de lignes ERREUR :"
+grep -h 'ERREUR' bruts/*.log | wc -l
+echo "Sources concernées :"
+grep -h 'ERREUR' bruts/*.log | cut -d';' -f3 | sort -u
+```
+
+Enregistre avec `Ctrl+O`, valide avec Entrée, puis quitte avec `Ctrl+X`. Relis le fichier avant de l'exécuter :
 
 ```bash
 cat scripts/bilan.sh
-```
-
-Puis demande à Bash de l'exécuter :
-
-```bash
 bash scripts/bilan.sh
-```
-
-Enregistre maintenant le résultat dans un rapport :
-
-```bash
 bash scripts/bilan.sh > rapports/bilan.txt
 cat rapports/bilan.txt
 ```
 
-Le script est une recette. Le fichier `bilan.txt` est le résultat d'une exécution de cette recette. Si les traces changent demain, tu pourras relancer le même script.
+`bash scripts/bilan.sh` demande à Bash de lire le fichier et d'exécuter ses lignes. Le script est la recette ; `bilan.txt` est le résultat d'une exécution.
 
-### Dans tes notes
+### 10.2 Le lancer directement
 
-Pourquoi un script peut-il être plus fiable que recopier plusieurs commandes à la main ? Quelle commande lance ton script ?
+Observe ses droits, puis essaie de le lancer directement :
+
+```bash
+ls -l scripts/bilan.sh
+./scripts/bilan.sh
+```
+
+Si le droit `x` manque, la commande est refusée. Donne au propriétaire tous les droits, au groupe la lecture et l'exécution, et aucun droit aux autres. Utilise d'abord la forme numérique, puis vérifie avec `ls -l`.
+
+Relance ensuite :
+
+```bash
+./scripts/bilan.sh
+```
+
+Rouvre enfin le script et ajoute une partie qui affiche les zones des lignes `CRITIQUE`, triées et sans doublon.
+
+!!! question "Question - N21 · Une recette exécutable"
+    Note le mode numérique appliqué et sa traduction en `rwx`. Pourquoi `bash scripts/bilan.sh` pouvait-il fonctionner avant `./scripts/bilan.sh` ? Quelle partie as-tu ajoutée ?
 
 ---
 
-## Boss final - Le rapport est prêt
+## Boss final — Envoyer le rapport d'Aurore
 
-Sans recopier les réponses précédentes, produis ces trois éléments :
+La procédure d'urgence demande un rapport reproductible. Termine les fichiers suivants sans modifier les journaux bruts :
 
-1. `rapports/nombre-erreurs.txt` : le nombre de lignes qui contiennent `ERREUR`.
-2. `rapports/utilisateurs.txt` : les utilisateurs et services du journal, une seule fois chacun, triés.
-3. `rapports/fichiers-importants.txt` : le nom des fichiers marqués `important` dans l'inventaire, sans la ligne de titre.
+1. `rapports/critiques.txt` : toutes les lignes `CRITIQUE`, triées ;
+2. `rapports/sources-erreur.txt` : les sources des lignes `ERREUR`, triées et sans doublon ;
+3. `rapports/zones-critiques.txt` : les zones des lignes `CRITIQUE`, triées et sans doublon ;
+4. `rapports/materiel-urgent.txt` : le nom des éléments marqués `urgent` dans l'inventaire ;
+5. `rapports/bilan.txt` : le résultat de ton script mis à jour.
 
-Puis complète tes notes :
+Retrouve ensuite les quatre fragments suivants :
 
-> Si je voulais analyser demain un autre fichier de journal, quelles commandes garderais-je ? Quel travail ferait chacune ?
+1. le canal ouvert sur la première ligne du journal du 21 septembre ;
+2. le code du signal critique du 22 septembre ;
+3. la zone des lignes critiques ;
+4. le numéro de fin de transmission sur la dernière ligne du 23 septembre.
 
-Quand tes trois rapports sont prêts, appelle l'enseignant pour une vérification rapide.
+Assemble-les avec des tirets. Le code final doit avoir cette forme :
+
+```text
+CANAL-SIGNAL-ZONE-NUMERO
+```
+
+### Autovérification
+
+```text
+□ Les cinq rapports existent et ne sont pas vides.
+□ Chaque liste demandée est triée et sans doublon lorsque c'est précisé.
+□ Le script fonctionne avec ./scripts/bilan.sh.
+□ Le script possède le mode demandé et aucun fichier de données n'est exécutable.
+□ Le dossier laboratoire/depot a retrouvé son droit d'écriture.
+□ Les fichiers du dossier bruts n'ont pas été modifiés.
+```
+
+!!! question "Question - N22 · Conclusion de l'enquête"
+    Note le code final, la source du signal, ses coordonnées et ta conclusion en deux ou trois phrases. Ajoute la conduite dont tu es le plus fier, une erreur qui t'a aidé à comprendre, et une notion qui reste encore incertaine.
 
 ---
 
-## Explorations bonus
+## Pour aller plus loin
 
-### Bonus B - Chercher plus loin
-
-`find` cherche dans une arborescence. Essaie :
+### Retrouver des fichiers avec `find`
 
 ```bash
 find . -name '*.log'
-find . -name '*.txt'
+find archives -name '*.log'
 ```
 
-Les guillemets empêchent le shell de remplacer l'étoile avant que `find` ne commence sa recherche.
+Les guillemets empêchent Bash de développer `*.log` avant que `find` ne commence sa recherche.
 
-### Bonus C - Lire les résultats avec leur numéro
+### Laisser `grep` compter
 
 ```bash
-grep -n 'ERREUR' bruts/evenements.log
-grep -c 'ERREUR' bruts/evenements.log
+grep -n 'CRITIQUE' bruts/communications-2026-09-22.log
+grep -c 'CRITIQUE' bruts/communications-2026-09-22.log
 ```
 
-`-n` affiche le numéro des lignes. `-c` affiche leur nombre.
+`-n` ajoute les numéros de ligne ; `-c` affiche directement le nombre de lignes trouvées.
 
-### Bonus D - Un rapport unique, même avec les erreurs
-
-```bash
-ls bruts bruts/fichier-inexistant > rapports/tout.txt 2>&1
-cat rapports/tout.txt
-```
-
-`2>&1` demande au shell d'envoyer les erreurs vers la même destination que la sortie normale. La position compte : écris bien `> rapports/tout.txt 2>&1` dans cet ordre.
-
-### Bonus E - Créer plusieurs lignes sans éditeur
-
-La notation `<<` permet de donner plusieurs lignes à une commande. Essaie ce document en ligne :
+### Écrire plusieurs lignes sans éditeur
 
 ```bash
-cat << FIN > rapports/message.txt
-Rapport créé le $(date +%H:%M).
-Les données viennent de bruts/evenements.log.
+cat << FIN > rapports/message-final.txt
+Rapport Aurore créé le $(date +%H:%M).
+Les journaux sources sont restés intacts.
 FIN
-cat rapports/message.txt
+cat rapports/message-final.txt
 ```
 
-Le mot `FIN` est choisi librement : il indique à Bash où s'arrête le texte. Ici, Bash remplace `$(date +%H:%M)` avant que `cat` n'écrive le fichier.
+Le premier `FIN` annonce le mot qui terminera le texte. Bash remplace ici `$(date +%H:%M)` avant d'envoyer les lignes à `cat`.
 
 ---
 
@@ -459,13 +706,13 @@ Le mot `FIN` est choisi librement : il indique à Bash où s'arrête le texte. I
 
 Tu sais désormais :
 
-- utiliser des motifs comme `*` et les guillemets pour contrôler ce que Bash interprète ;
-- récupérer le résultat d'une commande avec `$(...)` ;
-- lire une partie d'un fichier avec `head` et `tail` ;
-- compter, chercher, extraire, trier et transformer des lignes avec `wc`, `grep`, `cut`, `sort` et `tr` ;
-- relier des commandes avec `|` ;
-- séparer une sortie normale et une erreur avec `>` et `2>` ;
-- lancer une tâche en arrière-plan et la retrouver avec `jobs` ;
-- sauvegarder une suite de commandes dans un script Bash.
-
-Tu viens de passer d'une utilisation commande par commande à une manière beaucoup plus puissante de travailler : construire des petites chaînes d'outils qui transforment des informations.
+- expliquer pourquoi `~` est développé par le shell sans être écrit comme un chemin absolu ;
+- choisir entre `type`, `file`, `ls -l` et `ls -ld` ;
+- raisonner sur les droits du propriétaire, du groupe, d'un fichier et d'un dossier ;
+- contrôler les développements de Bash avec `*`, les guillemets, les accolades et `$(...)` ;
+- chercher, compter, extraire, trier et transformer avec `grep`, `wc`, `cut`, `sort` et `tr` ;
+- relier de petits outils avec `|` ;
+- séparer l'entrée, la sortie normale et la sortie d'erreur ;
+- gérer une tâche du terminal avec `jobs`, `fg` et `bg` ;
+- conserver une analyse dans un script exécutable ;
+- produire un rapport à partir de plusieurs milliers de lignes sans lire chaque ligne une par une.

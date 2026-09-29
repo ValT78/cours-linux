@@ -426,7 +426,7 @@ grep [options] 'motif recherché' fichier
 
 1. cherche le mot `archive` sans tenir compte de la casse dans le journal du 15 septembre ;
 2. affiche avec leur numéro toutes les lignes contenant `AVERTISSEMENT` dans ce même journal ;
-3. utilise `less` et sa recherche `/` pour retrouver `PROTOCOLE-ORION` dans le manuel ;
+3. utilise `less` et sa recherche `/` pour retrouver `PROTOCOLE-ORION` dans `documentation/manuel-station.txt` ;
 4. note le fragment de protocole découvert.
 
 ---

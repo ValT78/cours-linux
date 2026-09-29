@@ -19,8 +19,6 @@ Le TP est prévu pour une séance de trois heures. S'il reste des niveaux, tu le
 
 Avant la séance, télécharge ce document sur ton ordinateur habituel. Ouvre-le avec l'éditeur de ton choix : Bloc-notes, Word, Google Docs, VS Code ou un autre outil avec lequel tu es à l'aise.
 
-Ce document reste sur ton poste courant. Tu n'as pas besoin de le récupérer avec `wget` ni de l'ouvrir avec `nano` dans Linux. Garde-le ouvert pendant le TP, puis dépose la version complétée sur Moodle à la fin de la séance.
-
 Les encadrés `Question - N01`, `N02`… indiquent les réponses à écrire dans ce document. Quand on te demande de prévoir un résultat, réponds avant de lancer la commande, puis ajoute ce que tu as réellement observé.
 
 ## Récupérer le relais dans Linux

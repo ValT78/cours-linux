@@ -350,7 +350,7 @@ Dans `less` :
 | `g` / `G` | début / fin du fichier |
 | `q` | quitter |
 
-Cherche le mot `navigation`, passe au résultat suivant, puis quitte sans modifier le fichier.
+Cherche le mot `CHAPITRE` (en majuscules), passe au résultat suivant, puis quitte sans modifier le fichier.
 
 !!! question "Question - N11 · Choisir `cat`, `less` ou `nano`"
     Quel outil choisirais-tu pour lire un fichier de 700 lignes sans le modifier ? Lequel choisirais-tu pour le modifier ? Explique la différence d'usage, pas seulement le nom des commandes.
@@ -719,7 +719,7 @@ Dans cet ordre, retrouve :
 2. **entête** — sur la première ligne du journal du 15 septembre ;
 3. **secteur** — sur la ligne `ANOMALIE-ROUGE` du journal du 14 septembre ;
 4. **numéro** — sur la dernière ligne du journal du 16 septembre ;
-5. **protocole** — près de `PROTOCOLE-ORION` dans le manuel.
+5. **protocole** — près de `PROTOCOLE-ORION` dans `documentation/manuel-station.txt`.
 
 Pour chaque fragment, choisis l'outil le plus pratique parmi les options de `ls`, `head`, `tail`, `grep` et la recherche dans `less`.
 

@@ -96,3 +96,73 @@
 .md-typeset hr {
   border-bottom-color: var(--course-border);
 }
+
+/* La fiche à cinq colonnes bénéficie d'une lecture plus large sur ordinateur. */
+body:has(#fiche-revision) .md-grid {
+  max-width: 88rem;
+}
+
+.md-content__inner:has(#fiche-revision) table:not([class]) {
+  display: table;
+  width: 100%;
+  min-width: 42rem;
+  table-layout: fixed;
+  font-size: 0.72rem;
+}
+
+.md-content__inner:has(#fiche-revision) table:not([class]) th,
+.md-content__inner:has(#fiche-revision) table:not([class]) td {
+  padding: 0.65rem;
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+
+.md-content__inner:has(#fiche-revision) table:not([class]) th:nth-child(1) {
+  width: 16%;
+}
+
+.md-content__inner:has(#fiche-revision) table:not([class]) th:nth-child(2) {
+  width: 19%;
+}
+
+.md-content__inner:has(#fiche-revision) table:not([class]) th:nth-child(3) {
+  width: 25%;
+}
+
+.md-content__inner:has(#fiche-revision) table:not([class]) th:nth-child(4),
+.md-content__inner:has(#fiche-revision) table:not([class]) th:nth-child(5) {
+  width: 20%;
+}
+
+.md-content__inner:has(#fiche-revision) table:not([class]) code {
+  white-space: normal;
+}
+
+.md-content__inner:has(#fiche-revision) table:not([class]) tbody tr:nth-child(even) {
+  background-color: rgb(255 255 255 / 3%);
+}
+
+/* Sur petit écran, Material conserve le défilement horizontal des tableaux. */
+@media print {
+  .md-content__inner:has(#fiche-revision) table:not([class]) {
+    min-width: 0;
+    font-size: 8pt;
+    color: #111;
+    background: #fff;
+  }
+
+  .md-content__inner:has(#fiche-revision) table:not([class]) th {
+    color: #111;
+    background: #eee;
+  }
+
+  .md-content__inner:has(#fiche-revision) table:not([class]) code,
+  .md-content__inner:has(#fiche-revision) table:not([class]) strong {
+    color: #111;
+    background: transparent;
+  }
+
+  .md-content__inner:has(#fiche-revision) table:not([class]) tr {
+    break-inside: avoid;
+  }
+}

@@ -10,9 +10,11 @@ Commence par [Installer Linux pour les TP](installer-linux.md). Tutoriel pour Wi
 
 ## Pour les élèves
 
+- [Fiche de révision Linux](eleves/fiche-revision-linux.md) : notions, commandes, exemples et pièges fréquents, classés par thème.
 - [TP 1 — Premier contact avec Linux](eleves/tp1-premier-contact-linux.md)
 - [TP 1.5 — Reprendre le contrôle du terminal](eleves/tp1-5-maitriser-terminal.md)
 - [TP 2 — Faire parler les traces du relais Aurore](eleves/tp2-lire-les-traces.md)
+- [TP 2.5 — Construire ses premiers scripts Bash](eleves/tp2-5-premiers-scripts.md)
 
 ## Annexes projetables
 

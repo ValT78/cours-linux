@@ -592,7 +592,7 @@ echo "Sources concernées :"
 grep -h 'ERREUR' bruts/*.log | cut -d';' -f3 | sort -u
 ```
 
-Enregistre avec `Ctrl+O`, valide avec Entrée, puis quitte avec `Ctrl+X`. Relis le fichier avant de l'exécuter :
+Pour coller un bloc de commandes copié, utilise `Ctrl+Shift+V`. Tu peux copier du texte sélectionné à la souris dans le terminal avec `Ctrl+Shift+C` et supprimer une ligne avec `Ctrl+K`. Enregistre avec `Ctrl+S`, confirme le nom du fichier si demandé, puis quitte avec `Ctrl+X`. Relis le fichier avant de l'exécuter :
 
 ```bash
 cat scripts/bilan.sh

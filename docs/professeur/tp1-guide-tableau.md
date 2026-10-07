@@ -247,6 +247,8 @@ La complétion avec Tab n'est pas seulement un gain de temps. Elle vérifie prog
 | sélectionner les lignes correspondant à un motif | `grep` | non |
 | modifier le texte | `nano` | oui, après enregistrement |
 
+Dans `nano`, `Ctrl+S` enregistre et `Ctrl+X` quitte. Pour copier du texte, sélectionne-le à la souris dans le terminal puis utilise `Ctrl+Shift+C` ; place le curseur à la destination et colle avec `Ctrl+Shift+V`. `Ctrl+K` supprime toute la ligne courante.
+
 `less`, `head`, `tail` et `grep` évitent de confondre « lire un fichier » avec « afficher toutes ses lignes ». Le choix de l'outil part de la question : début, fin, occurrence précise, parcours libre ou modification.
 
 ```text
@@ -345,7 +347,7 @@ Pour un répertoire, l'accès combine généralement plusieurs droits : `r` perm
 | `sleep` semble ne rien faire | le programme attend, comme demandé | l'observer avec `jobs` ou `ps` |
 | `head` essaie d'ouvrir un fichier nommé `5` | l'option `-n` a été oubliée | utiliser `head -n 5 fichier` |
 | `grep` cherche dans le mauvais fichier | le motif et le nom du fichier sont inversés | relire la forme `grep 'motif' fichier` |
-| `nano` semble conserver une ancienne version | les changements n'ont pas été enregistrés | utiliser `Ctrl+O`, confirmer avec Entrée, puis quitter avec `Ctrl+X` |
+| `nano` semble conserver une ancienne version | les changements n'ont pas été enregistrés | utiliser `Ctrl+S`, confirmer le nom du fichier si demandé, puis quitter avec `Ctrl+X` |
 | un mode comme `758` est refusé | un chiffre de droits doit être compris entre 0 et 7 | recalculer chaque catégorie avec 4, 2 et 1 |
 | le propriétaire ne profite pas du droit `g` | Linux a déjà sélectionné la catégorie `u` | définir explicitement les droits du propriétaire |
 

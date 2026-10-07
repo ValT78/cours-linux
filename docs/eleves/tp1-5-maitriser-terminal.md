@@ -439,15 +439,17 @@ grep [options] 'motif recherché' fichier
 nano travail/enquete/rapport-final.txt
 ```
 
-Les raccourcis apparaissent en bas de l'écran. Le symbole `^` signifie `Ctrl` :
+Pour écrire et modifier ton rapport, utilise ces raccourcis :
 
-| Affichage dans nano | Touches | Action |
-|---|---|---|
-| `^O` | `Ctrl+O` | enregistrer ; confirmer ensuite le nom avec Entrée |
-| `^X` | `Ctrl+X` | quitter |
-| `^W` | `Ctrl+W` | rechercher dans le fichier |
-| `^K` | `Ctrl+K` | couper la ligne courante |
-| `^U` | `Ctrl+U` | recoller la ligne coupée |
+| Touches | Action |
+|---|---|
+| `Ctrl+Shift+C` | copier le texte sélectionné à la souris dans le terminal |
+| `Ctrl+Shift+V` | coller le texte à la position du curseur |
+| `Ctrl+S` | enregistrer ; confirmer le nom du fichier si demandé |
+| `Ctrl+X` | quitter |
+| `Ctrl+K` | supprimer toute la ligne courante |
+
+Pour copier du texte, sélectionne-le à la souris avant `Ctrl+Shift+C`. Pour le coller, place le curseur à l'endroit voulu avec les flèches, puis utilise `Ctrl+Shift+V`.
 
 Ajoute dans le rapport :
 
@@ -456,7 +458,7 @@ Ajoute dans le rapport :
 - l'outil utilisé pour chacun ;
 - une erreur utile rencontrée.
 
-Enregistre, quitte, puis vérifie avec un outil de lecture :
+Enregistre avec `Ctrl+S`, quitte avec `Ctrl+X`, puis vérifie avec un outil de lecture :
 
 ```bash
 cat travail/enquete/rapport-final.txt
@@ -464,7 +466,7 @@ cat travail/enquete/rapport-final.txt
 
 ### Reprendre le rapport
 
-Rouvre le rapport sans recopier la commande : utilise l'historique. Recherche le mot `Code`, déplace la ligne correspondante en haut du fichier avec les raccourcis de `nano`, puis enregistre à nouveau.
+Rouvre le rapport sans recopier la commande : utilise l'historique. Repère la ligne contenant le mot `Code`, sélectionne son texte à la souris et copie-le avec `Ctrl+Shift+C`. Place le curseur sur cette ligne et supprime-la avec `Ctrl+K`. Remonte au début du fichier avec les flèches, puis colle le texte avec `Ctrl+Shift+V`. Ajoute un retour à la ligne si nécessaire, puis enregistre avec `Ctrl+S`.
 
 !!! question "Question - N15 · Modifier avec `nano`"
     Note la modification effectuée et les raccourcis utilisés pour enregistrer et quitter. Pourquoi vérifier ensuite avec `cat` ou `less` reste-t-il utile ?

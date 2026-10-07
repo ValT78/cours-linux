@@ -1,0 +1,132 @@
+TP 2.5 — Construire ses premiers scripts Bash
+Nom / prénom :
+Séance / date :
+Dernier niveau terminé :
+
+Prévois les résultats avant de lancer les tests lorsque c'est demandé.
+Ajoute ensuite ce que tu as vraiment observé, même si cela contredit ta prévision.
+
+N01 — Recette et dossier courant
+Différence entre afficher et exécuter le script :
+Droit nécessaire au lancement direct :
+Dossier affiché depuis essais et explication :
+
+N02 — Où va le texte ?
+Contenu final de message.txt :
+Pourquoi wc -l < message.txt n'affiche pas le nom :
+Destination du message sur absent.txt :
+
+N03 — Le nom ou la valeur
+Mes prévisions pour les guillemets simples et doubles :
+Résultats observés :
+Écriture qui conserve le nom de la variable :
+Écriture qui affiche sa valeur :
+
+N04 — infos.sh
+Sortie depuis essais :
+Sortie depuis projet :
+Rôle de HOME et PWD :
+Rôle de $(...) :
+Rôle du dollar protégé :
+
+N05 — Combien de noms ?
+Nombre de chemins prévu :
+Nombre de chemins observé :
+Différence entre accolades et étoile :
+
+N06 — projet.sh
+Nombre total de fichiers :
+Pourquoi les dossiers viennent d'abord :
+Commande de vérification et résultat :
+
+N07 — Une ligne de compte
+Champ du nom de compte :
+Champ du dossier personnel :
+Résultat de -f1,7 et séparateur restant :
+
+N08 — comptes.sh
+Les trois transformations dans l'ordre :
+Résultat du script :
+Pourquoi conserver les lignes jusqu'après le tri :
+
+N09 — etc.sh
+Nom du fichier créé :
+Nombre affiché :
+Pourquoi conserver le nom dans une variable :
+Pourquoi utiliser > plutôt que >> :
+
+N10 — Prévoir les trois élus
+Trois fichiers les plus récents avant les tests :
+Ordre alphabétique attendu pour ces trois fichiers :
+
+N11 — recents.sh
+Résultat initial :
+Résultat après touch ancien.txt :
+Pourquoi sélectionner avant de trier alphabétiquement :
+
+N12 — Trouver la case à la main
+Numéro de ligne lu :
+Numéro de colonne lu :
+Valeur attendue avant la conduite :
+
+N13 — csv.sh
+Résultat pour ligne 3, colonne 2 :
+Résultat pour ligne 4, colonne 3 :
+Résultat pour ligne 1, colonne 2 :
+Pourquoi lire les numéros à chaque exécution :
+Outils pour choisir la ligne et la colonne :
+
+N14 — Deux clés, deux rôles
+Ordre obtenu dans le test des zones :
+Pourquoi sam vient avant zoe et alice ne vient pas en premier :
+
+N15 — shells.sh
+Les trois transformations :
+Clés de tri choisies et rôle de chacune :
+Pourquoi un simple sort ne suffit pas :
+
+N16 — Répéter et compter
+Intérêt de wc -l avec une redirection d'entrée :
+Effet du n dans la clé de tri :
+Effet de nullglob sur un motif sans correspondance :
+
+N17 — production.sh
+Classement obtenu :
+Rôle de la variable de boucle :
+Texte reçu par le tri après done :
+Résultat dans un dossier vide :
+
+N18 — Les candidats au nettoyage
+Fichiers anciens retenus dans essais :
+Rôle de -maxdepth 1 :
+Pourquoi -mtime +3 n'est pas un seuil de 72 heures :
+
+N19 — nettoyage.sh
+Fichiers proposés :
+Fichiers supprimés :
+Fichiers conservés et raisons :
+Contenu du journal après le premier passage :
+Contenu du journal après un passage avec refus :
+Pourquoi journaliser seulement après une suppression réussie :
+Protection des fichiers des sous-dossiers :
+
+N20 — Lire une sortie de who
+Différence entre compte et session :
+Numéros des champs de date et d'heure :
+Ordre chronologique attendu des quatre sessions fictives :
+
+N21 — quibosse.sh
+Classement du relevé fictif :
+Journal après deux passages du relevé fictif :
+Rôle de tee -a :
+Résultat avec les connexions réelles :
+
+N22 — Ta boîte à outils
+Script choisi :
+Trajet des données expliqué avec mes mots :
+Une erreur qui m'a aidé à comprendre :
+Niveau où je me suis arrêté :
+Notion à reprendre :
+
+Confiance globale avant le TP (1 à 4) :
+Confiance globale après le TP (1 à 4) :

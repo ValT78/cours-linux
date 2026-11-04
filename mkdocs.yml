@@ -24,6 +24,11 @@ nav:
       - TP 2 — Faire parler les traces du relais Aurore: eleves/tp2-lire-les-traces.md
       - TP 2.5 — Construire ses premiers scripts Bash: eleves/tp2-5-premiers-scripts.md
       - TP 3 — Donner des décisions aux outils d'Aurore: eleves/tp3-programmer-bash.md
+  - Corrigés:
+      - TP 1 — Premier contact avec Linux: corriges/tp1.md
+      - TP 1.5 — Reprendre le contrôle du terminal: corriges/tp1-5.md
+      - TP 2 — Faire parler les traces du relais Aurore: corriges/tp2.md
+      - TP 2.5 — Construire ses premiers scripts Bash: corriges/tp2-5.md
   - Annexes projetables:
       - TP 1 et TP 1.5 — Repères visuels et notions clés: professeur/tp1-guide-tableau.md
       - TP 2 — Repères visuels et notions clés: professeur/tp2-guide-tableau.md

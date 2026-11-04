@@ -15,10 +15,12 @@ Commence par [Installer Linux pour les TP](installer-linux.md). Tutoriel pour Wi
 - [TP 1.5 — Reprendre le contrôle du terminal](eleves/tp1-5-maitriser-terminal.md)
 - [TP 2 — Faire parler les traces du relais Aurore](eleves/tp2-lire-les-traces.md)
 - [TP 2.5 — Construire ses premiers scripts Bash](eleves/tp2-5-premiers-scripts.md)
+- [TP 3 — Donner des décisions aux outils d'Aurore](eleves/tp3-programmer-bash.md)
 
 ## Annexes projetables
 
 - [TP 1 et TP 1.5 — Repères visuels et notions clés](professeur/tp1-guide-tableau.md)
 - [TP 2 — Repères visuels et notions clés](professeur/tp2-guide-tableau.md)
+- [TP 3 — Bash avancé](professeur/tp3-guide-tableau.md)
 
 > Ces pages synthétisent les notions avec des schémas, des exemples et des repères de diagnostic. Elles sont conçues pour être projetées ou consultées comme aide-mémoire.

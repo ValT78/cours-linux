@@ -1,0 +1,9 @@
+TP 3 — Carnet de progression facultatif
+Nom / prénom :
+Séance :
+Dernier programme terminé :
+Version en cours (pour mon_cat : lecture / numeros / complet) :
+Commande pour reprendre mon travail :
+Difficulté ou message d'erreur à reprendre :
+
+Ce carnet est une aide personnelle. Aucun questionnaire ni compte rendu de chaque essai n'est demandé : le travail principal consiste à écrire, tester et corriger tes scripts.

@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="550" viewBox="0 0 1400 550" role="img" aria-labelledby="title desc">
+  <title id="title">Résultat arithmétique et statut de commande</title>
+  <desc id="desc">Une expression arithmétique nulle donne le statut 1, faux. Une expression non nulle donne le statut 0, vrai. Une condition if regarde le statut, pas le texte affiché.</desc>
+  <defs>
+    <style>.t{font-family:Arial,sans-serif;fill:#102a43}.m{font-family:monospace;fill:#102a43}.a{stroke:#ff725c;stroke-width:6;fill:none;marker-end:url(#h)}</style>
+    <marker id="h" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#ff725c"/></marker>
+  </defs>
+  <rect width="1400" height="550" fill="#f7fbff"/>
+  <text class="t" x="700" y="58" text-anchor="middle" font-size="32" font-weight="700">if regarde le statut de la commande</text>
+  <text class="t" x="240" y="120" text-anchor="middle" font-size="24">Construction exécutée</text>
+  <text class="t" x="720" y="120" text-anchor="middle" font-size="24">Statut récupéré dans $?</text>
+  <text class="t" x="1170" y="120" text-anchor="middle" font-size="24">Branche choisie</text>
+  <rect x="65" y="153" width="350" height="115" rx="16" fill="#dce9f5"/>
+  <text class="m" x="240" y="203" text-anchor="middle" font-size="30">((0))</text>
+  <text class="t" x="240" y="242" text-anchor="middle" font-size="21">résultat arithmétique nul</text>
+  <path class="a" d="M435 210 H535"/>
+  <rect x="560" y="153" width="320" height="115" rx="16" fill="#ffe0d9"/>
+  <text class="m" x="720" y="223" text-anchor="middle" font-size="32">1 : faux</text>
+  <path class="a" d="M905 210 H1010"/>
+  <text class="m" x="1170" y="223" text-anchor="middle" font-size="31">else</text>
+  <rect x="65" y="303" width="350" height="115" rx="16" fill="#dce9f5"/>
+  <text class="m" x="240" y="353" text-anchor="middle" font-size="30">((7))</text>
+  <text class="t" x="240" y="392" text-anchor="middle" font-size="21">résultat arithmétique non nul</text>
+  <path class="a" d="M435 360 H535"/>
+  <rect x="560" y="303" width="320" height="115" rx="16" fill="#b8f3df"/>
+  <text class="m" x="720" y="373" text-anchor="middle" font-size="32">0 : vrai</text>
+  <path class="a" d="M905 360 H1010"/>
+  <text class="m" x="1170" y="373" text-anchor="middle" font-size="31">then</text>
+  <text class="t" x="700" y="477" text-anchor="middle" font-size="24">Un calcul non nul devient vrai ; une commande réussie renvoie le statut 0.</text>
+  <text class="t" x="700" y="515" text-anchor="middle" font-size="23">Le texte affiché par une commande est une autre information.</text>
+</svg>

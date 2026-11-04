@@ -23,9 +23,11 @@ nav:
       - TP 1.5 — Reprendre le contrôle du terminal: eleves/tp1-5-maitriser-terminal.md
       - TP 2 — Faire parler les traces du relais Aurore: eleves/tp2-lire-les-traces.md
       - TP 2.5 — Construire ses premiers scripts Bash: eleves/tp2-5-premiers-scripts.md
+      - TP 3 — Donner des décisions aux outils d'Aurore: eleves/tp3-programmer-bash.md
   - Annexes projetables:
       - TP 1 et TP 1.5 — Repères visuels et notions clés: professeur/tp1-guide-tableau.md
       - TP 2 — Repères visuels et notions clés: professeur/tp2-guide-tableau.md
+      - TP 3 — Bash avancé: professeur/tp3-guide-tableau.md
 
 markdown_extensions:
   - tables

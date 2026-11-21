@@ -32,14 +32,32 @@ export LC_ALL=C
 total=0
 reussis=0
 
+afficher_texte() {
+    local titre=$1 fichier=$2 ligne nombre=0
+    printf '        %s\n' "$titre"
+    if [[ ! -s $fichier ]]; then
+        printf '          (rien)\n'
+        return
+    fi
+    while IFS= read -r ligne; do
+        printf '          |%s|\n' "$ligne"
+        nombre=$((nombre + 1))
+    done < <(head -c 800 "$fichier" | head -n 10)
+    if [[ -n $ligne ]]; then
+        printf '          |%s| (sans retour à la ligne dans cet aperçu)\n' "$ligne"
+    fi
+    if (( nombre == 10 || $(wc -c < "$fichier") > 800 )); then
+        printf '          (aperçu limité à 10 lignes et 800 octets)\n'
+    fi
+}
+
 bilan() {
     local titre=$1 raison=$2
     ((total += 1))
     if [[ -z $raison ]]; then
         ((reussis += 1))
-        echo "OK    — $titre"
     else
-        echo "ÉCHEC — $titre ($raison)"
+        printf 'ÉCHEC — %s\n        %s\n' "$titre" "$raison"
     fi
 }
 
@@ -56,39 +74,70 @@ essai() {
     code=$?
 
     if (( code == 124 || code == 137 )); then
-        raison='délai dépassé'
+        raison='Le programme a dépassé les 8 secondes autorisées.'
     elif (( code != code_attendu )); then
-        raison="statut attendu $code_attendu, obtenu $code"
+        raison="Le programme doit se terminer avec le code $code_attendu. Code obtenu : $code."
     elif ! cmp -s attendu sortie; then
-        raison='sortie standard différente'
+        raison='Compare le texte attendu et le texte affiché, ligne par ligne.'
     elif [[ $stderr_attendue == diagnostic && ! -s erreur ]]; then
-        raison='diagnostic manquant sur la sortie d’erreur'
+        raison='Envoie un message qui explique l’erreur sur la sortie d’erreur (stderr).'
     elif [[ $stderr_attendue != diagnostic ]] &&
         ! printf '%s' "$stderr_attendue" | cmp -s - erreur; then
-        raison='sortie d’erreur différente'
+        raison='Vérifie le message envoyé sur la sortie d’erreur (stderr).'
     fi
 
     bilan "$titre" "$raison"
     if [[ -n $raison ]]; then
-        diff -u --label 'sortie attendue' --label 'sortie obtenue' attendu sortie
-        if [[ -s erreur ]]; then
-            echo '        Sortie d’erreur obtenue (début) :'
-            head -c 400 erreur
-            echo
+        case "$nom:${1-}" in
+            lignes_utiles:'nom avec espaces.conf'|echecs:'un echec.log'|ecrire:*|tictac:*)
+                printf '        Arguments utilisés dans le dossier de test :'
+                if (( $# == 0 )); then printf ' (aucun)'; else printf ' %q' "$@"; fi
+                printf '\n'
+                if [[ $nom == tictac && $# -gt 0 ]]; then
+                    afficher_texte 'Saisie fournie (rien = fin de saisie immédiate)' entree
+                fi
+                ;;
+            *)
+                printf '        À essayer depuis le dossier de l’atelier :\n          bash %q' "$nom.sh"
+                if (( $# )); then printf ' %q' "$@"; fi
+                printf '\n'
+                ;;
+        esac
+        if ! cmp -s attendu sortie; then
+            afficher_texte 'Texte attendu' attendu
+            afficher_texte 'Texte affiché par ton programme' sortie
+        fi
+        if [[ $stderr_attendue != diagnostic ]]; then
+            printf '%s' "$stderr_attendue" > erreur-attendue
+            if ! cmp -s erreur-attendue erreur; then
+                afficher_texte 'Message attendu sur la sortie d’erreur' erreur-attendue
+                afficher_texte 'Message obtenu sur la sortie d’erreur' erreur
+            elif [[ -s erreur ]]; then
+                afficher_texte 'Message obtenu sur la sortie d’erreur' erreur
+            fi
+        elif [[ -s erreur ]]; then
+            afficher_texte 'Message obtenu sur la sortie d’erreur' erreur
         fi
     fi
 }
 
 fichier() {
-    local chemin=$1 contenu=$2 raison=''
-    if ! printf '%s' "$contenu" | cmp -s - "$chemin"; then
-        raison='fichier absent ou contenu différent'
+    local titre=$1 chemin=$2 contenu=$3 raison=''
+    printf '%s' "$contenu" > contenu-attendu
+    if [[ ! -f $chemin ]]; then
+        raison="Le fichier $chemin devrait exister à cette étape."
+    elif ! cmp -s contenu-attendu "$chemin"; then
+        raison="Le contenu du fichier $chemin est différent."
     fi
-    bilan "$chemin — contenu" "$raison"
+    bilan "$titre" "$raison"
+    if [[ -n $raison && -f $chemin ]]; then
+        afficher_texte 'Contenu attendu' contenu-attendu
+        afficher_texte 'Contenu du fichier' "$chemin"
+    fi
 }
 
 tester() {
-    local nom=$1 source usage question
+    local nom=$1 source usage question droits
     local -a commande
     echo "== $nom =="
 
@@ -113,52 +162,54 @@ tester() {
     case "$nom" in
         lignes_utiles|echecs)
             usage="usage : $nom.sh FICHIER"$'\n'
-            essai 'appel sans argument' 1 '' "$usage" ''
-            essai 'argument en trop' 1 '' "$usage" '' donnees/sshd_config autre
-            essai 'fichier absent' 2 '' diagnostic '' absent.txt
-            essai 'répertoire à la place d’un fichier' 2 '' diagnostic '' donnees
+            essai 'sans chemin de fichier, afficher le message d’usage et renvoyer 1' 1 '' "$usage" ''
+            essai 'avec deux arguments, afficher le message d’usage et renvoyer 1' 1 '' "$usage" '' donnees/sshd_config autre
+            essai 'signaler que absent.txt n’existe pas et renvoyer 2' 2 '' diagnostic '' absent.txt
+            essai 'refuser donnees car c’est un dossier et renvoyer 2' 2 '' diagnostic '' donnees
             ;;
     esac
 
     case "$nom" in
         lignes_utiles)
             essai 'directives SSH' 0 $'5\n' '' '' donnees/sshd_config
-            essai 'seulement des commentaires et des blancs' 0 $'0\n' '' '' donnees/commentaires.conf
+            essai 'un fichier composé de commentaires et de lignes blanches contient 0 directive' 0 $'0\n' '' '' donnees/commentaires.conf
             printf 'Option oui\n\t# commentaire\nAutre non\n' > 'nom avec espaces.conf'
-            essai 'nom avec espaces' 0 $'2\n' '' '' 'nom avec espaces.conf'
+            essai 'compter 2 directives dans « nom avec espaces.conf », un fichier créé par le vérificateur' 0 $'2\n' '' '' 'nom avec espaces.conf'
             ;;
         echecs)
-            essai 'classement des trois adresses' 0 \
+            essai 'compter 13 échecs au total, puis afficher les trois adresses les plus fréquentes' 0 \
                 $'13\n      6 203.0.113.7\n      4 198.51.100.23\n      2 203.0.113.99\n' \
                 '' '' donnees/auth.log
-            essai 'aucun échec' 0 $'0\n' '' '' donnees/sans-echec.log
+            essai 'afficher 0 sans ajouter de classement si le journal ne contient aucun échec' 0 $'0\n' '' '' donnees/sans-echec.log
             head -n 1 donnees/auth.log > 'un echec.log'
-            essai 'une seule adresse' 0 $'1\n      1 203.0.113.7\n' '' '' 'un echec.log'
+            essai 'avec une seule adresse dans le journal de test, afficher une seule ligne de classement' 0 $'1\n      1 203.0.113.7\n' '' '' 'un echec.log'
             ;;
         ecrire)
             usage=$'usage : ecrire FICHIER MOT...\n'
-            essai 'mot manquant' 1 '' "$usage" '' message.txt
-            essai 'écrire plusieurs arguments' 0 '' '' '' message.txt Bonjour tout le monde
-            fichier message.txt $'Bonjour tout le monde\n'
-            if [[ $(stat -c %a -- message.txt 2>/dev/null) == 644 ]]; then
-                bilan 'droits à la création' ''
+            essai 'un nom de fichier sans mot à écrire doit déclencher le message d’usage' 1 '' "$usage" '' message.txt
+            essai 'écrire « Bonjour tout le monde » avec un espace entre les mots' 0 '' '' '' message.txt Bonjour tout le monde
+            fichier 'vérifier le contenu de message.txt après la première écriture' message.txt $'Bonjour tout le monde\n'
+            droits=$(stat -c %a -- message.txt 2>/dev/null)
+            if [[ $droits == 644 ]]; then
+                bilan 'permissions de message.txt à la création' ''
             else
-                bilan 'droits à la création' '0644 attendu'
+                bilan 'permissions de message.txt à la création' \
+                    "Permissions attendues : 0644 (lecture et écriture pour le propriétaire, lecture pour les autres). Obtenu : ${droits:-fichier absent}."
             fi
-            essai 'remplacer un texte plus long' 0 '' '' '' message.txt 'un seul' mot
-            fichier message.txt $'un seul mot\n'
-            essai 'ouverture impossible' 2 '' diagnostic '' absent/message.txt mot
+            essai 'remplacer « Bonjour tout le monde » par « un seul mot » sans garder la fin de l’ancien texte' 0 '' '' '' message.txt 'un seul' mot
+            fichier 'vérifier que l’ancien texte a été entièrement remplacé dans message.txt' message.txt $'un seul mot\n'
+            essai 'signaler que le fichier ne peut pas être créé dans un dossier absent et renvoyer 2' 2 '' diagnostic '' absent/message.txt mot
             ;;
         tictac)
             question=$'Combien de secondes ?\n'
             essai 'argument manquant' 1 '' $'usage : tictac FICHIER\n' ''
-            essai 'écrire deux lignes' 0 "${question}"$'2 lignes écrites dans tic.txt\n' '' $'2\n' tic.txt
-            fichier tic.txt $'tic 1\ntic 2\n'
-            essai 'saisie non numérique' 1 "$question" $'tictac : nombre invalide\n' $'abc\n' tic.txt
-            essai 'entrée vide' 1 "$question" $'tictac : nombre invalide\n' '' tic.txt
-            essai 'zéro' 1 "$question" $'tictac : nombre invalide\n' $'0\n' tic.txt
-            fichier tic.txt $'tic 1\ntic 2\n'
-            essai 'ouverture impossible' 2 "$question" diagnostic $'1\n' absent/tic.txt
+            essai 'pour la saisie 2, écrire « tic 1 » puis « tic 2 » et annoncer deux lignes' 0 "${question}"$'2 lignes écrites dans tic.txt\n' '' $'2\n' tic.txt
+            fichier 'vérifier les deux lignes écrites dans tic.txt pour la saisie 2' tic.txt $'tic 1\ntic 2\n'
+            essai 'refuser la saisie abc et renvoyer 1' 1 "$question" $'tictac : nombre invalide\n' $'abc\n' tic.txt
+            essai 'sans saisie (comme avec < /dev/null), signaler une erreur et renvoyer 1' 1 "$question" $'tictac : nombre invalide\n' '' tic.txt
+            essai 'refuser la saisie 0 : le nombre de secondes doit être positif' 1 "$question" $'tictac : nombre invalide\n' $'0\n' tic.txt
+            fichier 'après abc, une fin de saisie immédiate et 0, tic.txt doit encore contenir ses deux lignes d’origine' tic.txt $'tic 1\ntic 2\n'
+            essai 'signaler que le fichier ne peut pas être créé dans un dossier absent et renvoyer 2' 2 "$question" diagnostic $'1\n' absent/tic.txt
             ;;
     esac
 }

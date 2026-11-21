@@ -34,8 +34,8 @@ grep -q 'syntaxe' "$journal"
 
 printf '#!/usr/bin/env bash\necho faux\n' > "$atelier/preparation/repere.sh"
 verifier_statut 1 repere
-grep -q 'attendu' "$journal"
-grep -q 'obtenu' "$journal"
+grep -q 'Texte attendu' "$journal"
+grep -q 'Texte affiché' "$journal"
 
 # Témoin minimal : messages et emplacement doivent suivre le dossier de lancement.
 printf '#!/usr/bin/env bash\necho "Atelier Aurore"\npwd\nwhoami\n' > "$atelier/preparation/repere.sh"
@@ -45,8 +45,8 @@ grep -q '2/2 essais' "$journal"
 # Un programme constant ne doit pas être accepté comme une factorielle.
 printf '#!/usr/bin/env bash\necho 720\n' > "$atelier/scripts/factorielle.sh"
 verifier_statut 1 factorielle
-grep -q 'OK.*factorielle de 6' "$journal"
-grep -q 'ECHEC.*factorielle de 0' "$journal"
+grep -q '1/11 essais réussis' "$journal"
+grep -q 'ÉCHEC.*factorielle de 0' "$journal"
 
 printf '#!/usr/bin/env bash\nwhile true; do :; done\n' > "$atelier/preparation/depart.sh"
 verifier_statut 1 depart

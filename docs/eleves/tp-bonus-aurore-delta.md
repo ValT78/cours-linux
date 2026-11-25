@@ -1,45 +1,43 @@
-# TP bonus — Aurore, décollage vers DELTA
+# TP bonus — Aurore, un idle game dans ton terminal
 
-Grâce au signal retrouvé dans les journaux d’Aurore, on sait où se trouve la balise 7. Une fusée de secours est prête à partir. Au décollage, elle n’a qu’un propulseur manuel. À toi de l’équiper pour rejoindre le secteur DELTA, à 200 km.
+Tu appuies sur **Espace** pour faire avancer ta fusée. Chaque kilomètre te rapporte un crédit. Avec tes premiers crédits, tu peux acheter un moteur qui fait avancer la fusée quand tu lâches le clavier. Ensuite, tu peux ajouter d’autres moteurs et gagner des primes en passant par des planètes.
 
-**Ton premier défi** tient en une phrase. Fais avancer la fusée de 5 km chaque fois que tu appuies sur **Espace**. Tu lui ajouteras ensuite un tableau de bord, une boutique et des moteurs qui la font avancer pendant que tu lâches le clavier. C’est le principe d’un *idle game*.
+On va faire ça en Bash, en commençant par un compteur. À la fin, tu tapes `bash fusee.sh` et tu joues directement dans ton terminal.
 
-Ce TP est facultatif. Essaie chaque exemple, puis réutilise-le dans ton jeu. À la fin de chaque niveau, joue une courte partie et vérifie ce que tu viens d’ajouter.
+```text
+  ═══════════════ AURORE · VOL LIBRE ═══════════════
+  .....🚀...............
 
-## Installer l’atelier
+  Distance  128 km     Temps de vol  00:42     Solde  118 cr
+  Prochaine planète  Vénus (250 km)
 
-**Dans ton terminal Linux**, crée le dossier de travail.
+  [ESPACE]  Impulsion +8 km        Propulsion auto +1 km/s
+  [1]       Propulseur automatique                 INSTALLÉ
+  [2]       Booster                                INSTALLÉ
+  [3]       Moteur ionique                            50 cr
 
-```bash
-mkdir -p ~/base-exploration/tp-bonus
-cd ~/base-exploration/tp-bonus
+  > Mars atteinte ! Prime de 30 cr.
+  [Q] Quitter
 ```
 
-Télécharge [l’archive de l’atelier](../assets/tp-bonus-aurore.zip) et place-la dans ce dossier. Depuis Linux, tu peux aussi la télécharger avec cette commande.
+## Préparer ton dossier
+
+**Dans ton terminal Linux**, crée ton dossier de jeu.
 
 ```bash
-wget https://valt78.github.io/cours-linux/assets/tp-bonus-aurore.zip
+mkdir -p ~/base-exploration/aurore
+cd ~/base-exploration/aurore
 ```
 
-**Dans le terminal**, décompresse et ouvre l’atelier.
-
-```bash
-unzip tp-bonus-aurore.zip
-cd atelier-aurore-delta
-ls
-```
-
-`affichage.sh` contient le tableau de bord. `verifier.sh` lance les essais, avec Python 3. Tu écris tout ton jeu dans un seul fichier, **`fusee.sh`**. Garde les fichiers fournis à côté.
-
-**Pour reprendre**, reviens dans `~/base-exploration/tp-bonus/atelier-aurore-delta`. Tu peux directement relancer le jeu avec `bash fusee.sh`.
+Tu commences avec `fusee.sh`. Tu créeras les autres fichiers au moment de t’en servir. Pour reprendre plus tard, reviens dans ce dossier et lance `bash fusee.sh`.
 
 ---
 
-## Niveau 1 — Faire décoller la fusée
+## Niveau 1 — Faire décoller la fusée avec Espace
 
-### 1.1 Afficher le compteur
+### 1.1 Afficher la distance
 
-**Dans le terminal**, ouvre ton fichier avec `nano fusee.sh`. **Dans l’éditeur**, écris ce premier script.
+Ouvre `nano fusee.sh`. **Dans l’éditeur**, saisis ce premier script.
 
 ```bash
 #!/usr/bin/env bash
@@ -47,77 +45,61 @@ distance=0
 printf '%s km\n' "$distance"
 ```
 
-La première ligne indique quel interpréteur doit lire le fichier si tu le lances directement. `distance=0` donne la valeur `0` à la variable `distance`. Colle le signe `=` à son nom et à sa valeur. `"$distance"` lit cette valeur pour la donner à `printf`. Dans le format, `%s` réserve la place de la valeur et `\n` passe à la ligne.
+La première ligne choisit Bash si ton fichier est lancé directement. `distance=0` range la valeur `0` dans la variable `distance`. Colle le `=` à son nom et à sa valeur. `"$distance"` lit ce que tu y as rangé. Dans le format de `printf`, `%s` insère la valeur et `\n` passe à la ligne.
 
-Enregistre avec **Ctrl+O**, confirme avec **Entrée**, puis quitte avec **Ctrl+X**. **Dans le terminal**, lance le script.
+Enregistre avec **Ctrl+O**, confirme avec **Entrée**, puis quitte avec **Ctrl+X**. Lance `bash fusee.sh`. Tu dois voir `0 km`.
 
-```bash
-bash fusee.sh
-```
+### 1.2 Lire une touche sur-le-champ
 
-Tu dois voir `0 km`. Essaie avec `distance=12`, puis remets le compteur à zéro.
-
-### 1.2 Lire Espace sans attendre Entrée
-
-**Dans le terminal**, ouvre un Bash en tapant `bash`. Essaie cette commande, puis appuie sur **Espace**. Quand l’invite revient, exécute la seconde ligne.
+**Dans le terminal**, tape `bash`, puis exécute la première ligne ci-dessous. Appuie sur **Espace**, puis lance la seconde ligne quand l’invite revient.
 
 ```bash
 IFS= read -r -s -n 1 touche
 printf '<%s>\n' "$touche"
 ```
 
-`read` place ce qu’il a lu dans la variable `touche`.
+`read` range la saisie dans `touche`.
 
 | Élément | Effet |
 |---|---|
-| `-n 1` | Lit au plus un caractère. Pour Espace ou une lettre, tu peux agir sans appuyer sur Entrée. |
+| `-n 1` | Lit au plus un caractère. Pour Espace ou une lettre, nul besoin d’appuyer sur Entrée. |
 | `-s` | Garde la touche invisible pendant la saisie. |
 | `-r` | Lit un antislash `\` comme un caractère ordinaire. |
-| `IFS=` | Désactive la séparation et le retrait des espaces pour cette commande. Un seul espace reste bien dans `touche`. |
+| `IFS=` | Empêche `read` de retirer les espaces autour de la saisie. |
 
-Tu dois voir `< >`. Essaie de nouveau avec la lettre `x` et observe `<x>`. Tape `exit` pour revenir à ton shell habituel.
+Tu dois voir `< >`. Essaie avec `x` pour obtenir `<x>`. Tu peux comparer avec la même lecture sans `IFS=`. Tape `exit` quand tu as fini l’essai.
 
-### 1.3 Ajouter 5 km
+### 1.3 Donner la première impulsion
 
-Dans cet exemple, Bash exécute les lignes entre `then` et `fi` si le texte contenu dans `touche` est égal à un espace. Garde les espaces autour de `[` et `]` et les guillemets autour de `" "`.
+Ce `if` exécute l’affichage si `touche` contient un espace. Garde les guillemets autour des deux valeurs et les espaces autour des crochets. Le `;` sépare le test de `then` sur la même ligne. `fi` ferme le `if`.
 
 ```bash
 if [ "$touche" = " " ]; then
-    printf 'Une impulsion !\n'
+    printf 'Impulsion !\n'
 fi
 ```
 
-Le `;` termine le test et permet d’écrire `then` sur la même ligne. Pour calculer une nouvelle valeur, utilise une expression arithmétique comme `distance=$((distance + 5))`. À l’intérieur de `$((…))`, Bash comprend `distance` comme un nombre et renvoie le résultat de l’addition. L’affectation range ce résultat dans `distance`.
+**Dans `fusee.sh`**, garde l’affichage initial, puis lis une touche. Reprends ce `if` pour faire `distance=$((distance + 5))` si c’est Espace. `$((…))` demande un calcul entier et l’affectation range le résultat dans `distance`. Affiche de nouveau la distance après le `fi`.
 
-**À toi de jouer.** Dans `fusee.sh`, garde l’affichage initial, lis une touche, puis ajoute 5 à `distance` si c’est Espace. Affiche le compteur après le `if`. Relance une fois avec Espace et une fois avec `x`. Tu dois obtenir `0 km` puis `5 km` au premier essai, et rester à `0 km` au second. Les deux essais se terminent après une touche.
-
-Quand ça marche, lance le testeur.
-
-```bash
-bash verifier.sh niveau-1
-```
-
-Il envoie des touches à ton script et compare le résultat attendu avec le résultat obtenu. En cas d’écart, corrige ton script puis relance le même test. Si Bash signale une erreur de syntaxe, `bash -n fusee.sh` permet de la retrouver sans jouer la partie.
+**Joue.** Appuie sur Espace. Le compteur doit passer de `0 km` à `5 km`. Relance et essaie `x`. La fusée reste à `0 km`.
 
 ---
 
-## Niveau 2 — Enchaîner les impulsions et faire bouger la fusée
+## Niveau 2 — Jouer en continu et dessiner le cockpit
 
-### 2.1 Garder une partie ouverte
+### 2.1 Piloter et quitter avec Q
 
-**Dans le terminal**, essaie cette boucle en lançant d’abord `bash`.
+Une boucle `while` répète les commandes entre `do` et `done` tant que son test réussit. Essaie cet exemple dans le terminal. `-lt` veut dire « inférieur à ». La boucle affiche `0`, `1` et `2`.
 
 ```bash
-compteur=0
-while [ "$compteur" -lt 3 ]; do
-    printf '%s\n' "$compteur"
-    compteur=$((compteur + 1))
+tour=0
+while [ "$tour" -lt 3 ]; do
+    printf '%s\n' "$tour"
+    tour=$((tour + 1))
 done
 ```
 
-`while` vérifie le test avant chaque tour. `-lt` signifie « inférieur à ». `do` ouvre les commandes à répéter et `done` les ferme. Tu dois voir `0`, `1`, puis `2`. Avec `while true; do`, la condition réussit à chaque tour. Tu peux alors utiliser `break` pour sortir de la boucle.
-
-Quand plusieurs touches déclenchent des actions différentes, `case` permet de leur donner chacune une branche. **Essaie dans le même Bash** une touche quelconque, puis **Q**.
+Avec `while true`, le test réussit à chaque tour. Tu peux alors décider de sortir avec `break`. Essaie la structure suivante dans Bash avec quelques lettres, puis avec **Q**.
 
 ```bash
 while true; do
@@ -129,63 +111,83 @@ while true; do
 done
 ```
 
-`q|Q` accepte les deux écritures. Le `)` ouvre l’action et `;;` termine la branche. `*` accepte toute touche restante et `esac` ferme le `case`. `|| break` sort de la boucle si `read` échoue, par exemple si l’entrée se ferme. Termine cet essai avec `exit`.
+`case` choisit une branche selon la touche. `q|Q` accepte les deux écritures. `)` ouvre l’action et `;;` la termine. `*` attrape les autres touches et `esac` ferme le `case`. Avec `|| break`, le programme quitte aussi la boucle si la lecture échoue.
 
-**Dans `fusee.sh`**, initialise `distance` une fois, **avant** la boucle. Dans la boucle, affiche la distance, puis lis la touche. Remplace ton `if` par un `case`. Ajoute une branche `" ")` pour l’impulsion et garde la branche `q|Q)` pour quitter. Tu peux ignorer les autres touches en omettant `*`.
+**Dans `fusee.sh`**, laisse `distance=0` **avant** le `while`, pour conserver la distance d’un tour au suivant. Dans la boucle, affiche le compteur, lis une touche et traite-la dans un `case`. Utilise `" ")` pour la branche Espace, garde `q|Q)` et retire la branche `*` pour ignorer les autres touches.
 
-Essaie avec Espace, `x`, Espace, Espace et **Q**. Le compteur se termine à `15 km`. À chaque tour, il repart de la distance que tu as accumulée.
+**Joue.** Fais Espace, `x`, Espace, Espace et **Q**. Tu dois finir à `15 km`.
 
-### 2.2 Relier le compteur à la piste
+### 2.2 Faire glisser la fusée sur l’écran
 
-Sur la piste, chaque segment représente 10 km. Essaie ce calcul **dans le terminal**.
-
-```bash
-printf '%s\n' "$((9 / 10))" "$((10 / 10))" "$((19 / 10))"
-```
-
-Tu obtiens `0`, `1`, `1`. Bash fait une division entière. À 9 km, la fusée est encore au départ. À 10 km, elle passe au premier segment. Le dernier repère se trouve à 200 km, après 20 segments.
-
-**Dans `fusee.sh`**, sous la première ligne du fichier, charge l’affichage fourni avec `source ./affichage.sh`. `source` lit un fichier Bash dans le script en cours. Il rend ici disponibles les fonctions d’affichage, des groupes de commandes que tu peux appeler par leur nom.
-
-Au début de chaque tour, remplace le `printf` du compteur par ces lignes, juste avant de lire la touche.
+Un cockpit redessine les mêmes lignes. **Dans le terminal**, essaie la seconde commande après la première.
 
 ```bash
-case_fusee=$((distance / 10))
-afficher_vol "$case_fusee" "$distance"
-printf '  [ESPACE] Impulsion manuelle  +5 km\n'
-afficher_commandes
+printf 'Ancien écran\n'
+printf '\033[H\033[JNouvel écran\n'
 ```
 
-`afficher_vol` reçoit la position sur la piste, puis la distance à afficher. Le tableau de bord garde la fusée au dernier repère si le compteur dépasse 200 km. `afficher_commandes` affiche le rappel pour quitter. Lance le jeu et observe le premier déplacement de la fusée au deuxième appui sur Espace.
+`\033` envoie le caractère spécial Échap. Avec `[H`, le terminal ramène le curseur en haut à gauche. Avec `[J`, il efface depuis le curseur jusqu’en bas. Tu peux alors dessiner une nouvelle image au même endroit.
+
+**Dans `affichage.sh`**, crée ta première fonction. Une fonction est un groupe de commandes que tu peux lancer par son nom. Les commandes entre `{` et `}` attendent que tu appelles `afficher_vol` pour s’exécuter.
 
 ```bash
-bash verifier.sh niveau-2
+afficher_vol() {
+    printf '\033[H\033[J'
+    printf '\n  ═══════════════ AURORE · VOL LIBRE ═══════════════\n'
+    printf '\n  🚀\n\n'
+    printf '  Distance  %s km\n' "$distance"
+    printf '\n  [ESPACE] Impulsion    [Q] Quitter\n'
+}
 ```
+
+Sous la première ligne de `fusee.sh`, ajoute ces deux commandes. Remplace ensuite le `printf` du compteur dans ta boucle par `afficher_vol`.
+
+```bash
+cd "$(dirname "$0")" || exit 1
+source ./affichage.sh
+```
+
+`$0` contient le chemin utilisé pour lancer `fusee.sh`. `dirname` en extrait le dossier et `$(…)` récupère le résultat. Ce `cd` place le jeu dans son propre dossier, même si tu le lances de plus loin. En cas d’échec, `exit 1` arrête le script. `source` lit les définitions d’`affichage.sh` dans le même Bash. La fonction peut alors lire `distance` et dessiner le compteur.
+
+### 2.3 Animer une piste sans fin
+
+**Dans le terminal**, essaie `printf '%s\n' "$((9 / 5))" "$((20 % 20))" "$((21 % 20))"`. Tu obtiens `1`, `0`, puis `1`. La division entière coupe la partie décimale. `%` donne le reste de la division, ce qui permet de revenir au début d’une piste de 20 positions.
+
+Dans `afficher_vol`, remplace le `printf` qui dessine la fusée par ce bloc.
+
+```bash
+local piste='....................'
+local position=$((distance / 5 % 20))
+printf '\n  %s🚀%s\n\n' "${piste:0:position}" "${piste:position}"
+```
+
+`local` garde ces deux variables à l’intérieur de la fonction. `${piste:0:position}` prend les points avant la fusée. Bash part du caractère `0` et en prend `position`. `${piste:position}` prend tous les points restants. Le dessin revient au départ tous les **100 km**, tandis que la distance continue à grimper.
+
+**Joue.** À 100 km, la fusée revient au bord gauche. À 105 km, elle a déjà glissé d’un cran vers la droite.
 
 ---
 
-## Niveau 3 — Ouvrir la boutique
+## Niveau 3 — Te faire payer et ouvrir la boutique
 
-### 3.1 Gagner des crédits en avançant
+### 3.1 Un kilomètre, un crédit
 
-Pour l’instant chaque impulsion donne 5 km. Ajoute `credits=0` avant la boucle. Dans la branche Espace, ajoute aussi 5 à `credits`. Chaque kilomètre parcouru rapporte un crédit.
-
-Tu vas dépenser ces crédits sans reculer. Après deux impulsions, tu auras 10 km au compteur et 10 crédits. Après l’achat, tu seras encore à 10 km avec un solde de 0.
-
-Initialise aussi `auto_installe=0` et `message=''` avant la boucle. `auto_installe` vaut `0` si le propulseur est absent et `1` s’il est installé. `message` est le texte que tu veux montrer après une tentative d’achat. Les deux apostrophes accolées créent un texte vide.
-
-**Dans la boucle**, remplace le `printf` qui affiche la commande Espace par la première ligne ci-dessous. Passe ensuite `message` à `afficher_commandes`.
+Initialise `credits=0` dans `fusee.sh`, à côté de `distance=0`. Dans `propulsion.sh`, crée la fonction `avancer`. Elle reçoit la distance à ajouter et verse le même montant en crédits.
 
 ```bash
-afficher_boutique "$credits" "$auto_installe"
-afficher_commandes "$message"
+avancer() {
+    local gain="$1"
+    distance=$((distance + gain))
+    credits=$((credits + gain))
+}
 ```
 
-Le tableau indique le solde, la commande Espace et le prix du premier propulseur. Essaie deux impulsions. Le prix passe du gris au jaune quand tu peux l’acheter.
+Dans une fonction, `$1` contient son premier argument. Avec `avancer 5`, `gain` vaut 5. Les compteurs `distance` et `credits` restent partagés avec `fusee.sh`, pour que la boucle voie les deux nouvelles valeurs.
 
-### 3.2 Autoriser l’achat au prix exact
+Charge `source ./propulsion.sh` sous le premier `source`. Dans la branche Espace, remplace l’addition par `avancer 5`. Dans `afficher_vol`, ajoute `Solde %s cr` à la ligne de distance et passe aussi `"$credits"` à `printf`.
 
-**Dans le terminal**, essaie ce calcul. Puis recommence avec un solde de `9`.
+### 3.2 Acheter ton premier moteur
+
+**Essaie dans le terminal** un achat avec exactement 10 crédits, puis avec 9.
 
 ```bash
 bourse=10
@@ -198,36 +200,56 @@ else
 fi
 ```
 
-`-ge` compare deux entiers et signifie « supérieur ou égal à ». Avec exactement 10 crédits, tu peux payer 10 crédits. `else` s’exécute quand le test est faux.
+`-ge` veut dire « supérieur ou égal à ». Le prix exact suffit. Les lignes après `else` s’exécutent quand le test est faux. Si tu achètes le moteur après deux impulsions, le solde tombe à zéro et la distance reste à 10 km.
 
-**Dans `fusee.sh`**, ajoute une branche `1)` à ton `case`. Fais choisir le message et l’action dans cet ordre.
+**Dans `boutique.sh`**, écris `prix_auto=10`, puis une fonction `acheter_auto`. Dans cette fonction, enchaîne les trois cas suivants.
 
-1. Si `[ "$auto_installe" -eq 1 ]`, indique que le propulseur est déjà installé. `-eq` compare deux entiers pour vérifier leur égalité.
-2. Sinon, si les crédits suffisent, enlève 10 crédits, mets `auto_installe` à `1` et annonce l’installation. Écris ce deuxième test avec `elif condition; then` dans le même `if`.
-3. Sinon, indique qu’il manque des crédits. Ferme le `if` avec `fi`, puis la branche `1` avec `;;`.
+1. Si `[ "$auto_installe" -eq 1 ]`, écris dans `message` que le moteur est déjà installé. `-eq` compare deux entiers pour vérifier leur égalité.
+2. Sinon, si le solde atteint `prix_auto`, paie le prix, passe `auto_installe` à `1` et annonce l’achat dans `message`. Écris ce deuxième test avec `elif condition; then`.
+3. Sinon, annonce qu’il manque des crédits. Ferme le `if` avec `fi`.
 
-Essaie d’acheter à `0` crédit. Puis, à `10` crédits, observe le solde revenir à `0` et le mot `INSTALLÉ` apparaître en vert. Regagne 10 crédits et essaie de racheter le propulseur. Le solde doit rester à 10.
+**Dans `fusee.sh`**, charge `source ./boutique.sh`. Avant la boucle, initialise `auto_installe=0` et `message=''`. Deux apostrophes accolées représentent un texte vide. Ajoute `1) acheter_auto ;;` au `case`.
+
+### 3.3 Allumer la boutique
+
+Dans `affichage.sh`, ajoute une fonction pour dessiner une ligne d’équipement. La même fonction servira pour les trois achats.
 
 ```bash
-bash verifier.sh niveau-3
+afficher_article() {
+    local touche="$1" nom="$2" prix="$3" installe="$4"
+    local etat="$prix cr" couleur=90
+    if [ "$installe" -eq 1 ]; then
+        etat='INSTALLÉ'
+        couleur=32
+    elif [ "$credits" -ge "$prix" ]; then
+        couleur=33
+    fi
+    printf '  \033[%sm[%s]  %-24s  %s\033[0m\n' "$couleur" "$touche" "$nom" "$etat"
+}
 ```
+
+Les quatre arguments donnent la touche, le nom, le prix et l’état de l’achat. `\033[` suivi du code et de `m` change la couleur. Le prix est gris (90), jaune (33) si tu peux l’acheter, et l’état installé est vert (32). `\033[0m` rétablit la couleur du terminal. `%-24s` réserve au nom au moins 24 caractères et l’aligne à gauche.
+
+Dans `afficher_vol`, sépare le rappel Espace du rappel Q. Entre les deux, appelle `afficher_article 1 'Propulseur automatique' "$prix_auto" "$auto_installe"`, puis ajoute une ligne `printf '  > %s\n' "$message"` pour le retour sur l’achat.
+
+**Joue.** Essaie **1** à 0 crédit. Fais deux impulsions, achète à 10 crédits et regarde le solde revenir à zéro pendant que la distance reste à 10 km. Regagne 10 crédits, puis essaie de racheter le moteur. Tes 10 crédits doivent rester en caisse. Tu viens de poser la boutique. Il reste à faire tourner le moteur.
 
 ---
 
-## Niveau 4 — Avancer même quand tu lâches le clavier
+## Niveau 4 — Lâcher le clavier et regarder la fusée filer
 
-### 4.1 Donner un délai à la lecture
+### 4.1 Réveiller la boucle chaque seconde
 
-**Dans le terminal**, ouvre un Bash et lance ces deux lignes. À ton premier essai, attends sans toucher au clavier. Pour le second, appuie sur une lettre avant la fin du délai.
+**Dans Bash**, essaie cette lecture et attends sans rien taper. Recommence en appuyant sur une lettre avant la fin du délai.
 
 ```bash
 IFS= read -r -s -n 1 -t 1 touche
-printf 'Statut %s\n' "$?"
+printf '<%s>\n' "$touche"
 ```
 
-Avec `-t 1`, `read` attend au plus une seconde. `$?` donne le statut de la commande juste exécutée. `0` indique que Bash a lu une touche. Observe le statut non nul quand le délai expire. Une entrée fermée donne `1`. Garde le statut tout de suite si tu dois l’utiliser plus loin.
+Avec `-t 1`, `read` attend au plus une seconde. La boucle peut donc reprendre la main pour faire avancer la fusée même quand tu ne touches à rien.
 
-Toujours dans ce Bash, relève la valeur de `SECONDS` à deux moments.
+Essaie aussi ce petit chronomètre.
 
 ```bash
 depart=$SECONDS
@@ -235,172 +257,156 @@ sleep 2
 printf '%s secondes écoulées\n' "$((SECONDS - depart))"
 ```
 
-`SECONDS` compte le temps en secondes entières depuis le lancement de Bash. `sleep 2` marque une pause de deux secondes pour l’essai. Dans le jeu, c’est `read` qui attend, tout en restant disponible pour une touche. Tape `exit` pour revenir à ton shell habituel.
+`SECONDS` est une variable de Bash qui compte le temps en secondes entières. Soustrais la valeur de départ pour mesurer le temps écoulé. Dans le jeu, `read` se charge de l’attente tout en restant disponible pour le clavier.
 
-### 4.2 Calculer le déplacement dans une fonction
+### 4.2 Brancher le moteur sur le chronomètre
 
-Une fonction regroupe des commandes sous un nom. Essaie cet exemple dans le terminal.
+Dans `fusee.sh`, initialise ces quatre variables avant la boucle.
 
 ```bash
-estimer_trajet() {
-    local secondes="$1"
-    local trajet=$((secondes * 2))
-    printf '%s km\n' "$trajet"
-}
-estimer_trajet 5
+vitesse_auto=0
+depart_vol=$SECONDS
+dernier_temps=$depart_vol
+temps_vol=0
 ```
 
-`nom() {` ouvre la définition et `}` la ferme. Le code s’exécute à l’appel `estimer_trajet 5`. Dans la fonction, `$1` contient le premier argument, ici `5`. `local` garde une variable dans la fonction. Tu dois voir `10 km`.
+Dans `boutique.sh`, ajoute 1 à `vitesse_auto` quand l’achat du premier moteur réussit. Dans `propulsion.sh`, écris `avancer_auto`. La fonction reçoit le nombre de secondes écoulées, le multiplie par `vitesse_auto` et donne le résultat à `avancer`. Par exemple, à 1 km/s, `avancer_auto 3` doit faire gagner 3 km et 3 crédits.
 
-**Dans `fusee.sh`**, écris la fonction `avancer_auto` juste après `source`. Elle reçoit le nombre de secondes écoulées. Garde ce nombre dans une variable locale et calcule le gain en le multipliant par `vitesse_auto`. Ajoute le gain à **`distance` et à `credits`**. Ces trois variables sont partagées avec la partie. Garde les deux compteurs modifiables depuis la fonction en évitant de les déclarer avec `local`.
-
-### 4.3 Brancher la fonction sur la boucle
-
-Dans les réglages de départ, ajoute `vitesse_auto=0` et `dernier_temps=$SECONDS` avant la boucle. Dans la branche `1`, passe `vitesse_auto` à `1` au moment de l’achat réussi. Ajoute `"$vitesse_auto"` comme troisième argument de `afficher_boutique` pour afficher la vitesse.
-
-Remplace l’ancienne ligne `read` par ce bloc, entre l’affichage de l’écran et le `case`.
+**Dans la boucle**, remplace l’ancienne ligne de lecture par ce bloc, juste avant le `case`.
 
 ```bash
-IFS= read -r -s -n 1 -t 1 touche
-statut=$?
-if [ "$statut" -eq 1 ] && [ ! -t 0 ]; then
-    break
+if ! IFS= read -r -s -n 1 -t 1 touche; then
+    [ -t 0 ] || break
+    touche=''
 fi
 
 maintenant=$SECONDS
-ecoule=$((maintenant - dernier_temps))
-avancer_auto "$ecoule"
+temps_vol=$((maintenant - depart_vol))
+avancer_auto "$((maintenant - dernier_temps))"
 dernier_temps=$maintenant
-
-if [ "$statut" -ne 0 ]; then
-    touche=''
-fi
 ```
 
-`&&` exige que les deux tests réussissent. `[ ! -t 0 ]` vérifie que l’entrée, désignée par `0`, ne vient pas d’un terminal. Le premier `if` permet au jeu de s’arrêter quand le testeur ferme son entrée. Au clavier, le jeu continue même si ta version de Bash renvoie `1` à l’expiration du délai.
+`!` inverse le résultat de `read`. Si aucune touche n’arrive avant la fin du délai, `touche=''` empêche le `case` de rejouer une commande. `[ -t 0 ]` vérifie que l’entrée du programme vient d’un terminal. `|| break` permet de s’arrêter si tu as lancé le jeu avec une entrée redirigée et que la lecture échoue. Le reste du bloc compte le temps passé depuis le dernier tour. Dix touches dans une même seconde ne font pas passer dix secondes. Un achat prend effet à partir du tour où tu le fais.
 
-La fonction de propulsion reçoit le temps écoulé après chaque lecture, avec ou sans touche. Si plusieurs tours ont lieu dans la même seconde, ils ajoutent 0 km. Le calcul se fait avant l’achat, donc le moteur démarre au moment où tu l’installes. Enfin, `-ne 0` teste si `read` a renvoyé un statut différent de zéro. Dans ce cas, vide `touche` pour qu’aucune commande ne parte au moment où le délai expire.
+### 4.3 Afficher le temps de vol
 
-**Joue une partie.** Attends avant d’acheter et observe `0 km/s`. Achète le propulseur à 10 km, relâche le clavier et regarde la distance et le solde augmenter ensemble. Appuie plusieurs fois sur `x` et observe que les touches inconnues laissent la propulsion continuer à 1 km/s.
-
-### 4.4 Tester cinq secondes sans attendre
-
-Pour que le vérificateur puisse appeler `avancer_auto` directement, place les réglages de départ et ta boucle dans une fonction `jouer`. Laisse `source` et la définition de `avancer_auto` au-dessus de `jouer`. Voici la structure à obtenir avec ton code.
+Dans `afficher_vol`, ajoute le temps de vol à côté de la distance et du solde. Essaie d’abord `temps_vol=65` avec ce format dans Bash.
 
 ```bash
-#!/usr/bin/env bash
-source ./affichage.sh
-
-avancer_auto() {
-    # Ton calcul de propulsion automatique.
-    :
-}
-
-jouer() {
-    # Tes réglages de départ et ta boucle while.
-    :
-}
-
-if [ "$1" != '--fonctions' ]; then
-    jouer
-fi
+printf 'Temps de vol  %02d:%02d\n' "$((temps_vol / 60))" "$((temps_vol % 60))"
 ```
 
-Les lignes `:` servent de repères. Cette commande ne fait rien. Remplace-les par tes commandes. Hors des fonctions, `$1` désigne le premier argument reçu par le script. Avec `bash fusee.sh`, il est vide et `!=` confirme qu’il diffère de `--fonctions`. Le vérificateur charge ton fichier avec cet argument pour disposer de `avancer_auto` sans lancer la partie.
+Tu dois voir `01:05`. `%02d` affiche un entier sur au moins deux chiffres, en ajoutant un zéro au besoin. Tu peux combiner les trois valeurs sur la même ligne du cockpit.
 
 ```bash
-bash verifier.sh niveau-4
+printf '  Distance  %s km     Temps de vol  %02d:%02d     Solde  %s cr\n' \
+    "$distance" "$((temps_vol / 60))" "$((temps_vol % 60))" "$credits"
 ```
 
-Le testeur simule cinq secondes à 0 km/s, puis à 1 km/s. Vérifie aussi que tu peux encore jouer avec `bash fusee.sh`.
+Un antislash en fin de ligne permet de continuer la même commande à la ligne suivante. À côté de la commande Espace, affiche aussi la vitesse avec `Propulsion auto +%s km/s` et `"$vitesse_auto"`.
+
+**Joue.** Attends quelques secondes au départ. Le temps avance et la distance reste à zéro. Achète le moteur et lâche le clavier. À chaque seconde, la distance et le solde gagnent tous les deux 1. Tape quelques `x` pendant que la fusée avance et observe que sa vitesse reste à 1 km/s.
 
 ---
 
-## Niveau 5 — Équiper la fusée et atteindre DELTA
+## Niveau 5 — Monter ta propre configuration de vol
 
 | Touche | Équipement | Coût | Effet |
 |---|---|---:|---|
-| **1** | Propulseur automatique | 10 crédits | Ajoute **1 km/s** |
-| **2** | Booster | 30 crédits | Fait passer une impulsion d’Espace de **5 à 8 km** |
-| **3** | Moteur ionique | 50 crédits | Ajoute **2 km/s** |
+| **1** | Propulseur automatique | 10 cr | Ajoute **1 km/s** |
+| **2** | Booster | 30 cr | Une impulsion passe de **5 à 8 km** |
+| **3** | Moteur ionique | 50 cr | Ajoute **2 km/s** |
 
-### 5.1 Donner plus de force à Espace
+**Construis le booster.** Initialise `impulsion=5` et `booster_installe=0` dans `fusee.sh`. Dans la branche Espace, appelle `avancer "$impulsion"`. Dans `boutique.sh`, ajoute `prix_booster=30` et écris `acheter_booster` avec les trois cas du premier achat. En cas de succès, le booster passe à l’état installé et `impulsion` vaut `8`. Branche la fonction sur **2** et ajoute la ligne correspondante dans `afficher_vol` avec `afficher_article`. Affiche aussi la valeur d’`impulsion` sur la ligne Espace.
 
-**Dans `jouer`**, initialise `impulsion=5` et `booster_installe=0`. Dans la branche Espace, utilise `impulsion` pour calculer le gain de distance et de crédits. Par exemple, `distance=$((distance + impulsion))` ajoute la valeur actuelle d’`impulsion`.
+**Ajoute le moteur ionique.** Reprends le même principe avec `ionique_installe=0`, `prix_ionique=50` et la fonction `acheter_ionique`, branchée sur **3**. Lors de l’achat, augmente la vitesse de 2 avec `vitesse_auto=$((vitesse_auto + 2))`. Ajoute sa ligne d’achat au cockpit.
 
-Construis la branche `2)` en reprenant les trois cas de l’achat du premier propulseur. Ici le prix est de 30 crédits. Après l’achat, `booster_installe` passe à `1` et `impulsion` à `8`. Ajoute `"$impulsion" "$booster_installe"` à la fin de ton appel à `afficher_boutique`.
+**Joue.** Prends le booster seul après six impulsions. L’impulsion suivante t’amène à 38 km et te laisse 8 crédits. Relance et achète les deux moteurs automatiques. Quel que soit l’ordre des achats, la vitesse doit atteindre 3 km/s. Laisse la fusée tourner au-delà de 200 km et regarde le compteur poursuivre sa course.
 
-Essaie le booster seul. Pars de 0, fais six impulsions, achète avec **2**, puis appuie sur Espace. Tu dois voir `38 / 200 km` et `8` crédits.
+---
 
-### 5.2 Cumuler deux moteurs automatiques
+## Niveau 6 — Partir à la chasse aux planètes
 
-Initialise `ionique_installe=0` dans `jouer`. Ajoute la branche `3)` et fais payer 50 crédits une seule fois. Pour augmenter la vitesse, utilise `vitesse_auto=$((vitesse_auto + 2))` quand l’achat réussit. Dans la branche du premier propulseur, ajoute `1` à la vitesse au lieu de lui donner la valeur `1`. Essaie les deux ordres d’achat. Dans les deux cas, la vitesse finale doit être de 3 km/s.
+Chaque planète est un palier. Lorsque tu l’atteins ou la dépasses, tu encaisses une prime et tu continues ton vol. Choisis leur nom et leur distance dans un fichier que tu peux modifier entre deux parties.
 
-Passe maintenant les six valeurs à l’affichage, dans cet ordre.
+### 6.1 Préparer la carte du vol
 
-```bash
-afficher_boutique "$credits" "$auto_installe" "$vitesse_auto" "$impulsion" "$booster_installe" "$ionique_installe"
-```
-
-Quand la fusée est en vol, tu peux obtenir un écran comme celui-ci.
+**Dans `planetes.txt`**, écris ces trois lignes. Chaque ligne contient la distance en kilomètres, le nom et la prime en crédits. Garde des distances entières, positives et strictement croissantes. Choisis des primes entières positives et écris les nombres sans zéro devant, comme `100`.
 
 ```text
-  AURORE  /  VOL DE SECOURS VERS DELTA
-
-  DÉPART ━━━━━━🚀━━━━━━━━━━━━━━ DELTA
-                 65 / 200 km
-
-  Crédits   25              Propulsion auto   +1 km/s
-
-  [ESPACE]  Impulsion manuelle  +8 km
-  [1]  Propulseur automatique    INSTALLÉ
-  [2]  Booster                   INSTALLÉ
-  [3]  Moteur ionique            50 crédits
-
-  > Booster installé. Prochaine impulsion à +8 km.
-
-  [Q] Quitter
+100|Mars|30
+250|Vénus|70
+600|Neptune|150
 ```
 
-### 5.3 Terminer le vol
-
-À 197 km, une impulsion de 8 km t’amène directement à 205 km. Utilise `-ge` pour déclencher l’arrivée dès que le compteur atteint **ou dépasse** 200 km.
-
-**Dans la boucle de `jouer`**, ajoute le test d’arrivée après l’affichage du tableau de bord, juste avant de lire une nouvelle touche. Quand le test est vrai, affiche la phrase suivante avec la distance parcourue, puis sors de la boucle avec `break`.
+Dans Bash, essaie de lire la première planète.
 
 ```bash
-printf '\nDELTA atteint à %s km !\n' "$distance"
+IFS='|' read -r seuil nom prime < planetes.txt
+printf 'À %s km, %s rapporte %s cr.\n' "$seuil" "$nom" "$prime"
 ```
 
-Teste un vol au clavier. Puis fais un vol où tu achètes au moins un moteur et le laisses franchir la ligne d’arrivée sans appuyer sur une touche. Dans les deux cas, tu dois voir la fusée au dernier repère, le message d’arrivée et le retour au terminal.
+`<` donne le fichier à `read`. Avec `IFS='|'`, les barres verticales séparent les trois champs. Bash les range dans `seuil`, `nom` et `prime`.
+
+### 6.2 Charger tous les paliers
+
+Un tableau garde plusieurs valeurs sous un même nom. Essaie `noms=('Mars' 'Vénus')` puis `printf '%s\n' "${noms[0]}" "${noms[1]}"` dans Bash. Le premier élément se trouve à l’indice 0. Dans le jeu, utilise le même indice pour retrouver le seuil, le nom et la prime d’une planète.
+
+**Dans `planetes.sh`**, ajoute la fonction suivante.
 
 ```bash
-bash verifier.sh niveau-5
+charger_planetes() {
+    local seuil nom prime
+    seuils=()
+    noms=()
+    primes=()
+    while IFS='|' read -r seuil nom prime || [ -n "$seuil" ]; do
+        if [ -n "$seuil" ]; then
+            seuils+=("$seuil")
+            noms+=("$nom")
+            primes+=("$prime")
+        fi
+    done < "$1"
+}
 ```
 
-Le vérificateur essaie le booster, cumule les deux moteurs et fait passer la fusée de 197 à 205 km. Quand tu peux rejoindre DELTA avec les commandes de ton jeu, ta mission est terminée. Garde `fusee.sh` dans ton atelier pour rejouer ou continuer. Il n’y a rien à déposer sur Moodle pour ce bonus.
+`=()` crée un tableau vide. `+=("valeur")` lui ajoute une entrée. La redirection placée après `done` donne le même fichier à toute la boucle. Chaque `read` lit une nouvelle ligne. `-n` vérifie qu’un texte contient au moins un caractère. Le test après `||` récupère aussi la dernière ligne si elle se termine sans retour à la ligne. Une ligne vide est ignorée.
 
-## Si tu veux prolonger le vol
+Dans `fusee.sh`, ajoute `source ./planetes.sh` en haut. Avant la boucle, initialise `index_planete=0` et appelle `charger_planetes planetes.txt`.
 
-### Reprendre une partie sauvegardée
+### 6.3 Verser la prime au bon moment
 
-Commence par écrire la distance et les crédits dans un fichier texte. Ajoute l’écriture dans la branche `q|Q)`, juste avant `break`.
+Dans `planetes.sh`, écris la fonction `visiter_planetes`. Son point de départ est toujours la prochaine planète à visiter.
 
-```bash
-printf '%s\n' "$distance" "$credits" > partie.txt
-```
+1. Tant que `[ "$index_planete" -lt "${#seuils[@]}" ]`, il reste une planète. `${#seuils[@]}` donne le nombre de seuils chargés.
+2. Récupère le seuil courant avec `"${seuils[index_planete]}"`. Si la fusée est encore en deçà du seuil, utilise `break` pour sortir de cette boucle.
+3. À partir du seuil, ajoute `${primes[index_planete]}` à `credits`, écris dans `message` le nom et le montant de la prime, puis augmente `index_planete` de 1. La boucle regarde aussitôt si un autre palier a été franchi.
 
-`>` envoie la sortie vers le fichier et remplace son ancien contenu. Joue quelques secondes, quitte avec **Q**, puis relis le fichier avec `cat partie.txt`. Ensuite, dans `jouer`, entre les réglages de départ et la boucle, teste `[ -f partie.txt ]` pour savoir si une sauvegarde existe. À l’intérieur du test, tu peux lire les deux lignes dans l’ordre.
+Dans `propulsion.sh`, appelle `visiter_planetes` à la fin d’`avancer`. Les impulsions et les moteurs automatiques déclenchent donc tous les deux les visites. Le déplacement du curseur vers la planète suivante empêche de toucher deux fois la même prime.
 
-```bash
-{
-    IFS= read -r distance
-    IFS= read -r credits
-} < partie.txt
-```
+**Dans `afficher_vol`**, reprends le test du nombre de seuils juste sous les compteurs. S’il en reste, affiche `Prochaine planète` avec `"${noms[index_planete]}"` et `"${seuils[index_planete]}"`. Sinon, affiche `Toutes les planètes visitées · Vol libre`. La partie continue jusqu’à ce que tu appuies sur **Q**.
 
-`<` donne le contenu du fichier aux deux `read` du groupe. Une fois cette reprise testée, ajoute les trois états d’installation à la sauvegarde et retrouve l’impulsion et la vitesse à partir des achats relus.
+**Joue.** Passe Mars et vérifie que ton solde gagne la prime en plus des crédits du trajet. Pour rendre le cas limite visible, déplace provisoirement les deux premiers paliers à 3 et 4 km dans `planetes.txt`. Au premier Espace, tu dois voir 5 km parcourus, deux primes versées et Neptune comme prochaine planète. Rétablis les distances, puis ajoute ta propre destination après Neptune.
 
-### Capter un message à mi-parcours
+---
 
-La balise 7 envoie un message au premier passage à 100 km. Réutilise la comparaison `-ge` de l’arrivée et une variable `signal_recu=0`, comme pour un équipement. Au début de chaque tour, avant l’affichage, utilise `[ "$distance" -ge 100 ] && [ "$signal_recu" -eq 0 ]` dans ton `if`. `&&` exige que les deux tests réussissent. Change alors ton message et passe `signal_recu` à `1`. Essaie de passer de 95 à 103 km avec le booster, puis achète un équipement et vérifie que le message d’achat reste affiché.
+## Ton jeu est prêt à décoller
+
+Lance `bash fusee.sh` et fais une démonstration. Donne tes premières impulsions, paie ton moteur, puis laisse quelqu’un regarder le compteur grimper tout seul. Choisis ensuite tes propres prix ou ajoute une planète à la carte.
+
+| Fichier | Ce qu’il contient |
+|---|---|
+| `fusee.sh` | Les réglages de départ, le chronomètre et les touches du jeu |
+| `affichage.sh` | Le cockpit, les couleurs et les lignes de boutique |
+| `propulsion.sh` | Les kilomètres et les crédits gagnés en avançant |
+| `boutique.sh` | Les prix et les achats |
+| `planetes.sh` | Le chargement des paliers, les visites et leurs primes |
+| `planetes.txt` | Les destinations que tu as choisies |
+
+Garde ensemble les six fichiers pour rejouer ou montrer ton jeu. Ce bonus est un projet personnel. Aucun dépôt sur Moodle.
+
+### Pour aller plus loin — Reprendre après avoir fermé le terminal
+
+Enregistre les valeurs dans la branche de **Q** avec `printf '%s\n' "$distance" "$credits" > partie.txt`. `>` envoie la sortie vers le fichier et remplace la sauvegarde précédente. Au lancement, teste `[ -f partie.txt ]` et relis les deux lignes dans le même ordre avec `read`. Ajoute ensuite les achats, le temps de vol et l’indice de la prochaine planète. Retrouve la vitesse et la force de l’impulsion à partir des achats. Pour reprendre le chronomètre avec le temps chargé, recule `depart_vol` d’autant et initialise `dernier_temps` à l’heure de reprise. Garde le même fichier de planètes pour cette partie.
+
+Quand la reprise fonctionne, essaie `date +%s`. Cette commande donne un nombre de secondes que tu peux enregistrer en quittant, puis soustraire à la valeur obtenue à la reprise. Tu peux ainsi verser la production automatique pour le temps passé hors du jeu en réutilisant `avancer_auto`.

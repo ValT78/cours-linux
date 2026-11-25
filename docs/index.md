@@ -17,7 +17,7 @@ Commence par [Installer Linux pour les TP](installer-linux.md). Tutoriel pour Wi
 - [TP 2.5 — Construire ses premiers scripts Bash](eleves/tp2-5-premiers-scripts.md)
 - [TP 3 — Donner des décisions aux outils d'Aurore](eleves/tp3-programmer-bash.md)
 - [TP 4 — Enquêter et journaliser sur Aurore](eleves/tp4-enqueter-journaliser.md)
-- [TP bonus — Aurore, décollage vers DELTA](eleves/tp-bonus-aurore-delta.md)
+- [TP bonus — Aurore, un idle game dans ton terminal](eleves/tp-bonus-aurore-delta.md)
 
 ## Corrigés
 
